@@ -5,14 +5,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0a0f18">
 <title>Digital Stock | ديجيتال ستوك</title>
-<!-- استدعاء خطوط Google بتصميم عصري -->
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<!-- استدعاء jsPDF مع خاصية defer لتسريع تحميل الصفحة -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
 
 <style>
 /* ================================================================
-   [1] DESIGN SYSTEM & CSS VARIABLES
+   [1] DESIGN SYSTEM
    ================================================================ */
 *, *::before, *::after { box-sizing: border-box; }
 
@@ -24,7 +22,6 @@
   --radius: 16px; --radius-sm: 10px;
   --font-ar: 'Cairo', sans-serif; --font-en: 'Inter', sans-serif;
 }
-
 :root[data-theme="light"] {
   --bg: #f8fafc; --surface: #ffffff; --surface-2: #f1f5f9; --surface-3: #e2e8f0;
   --line: #cbd5e1; --txt: #0f172a; --muted: #64748b; --muted-2: #94a3b8;
@@ -41,14 +38,13 @@ body {
   -webkit-font-smoothing: antialiased;
   transition: background-color 0.4s ease, color 0.4s ease;
 }
-
 button, input, select, textarea { font-family: inherit; font-size: 15px; }
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-thumb { background: var(--line); border-radius: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
 
 /* ================================================================
-   [2] FULL-SCREEN AUTHENTICATION (PRO LOGIN)
+   [2] AUTH SCREEN
    ================================================================ */
 #auth-screen {
   position: fixed; inset: 0; z-index: 1000;
@@ -66,7 +62,6 @@ button, input, select, textarea { font-family: inherit; font-size: 15px; }
   border: 1px solid color-mix(in srgb, var(--txt) 10%, transparent);
   border-radius: 24px; padding: 40px; width: 100%; max-width: 420px;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  transform: translateY(0); transition: transform 0.4s;
   animation: slideUp 0.6s ease-out forwards;
 }
 @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
@@ -82,8 +77,17 @@ button, input, select, textarea { font-family: inherit; font-size: 15px; }
 .brand-title { font-size: 24px; font-weight: 800; margin: 0; letter-spacing: -0.5px; }
 .brand-subtitle { font-size: 14px; color: var(--muted); margin-top: 5px; }
 
+/* Login spinner */
+.spinner-inline {
+  display: inline-block; width: 18px; height: 18px;
+  border: 2px solid rgba(255,255,255,0.35);
+  border-top-color: #fff; border-radius: 50%;
+  animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
 /* ================================================================
-   [3] MAIN APP LAYOUT (Hidden initially)
+   [3] MAIN APP
    ================================================================ */
 #app-screen {
   opacity: 0; visibility: hidden; pointer-events: none;
@@ -92,88 +96,244 @@ button, input, select, textarea { font-family: inherit; font-size: 15px; }
 }
 #app-screen.visible { opacity: 1; visibility: visible; pointer-events: auto; }
 
-.appbar { position: sticky; top: 0; z-index: 50; background: color-mix(in srgb, var(--bg) 85%, transparent); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--line); }
+.appbar { position: sticky; top: 0; z-index: 50;
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--line); }
 .appbar-in { max-width: 800px; margin: 0 auto; display: flex; align-items: center; gap: 15px; padding: 12px 20px 8px; }
-.mini-logo { width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-family: var(--font-en); font-size: 12px; }
-.titles { flex: 1; }
+.mini-logo { width: 40px; height: 40px; border-radius: 12px;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6); display: flex;
+  align-items: center; justify-content: center; color: white;
+  font-weight: bold; font-family: var(--font-en); font-size: 12px; }
+.titles { flex: 1; min-width: 0; }
 .t1 { font-size: 16px; font-weight: 800; }
-.t2 { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 8px; margin-top: 2px; }
-.status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--warn); box-shadow: 0 0 0 3px color-mix(in srgb, var(--warn) 20%, transparent); transition: 0.3s;}
-.status-dot.online { background: var(--ok); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ok) 20%, transparent); }
+.t2 { font-size: 12px; color: var(--muted); display: flex; align-items: center;
+  gap: 8px; margin-top: 2px; flex-wrap: wrap; }
+.status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--warn);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--warn) 20%, transparent); transition: 0.3s; }
+.status-dot.online { background: var(--ok);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ok) 20%, transparent); }
+.top-actions { display: flex; gap: 8px; }
 
-.tabs { max-width: 800px; margin: 0 auto; display: flex; gap: 8px; padding: 8px 20px 12px; overflow-x: auto; }
-.tab { padding: 10px 18px; border-radius: 99px; background: var(--surface-2); border: 1px solid var(--line); color: var(--muted); font-size: 14px; font-weight: 700; cursor: pointer; transition: 0.2s; white-space: nowrap; }
+.tabs { max-width: 800px; margin: 0 auto; display: flex; gap: 8px;
+  padding: 8px 20px 12px; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { padding: 10px 18px; border-radius: 99px; background: var(--surface-2);
+  border: 1px solid var(--line); color: var(--muted); font-size: 14px;
+  font-weight: 700; cursor: pointer; transition: 0.2s; white-space: nowrap; }
 .tab:hover { color: var(--txt); background: var(--surface-3); }
-.tab.active { background: var(--accent); color: white; border-color: transparent; box-shadow: 0 8px 20px var(--accent-glow); }
-.badge { display: inline-block; padding: 2px 8px; margin-right: 8px; background: rgba(255,255,255,0.2); border-radius: 99px; font-size: 11px; }
+.tab.active { background: var(--accent); color: white; border-color: transparent;
+  box-shadow: 0 8px 20px var(--accent-glow); }
+.badge { display: inline-block; padding: 2px 8px; margin-right: 8px;
+  background: rgba(255,255,255,0.2); border-radius: 99px; font-size: 11px; }
 
-main { max-width: 800px; margin: 0 auto; padding: 20px; flex: 1; width: 100%; }
+main { max-width: 800px; margin: 0 auto; padding: 20px;
+  flex: 1; width: 100%; }
 .view { display: none; animation: fadeIn 0.4s ease-out; }
 .view.active { display: block; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 
 /* ================================================================
-   [4] COMPONENTS (CARDS, INPUTS, BUTTONS)
+   [4] COMPONENTS
    ================================================================ */
-.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+.card { background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 20px; margin-bottom: 20px;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
 .card-head { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
 .card-head h2 { font-size: 17px; font-weight: 800; margin: 0; flex: 1; }
-.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--c); box-shadow: 0 0 0 4px color-mix(in srgb, var(--c) 20%, transparent); }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--c);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--c) 20%, transparent); }
+.hint { font-size: 12.5px; color: var(--muted); line-height: 1.5; margin: 0 0 14px; }
 
 .field { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
 .field > span { font-size: 13px; font-weight: 700; color: var(--muted); }
-.inp { width: 100%; background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--radius-sm); color: var(--txt); padding: 12px 16px; font-size: 15px; transition: 0.2s; }
-.inp:focus { border-color: var(--accent); background: var(--surface); box-shadow: 0 0 0 4px var(--accent-glow); outline: none; }
+.inp { width: 100%; background: var(--surface-2); border: 1px solid var(--line);
+  border-radius: var(--radius-sm); color: var(--txt); padding: 12px 16px;
+  font-size: 15px; transition: 0.2s; }
+.inp:focus { border-color: var(--accent); background: var(--surface);
+  box-shadow: 0 0 0 4px var(--accent-glow); outline: none; }
+.inp::placeholder { color: var(--muted-2); }
+textarea.inp { resize: vertical; min-height: 56px; line-height: 1.45; }
+select.inp { cursor: pointer; }
 
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
 @media(max-width:600px) { .grid2 { grid-template-columns: 1fr; } }
 
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 20px; border-radius: var(--radius-sm); font-size: 15px; font-weight: 700; cursor: pointer; transition: 0.2s; border: none; }
+.btn { display: inline-flex; align-items: center; justify-content: center;
+  gap: 8px; padding: 12px 20px; border-radius: var(--radius-sm);
+  font-size: 15px; font-weight: 700; cursor: pointer; transition: 0.2s;
+  border: none; text-decoration: none; }
 .btn:active { transform: scale(0.98); }
 .btn:disabled { opacity: 0.6; cursor: not-allowed; }
-.btn.primary { background: var(--accent); color: white; box-shadow: 0 4px 14px var(--accent-glow); }
-.btn.primary:hover { filter: brightness(1.1); box-shadow: 0 6px 20px var(--accent-glow); }
+.btn.primary { background: var(--accent); color: white;
+  box-shadow: 0 4px 14px var(--accent-glow); }
+.btn.primary:hover:not(:disabled) { filter: brightness(1.1);
+  box-shadow: 0 6px 20px var(--accent-glow); }
 .btn.ghost { background: transparent; border: 1px solid var(--line); color: var(--txt); }
 .btn.ghost:hover { background: var(--surface-2); }
-.btn.wa { background: #25D366; color: white; box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3); }
-.btn.danger { background: color-mix(in srgb, var(--danger) 15%, transparent); color: var(--danger); }
+.btn.wa { background: #25D366; color: white;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3); }
+.btn.danger { background: color-mix(in srgb, var(--danger) 15%, transparent);
+  color: var(--danger); }
+.btn.sm { padding: 8px 14px; font-size: 13px; }
 
-.icon-btn { width: 38px; height: 38px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--line); color: var(--txt); display: grid; place-items: center; cursor: pointer; transition: 0.2s; }
+.icon-btn { width: 38px; height: 38px; border-radius: 10px;
+  background: var(--surface-2); border: 1px solid var(--line); color: var(--txt);
+  display: grid; place-items: center; cursor: pointer; transition: 0.2s; padding: 0; }
 .icon-btn:hover { background: var(--surface-3); }
+.icon-btn.danger:hover { background: var(--danger); color: white;
+  border-color: var(--danger); }
 
 /* ITEMS GRID */
-.items-head, .item-row { display: grid; grid-template-columns: 1fr 80px 100px 40px; gap: 10px; align-items: center; }
-.items-head { font-size: 12px; font-weight: 800; color: var(--muted-2); margin-bottom: 8px; }
+.items-head, .item-row { display: grid;
+  grid-template-columns: 1fr 80px 100px 40px; gap: 10px; align-items: center; }
+.items-head { font-size: 12px; font-weight: 800; color: var(--muted-2);
+  margin-bottom: 8px; padding: 0 4px; }
 .item-row { margin-bottom: 10px; }
+@media(max-width:520px) {
+  .items-head, .item-row { grid-template-columns: 1fr 60px 80px 34px; gap: 6px; }
+  .item-row .inp { padding: 9px 8px; font-size: 13.5px; }
+}
+
+/* PHOTOS */
+.photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 9px; }
+.photo-grid:empty { display: none; }
+.photo-grid:not(:empty) { margin-bottom: 12px; }
+.thumb { position: relative; aspect-ratio: 4/3; border-radius: var(--radius-sm);
+  overflow: hidden; border: 1px solid var(--line); background: var(--surface-2); }
+.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.thumb button { position: absolute; top: 5px; right: 5px; width: 24px; height: 24px;
+  border-radius: 50%; border: none; background: rgba(0,0,0,.7); color: #fff;
+  font-size: 12px; cursor: pointer; display: grid; place-items: center; padding: 0; }
+.thumb button:hover { background: var(--danger); }
+
+/* SIGNATURE */
+.sig-wrap { background: #fff; border-radius: var(--radius-sm);
+  overflow: hidden; border: 1px solid var(--line); position: relative; }
+.sig-wrap canvas { display: block; width: 100%; height: 140px;
+  touch-action: none; cursor: crosshair; }
+.sig-clear { position: absolute; top: 8px; left: 8px;
+  background: rgba(0,0,0,.7); color: #fff; border: none; padding: 5px 10px;
+  border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: 600; }
+.sig-clear:hover { background: var(--danger); }
+
+/* HISTORY TOOLS */
+.hist-tools { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.hist-search { flex: 1; min-width: 180px; }
+.hist-filter { padding: 9px 14px; background: var(--surface-2);
+  border: 1px solid var(--line); border-radius: var(--radius-sm); color: var(--txt);
+  font-size: 13px; cursor: pointer; font-weight: 700; transition: 0.16s;
+  white-space: nowrap; }
+.hist-filter:hover { border-color: var(--accent); }
+.hist-filter.active { background: color-mix(in srgb, var(--accent) 20%, transparent);
+  border-color: var(--accent); color: var(--accent); }
+
+.hist-item { display: flex; align-items: center; gap: 12px;
+  background: var(--surface); border: 1px solid var(--line);
+  border-right: 4px solid var(--c); border-radius: var(--radius-sm);
+  padding: 12px 14px; margin-bottom: 10px; transition: 0.16s; }
+.hist-item:hover { background: var(--surface-2); }
+.hist-main { flex: 1; min-width: 0; }
+.hist-ref { font-size: 14px; font-weight: 800; display: flex; gap: 8px;
+  align-items: center; flex-wrap: wrap; }
+.hist-sub { font-size: 12px; color: var(--muted); margin-top: 4px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hist-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+
+.pill { font-size: 10px; font-weight: 800; padding: 3px 8px;
+  border-radius: 99px; background: var(--surface-3); color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.3px; }
+.pill.ok { background: rgba(16,185,129,.2); color: var(--ok); }
+.pill.warn { background: rgba(245,158,11,.2); color: var(--warn); }
+
+.empty { text-align: center; padding: 56px 20px; color: var(--muted); }
+.empty .ico { font-size: 42px; opacity: 0.35; margin-bottom: 12px; }
+.empty p { margin: 0; font-size: 14px; line-height: 1.6; }
+
+/* BANNER */
+.banner { padding: 11px 14px; border-radius: var(--radius-sm);
+  margin-bottom: 14px; font-size: 13px; display: flex; gap: 10px;
+  align-items: flex-start; line-height: 1.5; }
+.banner.warn { background: rgba(245,158,11,.12);
+  border: 1px solid rgba(245,158,11,.35); color: #fbbf24; }
+.banner.ok { background: rgba(16,185,129,.12);
+  border: 1px solid rgba(16,185,129,.35); color: #6ee7b7; }
+.banner.info { background: rgba(59,130,246,.12);
+  border: 1px solid rgba(59,130,246,.35); color: #93c5fd; }
+.banner .b-ic { flex: 0 0 20px; text-align: center; font-size: 16px; }
 
 /* MODALS */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; visibility: hidden; transition: 0.3s; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  z-index: 2000; display: flex; align-items: center; justify-content: center;
+  padding: 16px; opacity: 0; visibility: hidden; transition: 0.3s; }
 .modal-overlay.open { opacity: 1; visibility: visible; }
-.modal-box { background: var(--surface); width: 100%; max-width: 500px; border-radius: 20px; border: 1px solid var(--line); box-shadow: 0 25px 50px rgba(0,0,0,0.5); transform: scale(0.95); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column; max-height: 90vh;}
+.modal-box { background: var(--surface); width: 100%; max-width: 500px;
+  border-radius: 20px; border: 1px solid var(--line);
+  box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+  transform: scale(0.95); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: flex; flex-direction: column; max-height: 92vh; }
 .modal-overlay.open .modal-box { transform: scale(1); }
-.modal-head { padding: 15px 20px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; }
-.modal-head h3 { margin: 0; font-size: 18px; }
+.modal-head { padding: 15px 20px; border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: space-between; }
+.modal-head h3 { margin: 0; font-size: 18px; font-weight: 800; }
 .modal-body { padding: 20px; overflow-y: auto; }
-.modal-foot { padding: 15px 20px; border-top: 1px solid var(--line); display: flex; gap: 10px; }
+.modal-foot { padding: 15px 20px; border-top: 1px solid var(--line);
+  display: flex; gap: 10px; flex-wrap: wrap; }
+.modal-foot .btn { flex: 1; min-width: 100px; }
 
-/* TOAST NOTIFICATION */
-#toast { position: fixed; bottom: 30px; left: 50%; transform: translate(-50%, 100px); background: var(--txt); color: var(--bg); padding: 12px 24px; border-radius: 99px; font-weight: 700; font-size: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); opacity: 0; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 3000; }
+#cardPreview { width: 100%; border-radius: var(--radius-sm); display: block; }
+.spinner { width: 34px; height: 34px; margin: 48px auto; border-radius: 50%;
+  border: 3px solid var(--line); border-top-color: var(--accent);
+  animation: spin .8s linear infinite; }
+
+/* ARCHIVE STATUS */
+.archive-status { margin-top: 12px; padding: 11px 14px;
+  border-radius: var(--radius-sm); background: var(--surface-2);
+  border: 1px solid var(--line); display: flex; gap: 10px;
+  align-items: center; font-size: 13px; }
+.archive-status .as-ic { width: 28px; height: 28px; border-radius: 50%;
+  display: grid; place-items: center; background: var(--surface-3);
+  font-size: 14px; flex: 0 0 28px; }
+.archive-status.running { border-color: var(--accent);
+  background: rgba(59,130,246,.08); }
+.archive-status.running .as-ic { background: rgba(59,130,246,.2);
+  color: #93c5fd; animation: spin 1.4s linear infinite; }
+.archive-status.done { border-color: var(--ok);
+  background: rgba(16,185,129,.08); }
+.archive-status.done .as-ic { background: rgba(16,185,129,.25); color: #6ee7b7; }
+.archive-status.err { border-color: var(--danger);
+  background: rgba(239,68,68,.08); }
+.archive-status.err .as-ic { background: rgba(239,68,68,.2); color: #fca5a5; }
+.archive-status .as-main { flex: 1; }
+.archive-status .as-t { font-weight: 700; }
+.archive-status .as-s { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+
+/* TOAST */
+#toast { position: fixed; bottom: 30px; left: 50%;
+  transform: translate(-50%, 100px);
+  background: var(--txt); color: var(--bg);
+  padding: 12px 24px; border-radius: 99px; font-weight: 700;
+  font-size: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  opacity: 0; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 3000; pointer-events: none; max-width: 90vw; text-align: center; }
 #toast.show { transform: translate(-50%, 0); opacity: 1; }
+
+.hr { height: 1px; background: var(--line); margin: 16px 0; border: 0; }
 </style>
 </head>
 <body>
 
 <!-- ================================================================
-     [A] AUTHENTICATION SCREEN (LOGIN)
+     [A] AUTH SCREEN
      ================================================================ -->
 <div id="auth-screen">
   <div class="login-glass">
     <div class="brand-header">
       <div class="brand-logo">DS</div>
       <h1 class="brand-title">Digital Stock</h1>
-      <p class="brand-subtitle">نظام الإدارة والأمن الذكي - Les Oliviers Palace</p>
+      <p class="brand-subtitle">نظام الإدارة والأمن الذكي — Les Oliviers Palace</p>
     </div>
-    
     <div id="login-form-container">
       <label class="field">
         <span>البريد الإلكتروني</span>
@@ -191,7 +351,7 @@ main { max-width: 800px; margin: 0 auto; padding: 20px; flex: 1; width: 100%; }
 </div>
 
 <!-- ================================================================
-     [B] MAIN APPLICATION SCREEN
+     [B] MAIN APP
      ================================================================ -->
 <div id="app-screen">
   <header class="appbar">
@@ -201,12 +361,12 @@ main { max-width: 800px; margin: 0 auto; padding: 20px; flex: 1; width: 100%; }
         <div class="t1">Digital Stock</div>
         <div class="t2">
           <span class="status-dot" id="netStatusDot"></span>
-          <span id="netStatusText">غير متصل</span> | 
+          <span id="netStatusText">غير متصل</span> |
           <span id="currentUserDisplay" style="color: var(--accent); font-weight: 700;">👤 ...</span>
         </div>
       </div>
       <div class="top-actions">
-        <button class="icon-btn" id="btnThemeToggle" title="Dark/Light Mode">🌓</button>
+        <button class="icon-btn" id="btnThemeToggle" title="الوضع الفاتح/الداكن">🌓</button>
         <button class="icon-btn" id="btnSettings" title="الإعدادات">⚙</button>
       </div>
     </div>
@@ -221,6 +381,15 @@ main { max-width: 800px; margin: 0 auto; padding: 20px; flex: 1; width: 100%; }
     <section class="view active" id="view-warehouse"></section>
     <section class="view" id="view-bon"></section>
     <section class="view" id="view-history">
+      <div id="histBanner"></div>
+      <div class="hist-tools">
+        <input class="inp hist-search" id="histSearch" placeholder="🔍 بحث (المرجع، الاسم، الصنف…)">
+        <button class="hist-filter active" data-filter="all">الكل</button>
+        <button class="hist-filter" data-filter="warehouse">داخلي</button>
+        <button class="hist-filter" data-filter="bon">خارجي</button>
+        <button class="icon-btn" id="btnExportAll" title="تصدير الكل">⬇</button>
+        <button class="icon-btn" id="btnImportAll" title="استيراد">⬆</button>
+      </div>
       <div id="histList"></div>
     </section>
   </main>
@@ -229,62 +398,105 @@ main { max-width: 800px; margin: 0 auto; padding: 20px; flex: 1; width: 100%; }
 <!-- ================================================================
      [C] MODALS
      ================================================================ -->
-<!-- Settings Modal -->
+
+<!-- Settings -->
 <div class="modal-overlay" id="setModal">
   <div class="modal-box">
     <div class="modal-head">
       <h3>الإعدادات</h3>
-      <button class="icon-btn close-modal">✕</button>
+      <button class="icon-btn close-modal" type="button">✕</button>
     </div>
     <div class="modal-body">
-      <label class="field"><span>اسم المنشأة</span><input class="inp" id="setHotel" value="Les Oliviers Palace"></label>
-      <label class="field"><span>هاتف المشرف (للواتساب)</span><input class="inp" id="setPhone" dir="ltr" placeholder="+216..."></label>
-      <hr style="border:0; border-top:1px solid var(--line); margin:20px 0;">
-      <div style="display:flex; justify-content:space-between; align-items:center;">
-        <div><strong style="font-size: 14px;">حسابك الحالي</strong><br><span id="settingEmail" style="font-size: 12px; color: var(--muted);">...</span></div>
-        <button class="btn danger sm" id="btnLogoutBtn">تسجيل الخروج</button>
+      <label class="field">
+        <span>اسم المنشأة</span>
+        <input class="inp" id="setHotel" value="Les Oliviers Palace">
+      </label>
+      <label class="field">
+        <span>هاتف المشرف (للواتساب)</span>
+        <input class="inp" id="setPhone" dir="ltr" placeholder="+216...">
+      </label>
+      <div class="hr"></div>
+      <p class="hint" style="margin-bottom:10px">
+        <b>Firebase</b> — لإعادة ضبط الاتصال بالسحابة. اتركه فارغاً للاحتفاظ بالإعدادات الحالية.
+      </p>
+      <label class="field">
+        <span>إعدادات Firebase (JSON)</span>
+        <textarea class="inp" id="setFbConfig" rows="5" dir="ltr"
+          placeholder='{ "apiKey": "…", "projectId": "…", "storageBucket": "…" }'></textarea>
+      </label>
+      <div class="hr"></div>
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+        <div style="min-width:0;flex:1;">
+          <strong style="font-size: 14px;">حسابك الحالي</strong><br>
+          <span id="settingEmail" style="font-size: 12px; color: var(--muted); word-break:break-all;">...</span>
+        </div>
+        <button class="btn danger sm" id="btnLogoutBtn" type="button">تسجيل الخروج</button>
+      </div>
+      <div class="hr"></div>
+      <div class="banner info" style="margin-bottom:0">
+        <span class="b-ic">💾</span>
+        <span>التخزين المحلي: <b id="storageInfo">—</b></span>
       </div>
     </div>
     <div class="modal-foot">
-      <button class="btn primary close-modal" style="flex:1" id="btnSaveSettings">حفظ الإعدادات</button>
+      <button class="btn ghost close-modal" type="button" style="flex:0 0 auto">إلغاء</button>
+      <button class="btn primary" id="btnSaveSettings" type="button">حفظ الإعدادات</button>
     </div>
   </div>
 </div>
 
-<!-- Card Preview Modal -->
+<!-- Card Preview -->
 <div class="modal-overlay" id="cardModal">
-  <div class="modal-box" style="max-width: 600px;">
+  <div class="modal-box" style="max-width: 640px;">
     <div class="modal-head">
       <h3 id="cardModalTitle">بطاقة المعاملة</h3>
-      <button class="icon-btn close-modal">✕</button>
+      <button class="icon-btn close-modal" type="button">✕</button>
     </div>
-    <div class="modal-body" style="background:#e2e8f0; text-align:center; padding:10px;">
+    <div class="modal-body" style="background:#e2e8f0; padding:12px;">
       <div id="cardModalBody"></div>
+      <div class="archive-status" id="archiveStatus" style="display:none">
+        <div class="as-ic" id="archiveIcon">☁</div>
+        <div class="as-main">
+          <div class="as-t" id="archiveText">جاري الأرشفة…</div>
+          <div class="as-s" id="archiveSub">تجميع PDF + JSON</div>
+        </div>
+      </div>
     </div>
     <div class="modal-foot">
-      <button class="btn wa" id="btnShareWA">📲 واتساب</button>
-      <button class="btn ghost" id="btnDownloadPdf">⬇ PDF</button>
+      <button class="btn wa" id="btnShareWA" type="button">📲 واتساب</button>
+      <button class="btn ghost" id="btnDownloadJpg" type="button">⬇ JPG</button>
+      <button class="btn ghost" id="btnDownloadPdf" type="button">⬇ PDF</button>
+      <button class="btn ghost" id="btnDownloadJson" type="button">⬇ JSON</button>
     </div>
   </div>
 </div>
 
 <input type="file" id="fileInput" accept="image/*" hidden>
+<input type="file" id="importInput" accept="application/json" hidden>
 <div id="toast"></div>
 
 <!-- ================================================================
-     [D] JAVASCRIPT (FIREBASE & APP LOGIC)
+     [D] APPLICATION SCRIPT
      ================================================================ -->
 <script type="module">
-// استدعاء مكتبات Firebase - الإصدار 10 - ES Modules
+/* ================================================================
+   FIREBASE — LAZY LOAD (allows the app to work offline-first)
+   ================================================================ */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, collection, doc, runTransaction, serverTimestamp, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { getStorage, ref, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut,
+         setPersistence, browserLocalPersistence }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, doc, runTransaction, serverTimestamp,
+         Timestamp, enableIndexedDbPersistence, updateDoc, getDoc }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL,
+         uploadString }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
 /* ------------------------------------------------------------------
-   1. FIREBASE SETUP & CONFIG
+   CONFIG — override via localStorage settings
    ------------------------------------------------------------------ */
-const firebaseConfig = {
+const DEFAULT_CONFIG = {
   apiKey: "AIzaSyDHoeuyuIBt00rSWCyU9Vl_xGnWe2hLA7U",
   authDomain: "digital-stock-8bdff.firebaseapp.com",
   projectId: "digital-stock-8bdff",
@@ -292,295 +504,1900 @@ const firebaseConfig = {
   messagingSenderId: "514830429461",
   appId: "1:514830429461:web:51bb22607b2a9782890d1c"
 };
+const fbConfig = JSON.parse(localStorage.getItem('ds.fbConfig') || 'null') || DEFAULT_CONFIG;
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const storage = getStorage(app);
+const fbApp = initializeApp(fbConfig);
+const auth = getAuth(fbApp);
+const db = getFirestore(fbApp);
+const storage = getStorage(fbApp);
 
-// Variables Globales
-let currentGuard = "";
-const STORE_KEY = 'ds.transactions.v2';
-const drafts = { warehouse: [], bon: [] };
-let activeTx = null;
-let activeCardUrl = null;
+// Offline persistence for Firestore
+enableIndexedDbPersistence(db).catch(err => {
+  if (err.code === 'failed-precondition') console.warn('Firestore persistence: multiple tabs open');
+  else if (err.code === 'unimplemented') console.warn('Firestore persistence: not supported');
+});
 
-// Helpers
-const $ = s => document.querySelector(s); const $$ = s => [...document.querySelectorAll(s)];
-const showToast = (msg) => { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 3000); };
-
-/* ------------------------------------------------------------------
-   2. AUTHENTICATION LOGIC (Persistence enabled for GitHub Pages)
-   ------------------------------------------------------------------ */
-// تعيين جلسة دائمة لحفظ الدخول بعد التحديث
 setPersistence(auth, browserLocalPersistence).catch(console.error);
 
-$('#btnLoginBtn').addEventListener('click', async () => {
-  const email = $('#loginEmail').value.trim();
-  const pass = $('#loginPass').value;
-  const btn = $('#btnLoginBtn');
-  
-  if(!email || !pass) return showToast("أدخل البريد وكلمة المرور");
-  btn.disabled = true; btn.innerHTML = '<span class="spinner" style="width:20px;height:20px;margin:0;border-width:2px;border-top-color:#fff;"></span>';
-  
-  try {
-    await signInWithEmailAndPassword(auth, email, pass);
-    showToast("نجاح الدخول!");
-  } catch (err) {
-    showToast("بيانات خاطئة أو لا يوجد اتصال");
-    console.error(err);
-  }
-  btn.disabled = false; btn.textContent = 'تسجيل الدخول';
-});
+/* ================================================================
+   CONSTANTS
+   ================================================================ */
+const STORE_KEY = 'ds.transactions.v3';
+const QUEUE_KEY = 'ds.queue.v3';
+const AGENT_KEY = 'ds.current_agent';
+const COUNTER_KEY = 'ds.counters.v3';
+const SET_KEY = 'ds.settings.v3';
+const MAX_PHOTOS = 5;
+const RETENTION_MS = 48 * 3600 * 1000;
 
-// دعم ضغط Enter
-$('#loginPass').addEventListener('keypress', e => { if(e.key === 'Enter') $('#btnLoginBtn').click(); });
-
-$('#btnLogoutBtn').addEventListener('click', async () => {
-  if(confirm("تسجيل الخروج؟")) {
-    await signOut(auth);
-    $('.modal-overlay.open')?.classList.remove('open');
-    showToast("تم تسجيل الخروج");
-  }
-});
-
-// مراقب حالة المستخدم (يُظهر ويُخفي الشاشات)
-onAuthStateChanged(auth, (user) => {
-  const authScreen = $('#auth-screen');
-  const appScreen = $('#app-screen');
-  
-  if (user) {
-    currentGuard = user.displayName || user.email.split('@')[0];
-    $('#currentUserDisplay').textContent = `👤 ${currentGuard}`;
-    $('#settingEmail').textContent = user.email;
-    
-    // إخفاء شاشة الدخول وإظهار التطبيق
-    authScreen.classList.add('hidden');
-    appScreen.classList.add('visible');
-    
-    initForms(); // بناء النماذج
-    renderHistory();
-  } else {
-    currentGuard = "";
-    // إرجاع شاشة الدخول
-    authScreen.classList.remove('hidden');
-    appScreen.classList.remove('visible');
-    $('#loginPass').value = '';
-  }
-});
-
-/* ------------------------------------------------------------------
-   3. UI & THEME LOGIC
-   ------------------------------------------------------------------ */
-$('#btnThemeToggle').onclick = () => {   const root = document.documentElement;   root.setAttribute('data-theme', root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); };  // إدارة نوافذ Modal $$('.close-modal').forEach(btn => btn.onclick = e => e.target.closest('.modal-overlay').classList.remove('open'));
-$('#btnSettings').onclick = () => $('#setModal').classList.add('open');
-$('#btnSaveSettings').onclick = () => { 
-  localStorage.setItem('ds.hotel', $('#setHotel').value);
-  localStorage.setItem('ds.phone', $('#setPhone').value);
-  $('#setModal').classList.remove('open'); showToast("تم الحفظ"); 
-};
-
-// التبويبات Tabs
-$('#tabs').onclick = e => {
-  const t = e.target.closest('.tab'); if(!t) return;
-  $$('.tab').forEach(x => x.classList.toggle('active', x === t));$$
-('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + t.dataset.view));
-};
-
-// حالة الاتصال
-const updateNetStatus = () => {
-  const on = navigator.onLine;
-  $('#netStatusDot').className = `status-dot ${on?'online':''}`;
-  $('#netStatusText').textContent = on ? 'متصل (سحابي)' : 'مفصول (محلي)';
-};
-window.addEventListener('online', updateNetStatus);
-window.addEventListener('offline', updateNetStatus);
-updateNetStatus();
-
-/* ------------------------------------------------------------------
-   4. FORM BUILDER & DATA HANDLING
-   ------------------------------------------------------------------ */
 const MODULES = {
-  warehouse: { key: 'warehouse', label: 'خروج مخزن (WER)', c: '#10b981', prefix: 'WER',
-    html: `
+  warehouse: {
+    key: 'warehouse',
+    label: 'خروج مخزن (WER)',
+    title: 'تقرير خروج المخزن — الاقتصاد',
+    subtitle: 'حركة داخلية — بضاعة باقية في المنشأة',
+    tag: 'داخلي',
+    accent: '#10b981',
+    prefix: 'WER',
+    hint: 'صرف بضاعة من الاقتصاد إلى قسم داخلي (المطبخ، الخدمة، الصيانة…).',
+    extraHtml: `
       <div class="grid2">
-        <label class="field"><span>القسم المستلم *</span><select class="inp" name="dep" required><option value="">- إختر -</option><option>المطبخ</option><option>المطعم</option><option>الصيانة</option><option>الإدارة</option></select></label>
-        <label class="field"><span>رقم أمر الشراء (اختياري)</span><input class="inp" name="po"></label>
+        <label class="field">
+          <span>القسم المستلم *</span>
+          <select class="inp" name="department" required>
+            <option value="">— اختر —</option>
+            <option>المطبخ</option>
+            <option>المطعم / F&amp;B</option>
+            <option>التدبير الفندقي</option>
+            <option>الصيانة / التقنية</option>
+            <option>الاستقبال</option>
+            <option>Spa / الترفيه</option>
+            <option>الإدارة</option>
+            <option>أخرى</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>رقم أمر الشراء</span>
+          <input class="inp" name="po" placeholder="اختياري">
+        </label>
       </div>`
   },
-  bon: { key: 'bon', label: 'إذن خروج نهائي (BDS)', c: '#f59e0b', prefix: 'BDS',
-    html: `
+  bon: {
+    key: 'bon',
+    label: 'إذن خروج نهائي (BDS)',
+    title: 'إذن خروج نهائي',
+    subtitle: 'خروج نهائي — بضاعة تغادر المنشأة',
+    tag: 'خارجي',
+    accent: '#f59e0b',
+    prefix: 'BDS',
+    hint: 'الترخيص وتتبع البضاعة التي تغادر نهائياً من محيط الفندق.',
+    extraHtml: `
       <div class="grid2">
-        <label class="field"><span>جهة الوصول *</span><input class="inp" name="dest" required></label>
-        <label class="field"><span>السبب *</span><select class="inp" name="reason" required><option value="">- إختر -</option><option>إرجاع مورد</option><option>صيانة خارجية</option><option>إتلاف</option></select></label>
-        <label class="field"><span>المركبة / السائق</span><input class="inp" name="veh"></label>
-        <label class="field"><span>المفوِّض (المدير)</span><input class="inp" name="authBy"></label>
+        <label class="field">
+          <span>جهة الوصول *</span>
+          <input class="inp" name="destination" required placeholder="مورد، ورشة، عميل…">
+        </label>
+        <label class="field">
+          <span>السبب *</span>
+          <select class="inp" name="reason" required>
+            <option value="">— اختر —</option>
+            <option>إرجاع مورد</option>
+            <option>إعارة / إصلاح</option>
+            <option>هبة / عمل خيري</option>
+            <option>بيع / تلف</option>
+            <option>إخلاء نفايات</option>
+            <option>نقل إلى موقع آخر</option>
+            <option>أخرى</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>المركبة / السائق</span>
+          <input class="inp" name="vehicle" placeholder="مثال: شاحنة ABC-123">
+        </label>
+        <label class="field">
+          <span>المفوِّض</span>
+          <input class="inp" name="authorizedBy" placeholder="اسم المسؤول">
+        </label>
       </div>`
   }
 };
 
-function initForms() {
-  ['warehouse', 'bon'].forEach(k => {
-    const m = MODULES[k];
-    $(`#view-${k}`).innerHTML = `
-      <form id="f-${k}" onsubmit="event.preventDefault();">
-        <div class="card"><div class="card-head"><span class="dot" style="--c:${m.c}"></span><h2>${m.label}</h2></div>
-          <div class="grid2" style="margin-bottom:15px;">
-            <label class="field"><span>الحارس (أنت)</span><input class="inp" name="guard" value="${currentGuard}" readonly style="opacity:0.7"></label>
-            <label class="field"><span>المستخرج (الموظف) *</span><input class="inp" name="staff" required></label>
-          </div>
-          ${m.html}
-          <label class="field"><span>ملاحظات</span><textarea class="inp" name="notes" rows="2"></textarea></label>
-        </div>
-        <div class="card"><div class="card-head"><span class="dot" style="--c:${m.c}"></span><h2>الأصناف</h2></div>
-          <div class="items-head"><span>التسمية</span><span style="text-align:center">الكمية</span><span>الوحدة</span><span></span></div>
-          <div id="it-${k}"></div>
-          <button type="button" class="btn ghost" id="add-${k}" style="width:100%; margin-top:10px;">+ إضافة صنف</button>
-        </div>
-        <button type="button" class="btn primary" id="btn-${k}" style="width:100%; height:50px; --c:${m.c}">✓ اعتماد وإصدار البطاقة</button>
-      </form>`;
-    
-    // إضافة صف مبدئي
-    addItemRow(k);
-    $(`#add-${k}`).onclick = () => addItemRow(k);
-    $(`#btn-${k}`).onclick = () => submitForm(k);
+const UNITS = ['حبة','كغ','غرام','لتر','سل','كرتون','صندوق','كيس','طبلة'];
+
+/* ================================================================
+   STATE
+   ================================================================ */
+const drafts = { warehouse: [], bon: [] };      // { blob, url, size }[]
+const signatures = { warehouse: null, bon: null };
+let currentAgent = '';
+let settings = { hotel: 'Les Oliviers Palace', phone: '' };
+let activeTx = null;
+let activeCardUrl = null;
+let historyFilter = 'all';
+let historyQuery = '';
+let firebaseReady = false;
+
+/* ================================================================
+   UTILS
+   ================================================================ */
+const $  = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g,
+  c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+const fmtDate = d => new Date(d).toLocaleDateString('ar-EG');
+const fmtTime = d => new Date(d).toLocaleTimeString('ar-EG',
+  { hour:'2-digit', minute:'2-digit' });
+const fmtDateTime = d => `${fmtDate(d)} • ${fmtTime(d)}`;
+
+function toast(msg, ms = 2800) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => t.classList.remove('show'), ms);
+}
+
+function shade(hex, pct) {
+  const n = parseInt(hex.slice(1), 16);
+  const cl = v => Math.max(0, Math.min(255, Math.round(v)));
+  const r = cl(((n>>16)&255)*(1+pct/100));
+  const g = cl(((n>>8)&255)*(1+pct/100));
+  const b = cl((n&255)*(1+pct/100));
+  return `rgb(${r},${g},${b})`;
+}
+
+function dataURLtoBlob(dataURL) {
+  const [header, base64] = dataURL.split(',');
+  const mime = header.match(/:(.*?);/)[1];
+  const bin = atob(base64);
+  const arr = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+  return new Blob([arr], { type: mime });
+}
+
+/* ================================================================
+   STORAGE — localStorage (metadata) + IndexedDB (blobs)
+   ================================================================ */
+function loadAll() {
+  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || []; }
+  catch { return []; }
+}
+function saveAll(list) {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(list)); }
+  catch { alert('التخزين المحلي ممتلئ. امسح السجلات القديمة.'); }
+}
+function loadSettings() {
+  try {
+    const s = JSON.parse(localStorage.getItem(SET_KEY));
+    if (s) settings = { ...settings, ...s };
+  } catch {}
+}
+function saveSettings() {
+  localStorage.setItem(SET_KEY, JSON.stringify(settings));
+}
+
+/* ------- IndexedDB -------- */
+const DB_NAME = 'ds.archive.v3';
+const DB_VERSION = 1;
+let _db = null;
+
+function openArchive() {
+  if (_db) return Promise.resolve(_db);
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = e => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains('files')) {
+        const st = db.createObjectStore('files', { keyPath: 'key' });
+        st.createIndex('expireAt', 'expireAt');
+        st.createIndex('ref', 'ref');
+        st.createIndex('txId', 'txId');
+      }
+    };
+    req.onsuccess = () => { _db = req.result; resolve(_db); };
+    req.onerror   = () => reject(req.error);
   });
 }
 
-function addItemRow(k) {
-  const div = document.createElement('div'); div.className = 'item-row';
-  div.innerHTML = `<input class="inp n" required placeholder="اسم الصنف"><input class="inp q i-qty" type="number" min="0" required placeholder="0"><select class="inp u"><option>حبة</option><option>كغ</option><option>لتر</option><option>كرتون</option></select><button type="button" class="icon-btn danger del">✕</button>`;
-  $(`#it-${k}`).appendChild(div);
-  div.querySelector('.del').onclick = () => { div.remove(); if(!$(`#it-${k}`).children.length) addItemRow(k); };
+async function idbPut(rec) {
+  const db = await openArchive();
+  return new Promise((res, rej) => {
+    const tx = db.transaction('files', 'readwrite');
+    tx.objectStore('files').put(rec);
+    tx.oncomplete = () => res();
+    tx.onerror    = () => rej(tx.error);
+  });
 }
 
-/* ------------------------------------------------------------------
-   5. SUBMIT & FIREBASE TRANSACTION
-   ------------------------------------------------------------------ */
-async function submitForm(k) {
-  const form = $(`#f-${k}`), fd = new FormData(form);
-  if(!form.checkValidity()) { form.reportValidity(); return; }
-  
-  const items = $$(`#it-${k} .item-row`).map(r => ({ n: r.querySelector('.n').value, q: r.querySelector('.q').value, u: r.querySelector('.u').value })).filter(i => i.n && i.q);
-  if(!items.length) return showToast("أضف صنفاً واحداً على الأقل");
+async function idbGet(key) {
+  const db = await openArchive();
+  return new Promise((res, rej) => {
+    const tx = db.transaction('files', 'readonly');
+    const rq = tx.objectStore('files').get(key);
+    rq.onsuccess = () => res(rq.result || null);
+    rq.onerror   = () => rej(rq.error);
+  });
+}
 
-  const btn = $(`#btn-${k}`); const oldTxt = btn.textContent;
-  btn.disabled = true; btn.textContent = 'جاري الحفظ في السحابة...';
+async function idbDeleteByRef(ref) {
+  const db = await openArchive();
+  return new Promise((res, rej) => {
+    const tx = db.transaction('files', 'readwrite');
+    const idx = tx.objectStore('files').index('ref');
+    const rq = idx.openCursor(IDBKeyRange.only(ref));
+    rq.onsuccess = e => {
+      const cur = e.target.result;
+      if (!cur) return;
+      cur.delete(); cur.continue();
+    };
+    tx.oncomplete = () => res();
+    tx.onerror    = () => rej(tx.error);
+  });
+}
 
+async function idbDeleteByTxId(txId) {
+  const db = await openArchive();
+  return new Promise((res, rej) => {
+    const tx = db.transaction('files', 'readwrite');
+    const idx = tx.objectStore('files').index('txId');
+    const rq = idx.openCursor(IDBKeyRange.only(txId));
+    rq.onsuccess = e => {
+      const cur = e.target.result;
+      if (!cur) return;
+      cur.delete(); cur.continue();
+    };
+    tx.oncomplete = () => res();
+    tx.onerror    = () => rej(tx.error);
+  });
+}
+
+async function idbPurgeExpired() {
+  const db = await openArchive();
+  return new Promise((res, rej) => {
+    const tx = db.transaction('files', 'readwrite');
+    const idx = tx.objectStore('files').index('expireAt');
+    const range = IDBKeyRange.upperBound(new Date().toISOString());
+    const rq = idx.openCursor(range);
+    let n = 0;
+    rq.onsuccess = e => {
+      const cur = e.target.result;
+      if (!cur) return;
+      cur.delete(); n++; cur.continue();
+    };
+    tx.oncomplete = () => res(n);
+    tx.onerror    = () => rej(tx.error);
+  });
+}
+
+async function idbSizeEstimate() {
   try {
-    const hotel = localStorage.getItem('ds.hotel') || 'Les Oliviers Palace';
-    const dateKey = new Date().toISOString().slice(0,10).replace(/-/g,'');
-    const counterRef = doc(db, 'counters', `${MODULES[k].prefix}_${dateKey}`);
-    const txRef = doc(collection(db, 'transactions'));
-    let refNum = "";
+    if (navigator.storage && navigator.storage.estimate) {
+      const { usage, quota } = await navigator.storage.estimate();
+      return `${(usage/1024/1024).toFixed(1)} MB / ${(quota/1024/1024).toFixed(0)} MB`;
+    }
+  } catch {}
+  return '—';
+}
 
-    // Transaction لحفظ التسلسل بشكل آمن سحابياً
+/* ================================================================
+   ATOMIC COUNTERS
+   ================================================================ */
+function localNextSeq(prefix, dateKey) {
+  const counters = JSON.parse(localStorage.getItem(COUNTER_KEY) || '{}');
+  const id = `${prefix}_${dateKey}`;
+  const next = (counters[id] || 0) + 1;
+  counters[id] = next;
+  localStorage.setItem(COUNTER_KEY, JSON.stringify(counters));
+  return next;
+}
+function formatRef(prefix, dateKey, seq) {
+  return `${prefix}-${dateKey}-${String(seq).padStart(4,'0')}`;
+}
+
+/* ================================================================
+   COMMIT — Firebase atomic OR local fallback
+   ================================================================ */
+async function commitTransaction(payload) {
+  const prefix  = MODULES[payload.module].prefix;
+  const dateKey = new Date().toISOString().slice(0,10).replace(/-/g,'');
+
+  if (firebaseReady) {
+    const counterRef = doc(db, 'counters', `${prefix}_${dateKey}`);
+    const txRef      = doc(collection(db, 'transactions'));
+    let assignedRef  = null;
     await runTransaction(db, async (trx) => {
       const snap = await trx.get(counterRef);
-      let seq = snap.exists() ? snap.data().seq + 1 : 1;
-      trx.set(counterRef, { seq, updatedAt: serverTimestamp() }, {merge:true});
-      refNum = `${MODULES[k].prefix}-${dateKey}-${String(seq).padStart(4,'0')}`;
-      
+      let nextSeq;
+      if (!snap.exists()) {
+        nextSeq = 1;
+        trx.set(counterRef, { prefix, dateKey, seq: 1, updatedAt: serverTimestamp() });
+      } else {
+        nextSeq = (snap.data().seq || 0) + 1;
+        trx.update(counterRef, { seq: nextSeq, updatedAt: serverTimestamp() });
+      }
+      assignedRef = formatRef(prefix, dateKey, nextSeq);
       trx.set(txRef, {
-        ref: refNum, module: k, hotel,
-        guard: currentGuard, staff: fd.get('staff'),
-        dep: fd.get('dep')||'', po: fd.get('po')||'', dest: fd.get('dest')||'', reason: fd.get('reason')||'', veh: fd.get('veh')||'', authBy: fd.get('authBy')||'', notes: fd.get('notes')||'',
-        items, createdAt: serverTimestamp(), createdBy: auth.currentUser.uid
+        ...payload,
+        ref: assignedRef,
+        createdAt: serverTimestamp(),
+        expireAt: Timestamp.fromMillis(Date.now() + RETENTION_MS),
+        archived: false, archiveUrls: null, archivedAt: null,
+        createdBy: auth.currentUser?.uid || null
       });
     });
-
-    // حفظ محلي للعرض السريع
-    const txData = { id: txRef.id, ref: refNum, module: k, hotel, guard: currentGuard, staff: fd.get('staff'), items, createdAt: new Date().toISOString() };
-    const all = JSON.parse(localStorage.getItem(STORE_KEY)||'[]'); all.unshift(txData); localStorage.setItem(STORE_KEY, JSON.stringify(all.slice(0,50)));
-    
-    form.reset(); $(`#it-${k}`).innerHTML=''; addItemRow(k); renderHistory();
-    showToast(`تم الحفظ: ${refNum}`);
-    
-    // عرض البطاقة مباشرة
-    showCard(txData);
-    
-  } catch(e) {
-    console.error(e); showToast("خطأ في الاتصال بقاعدة البيانات");
+    return { id: txRef.id, ref: assignedRef };
   }
-  btn.disabled = false; btn.textContent = oldTxt;
+
+  // Local
+  const seq = localNextSeq(prefix, dateKey);
+  const ref = formatRef(prefix, dateKey, seq);
+  const id  = (crypto.randomUUID && crypto.randomUUID()) || String(Date.now());
+  return { id, ref };
 }
 
-/* ------------------------------------------------------------------
-   6. CARD GENERATION (HTML to Canvas/DataURL via pure JS)
-   ------------------------------------------------------------------ */
-function showCard(tx) {
-  activeTx = tx;
-  $('#cardModalTitle').textContent = tx.ref;
+/* ================================================================
+   PHOTO HANDLING
+   ================================================================ */
+function compressImage(file, maxDim = 1100, quality = 0.78) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      let { width: w, height: h } = img;
+      const scale = Math.min(1, maxDim / Math.max(w, h));
+      w = Math.max(1, Math.round(w * scale));
+      h = Math.max(1, Math.round(h * scale));
+      const c = document.createElement('canvas');
+      c.width = w; c.height = h;
+      c.getContext('2d').drawImage(img, 0, 0, w, h);
+      URL.revokeObjectURL(url);
+      c.toBlob(b => b ? resolve(b) : reject(new Error('blob')), 'image/jpeg', quality);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('load')); };
+    img.src = url;
+  });
+}
+
+async function savePhotosLocal(txId, photoItems) {
+  const expires = new Date(Date.now() + RETENTION_MS).toISOString();
+  const refs = [];
+  for (let i = 0; i < photoItems.length; i++) {
+    const key = `photo::${txId}::${String(i).padStart(2,'0')}`;
+    await idbPut({
+      key,
+      blob: photoItems[i].blob,
+      txId, kind: 'photo', expireAt: expires,
+      createdAt: new Date().toISOString()
+    });
+    refs.push(key);
+  }
+  return refs;
+}
+
+async function savePhotosFirebase(txId, photoItems) {
+  const dateKey = new Date().toISOString().slice(0,10);
+  const urls = [];
+  for (let i = 0; i < photoItems.length; i++) {
+    const path = `exits/${dateKey}/${txId}/${String(i+1).padStart(2,'0')}.jpg`;
+    const r = storageRef(storage, path);
+    await uploadBytes(r, photoItems[i].blob, {
+      contentType: 'image/jpeg',
+      cacheControl: 'public,max-age=31536000'
+    });
+    urls.push(await getDownloadURL(r));
+  }
+  return urls;
+}
+
+const _urlCache = new Map();
+async function photoRefToURL(ref) {
+  if (!ref) return null;
+  if (ref.startsWith('http')) return ref;
+  if (_urlCache.has(ref)) return _urlCache.get(ref);
+  const rec = await idbGet(ref);
+  if (!rec || !rec.blob) return null;
+  const url = URL.createObjectURL(rec.blob);
+  _urlCache.set(ref, url);
+  return url;
+}
+
+/* ================================================================
+   OFFLINE QUEUE
+   ================================================================ */
+function queueOffline(payload, moduleKey, photoItems) {
+  const q = JSON.parse(localStorage.getItem(QUEUE_KEY) || '[]');
+  const jobId = (crypto.randomUUID && crypto.randomUUID()) || String(Date.now());
+  const photoKeys = [];
+  q.push({ id: jobId, payload, moduleKey, photoKeys,
+           queuedAt: new Date().toISOString() });
+  localStorage.setItem(QUEUE_KEY, JSON.stringify(q));
+
+  (async () => {
+    for (let i = 0; i < photoItems.length; i++) {
+      const key = `queue::${jobId}::${String(i).padStart(2,'0')}`;
+      await idbPut({
+        key, blob: photoItems[i].blob, kind: 'queue-photo',
+        expireAt: new Date(Date.now() + 7*24*3600*1000).toISOString()
+      });
+      photoKeys.push(key);
+    }
+    const fresh = JSON.parse(localStorage.getItem(QUEUE_KEY) || '[]');
+    const idx = fresh.findIndex(j => j.id === jobId);
+    if (idx >= 0) {
+      fresh[idx].photoKeys = photoKeys;
+      localStorage.setItem(QUEUE_KEY, JSON.stringify(fresh));
+    }
+  })();
+}
+
+async function flushOfflineQueue() {
+  if (!firebaseReady || !navigator.onLine) return;
+  const q = JSON.parse(localStorage.getItem(QUEUE_KEY) || '[]');
+  if (!q.length) return;
+  const remaining = [];
+  let synced = 0;
+
+  for (const job of q) {
+    try {
+      const photoItems = [];
+      for (const k of job.photoKeys || []) {
+        const rec = await idbGet(k);
+        if (rec && rec.blob) photoItems.push({ blob: rec.blob });
+      }
+      const tempId = (crypto.randomUUID && crypto.randomUUID()) || String(Date.now());
+      const photoRefs = await savePhotosFirebase(tempId, photoItems);
+      const { id, ref } = await commitTransaction({ ...job.payload, photos: photoRefs });
+
+      const cached = loadAll();
+      cached.unshift({
+        id, ref, ...job.payload, photos: photoRefs,
+        createdAt: new Date().toISOString(),
+        expireAt: new Date(Date.now() + RETENTION_MS).toISOString(),
+        archived: false
+      });
+      saveAll(cached);
+      synced++;
+    } catch (e) {
+      console.warn('Queue flush failed:', e);
+      remaining.push(job);
+    }
+  }
+  localStorage.setItem(QUEUE_KEY, JSON.stringify(remaining));
+  if (synced) {
+    toast(`تمت مزامنة ${synced} معاملة`);
+    renderHistory();
+  }
+}
+
+window.addEventListener('online', () => { updateNetStatus(); flushOfflineQueue(); });
+window.addEventListener('offline', updateNetStatus);
+
+/* ================================================================
+   FORM BUILDER
+   ================================================================ */
+function itemRowHtml() {
+  return `
+    <div class="item-row">
+      <input class="inp i-name" placeholder="التسمية">
+      <input class="inp i-qty" type="number" min="0" step="any" placeholder="0">
+      <select class="inp i-unit">${UNITS.map(u => `<option>${u}</option>`).join('')}</select>
+      <button type="button" class="icon-btn danger del" title="حذف">✕</button>
+    </div>`;
+}
+
+function formHtml(m) {
+  return `
+  <form class="form" id="form-${m.key}" autocomplete="off" novalidate>
+    <div class="card">
+      <div class="card-head">
+        <span class="dot" style="--c:${m.accent}"></span>
+        <h2>${m.label}</h2>
+        <span class="pill" style="--c:${m.accent}">${m.tag}</span>
+      </div>
+      <p class="hint">${m.hint}</p>
+      <label class="field">
+        <span>الموظف المستخرج *</span>
+        <input class="inp" name="staff" required placeholder="الاسم واللقب" list="dl-staff">
+      </label>
+      <label class="check-row" style="display:flex;align-items:center;gap:10px;margin-bottom:12px;padding:10px 12px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);cursor:pointer;">
+        <input type="checkbox" data-guard-override style="width:18px;height:18px;accent-color:var(--accent);cursor:pointer;">
+        <span style="font-size:13.5px;user-select:none;">تسجيل باسم حارس آخر</span>
+      </label>
+      <label class="field" data-guard-field style="display:none">
+        <span>اسم الحارس البديل *</span>
+        <input class="inp" name="guardOverride" placeholder="الاسم الكامل">
+      </label>
+      ${m.extraHtml}
+      <label class="field" style="margin-bottom:0">
+        <span>ملاحظات</span>
+        <textarea class="inp" name="notes" rows="2" placeholder="ملاحظات إضافية…"></textarea>
+      </label>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="dot" style="--c:${m.accent}"></span>
+        <h2>الأصناف</h2>
+        <span class="pill">تفاصيل</span>
+      </div>
+      <div class="items-head">
+        <span>التسمية</span>
+        <span style="text-align:center">الكمية</span>
+        <span>الوحدة</span>
+        <span></span>
+      </div>
+      <div class="items" id="items-${m.key}"></div>
+      <button type="button" class="btn ghost sm" data-add-item="${m.key}" style="width:100%;margin-top:10px;">
+        + إضافة صنف
+      </button>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="dot" style="--c:${m.accent}"></span>
+        <h2>الصور التوثيقية</h2>
+        <span class="pill" id="pc-${m.key}">0 / ${MAX_PHOTOS}</span>
+      </div>
+      <p class="hint">حتى ${MAX_PHOTOS} صور. تُضاف علامة مائية تلقائياً على البطاقة.</p>
+      <div class="photo-grid" id="pg-${m.key}"></div>
+      <div class="row-btns" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
+        <button type="button" class="btn ghost sm" data-cam="${m.key}">📷 كاميرا</button>
+        <button type="button" class="btn ghost sm" data-gal="${m.key}">🖼 معرض</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="dot" style="--c:${m.accent}"></span>
+        <h2>التوقيع (اختياري)</h2>
+        <span class="pill">يدوي</span>
+      </div>
+      <p class="hint">وقّع مباشرة بالأسفل بإصبعك أو بالفأرة.</p>
+      <div class="sig-wrap">
+        <canvas id="sig-${m.key}"></canvas>
+        <button type="button" class="sig-clear" data-sig-clear="${m.key}">مسح</button>
+      </div>
+    </div>
+
+    <div class="actions" style="display:flex;gap:10px;flex-wrap:wrap;">
+      <button type="submit" class="btn primary" style="--c:${m.accent};flex:1;min-width:200px;background:${m.accent};">
+        ✓ اعتماد وإصدار البطاقة
+      </button>
+      <button type="reset" class="btn ghost">إعادة تعيين</button>
+    </div>
+
+    <datalist id="dl-staff"></datalist>
+  </form>`;
+}
+
+function initForms() {
+  ['warehouse','bon'].forEach(key => {
+    const m = MODULES[key];
+    const host = document.getElementById('view-' + key);
+    host.innerHTML = formHtml(m);
+    addItemRow(key);
+    initSignature(key);
+
+    host.addEventListener('click', e => {
+      const addBtn = e.target.closest('[data-add-item]');
+      if (addBtn) return addItemRow(addBtn.dataset.addItem);
+      const delBtn = e.target.closest('[data-del-item], .del');
+      if (delBtn && delBtn.closest('.item-row')) return removeItemRow(delBtn);
+      const cam = e.target.closest('[data-cam]');
+      if (cam) return openPicker(cam.dataset.cam, true);
+      const gal = e.target.closest('[data-gal]');
+      if (gal) return openPicker(gal.dataset.gal, false);
+      const sigClr = e.target.closest('[data-sig-clear]');
+      if (sigClr) return clearSignature(sigClr.dataset.sigClear);
+    });
+
+    host.addEventListener('change', e => {
+      if (e.target.matches('[data-guard-override]')) {
+        const field = host.querySelector('[data-guard-field]');
+        if (field) field.style.display = e.target.checked ? 'flex' : 'none';
+      }
+    });
+
+    host.addEventListener('submit', e => {
+      e.preventDefault();
+      handleSubmit(key);
+    });
+
+    host.addEventListener('reset', () => {
+      setTimeout(() => {
+        drafts[key].forEach(p => { try { URL.revokeObjectURL(p.url); } catch {} });
+        drafts[key] = [];
+        signatures[key] = null;
+        renderPhotos(key);
+        clearSignature(key);
+        document.getElementById('items-' + key).innerHTML = '';
+        addItemRow(key);
+        const gc = host.querySelector('[data-guard-override]');
+        if (gc) gc.checked = false;
+        const gf = host.querySelector('[data-guard-field]');
+        if (gf) gf.style.display = 'none';
+      }, 0);
+    });
+  });
+  refreshDatalists();
+}
+
+function addItemRow(key) {
+  const wrap = document.getElementById('items-' + key);
+  const div = document.createElement('div');
+  div.innerHTML = itemRowHtml();
+  wrap.appendChild(div.firstElementChild);
+}
+
+function removeItemRow(btn) {
+  const row = btn.closest('.item-row');
+  const wrap = row.parentElement;
+  row.remove();
+  if (!wrap.children.length) addItemRow(wrap.id.replace('items-',''));
+}
+
+/* ================================================================
+   SIGNATURE PAD
+   ================================================================ */
+function initSignature(key) {
+  const canvas = document.getElementById('sig-' + key);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let drawing = false;
+
+  function resize() {
+    const rect = canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.strokeStyle = '#0f172a';
+  }
+  resize();
+  window.addEventListener('resize', () => {
+    const sig = signatures[key];
+    resize();
+    if (sig) {
+      const i = new Image();
+      i.onload = () => ctx.drawImage(i, 0, 0, canvas.width, canvas.height);
+      i.src = sig;
+    }
+  });
+
+  function getPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const p = e.touches ? e.touches[0] : e;
+    return { x: p.clientX - rect.left, y: p.clientY - rect.top };
+  }
+  function start(e) { e.preventDefault(); drawing = true; const { x, y } = getPos(e); ctx.beginPath(); ctx.moveTo(x, y); }
+  function move(e) {
+    if (!drawing) return;
+    e.preventDefault();
+    const { x, y } = getPos(e);
+    ctx.lineTo(x, y);
+    ctx.stroke();
+  }
+  function end(e) {
+    if (!drawing) return;
+    drawing = false;
+    try { signatures[key] = canvas.toDataURL('image/png'); } catch {}
+  }
+
+  canvas.addEventListener('mousedown', start);
+  canvas.addEventListener('mousemove', move);
+  canvas.addEventListener('mouseup', end);
+  canvas.addEventListener('mouseleave', end);
+  canvas.addEventListener('touchstart', start, { passive: false });
+  canvas.addEventListener('touchmove', move, { passive: false });
+  canvas.addEventListener('touchend', end);
+}
+
+function clearSignature(key) {
+  const canvas = document.getElementById('sig-' + key);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  signatures[key] = null;
+}
+
+/* ================================================================
+   PHOTOS
+   ================================================================ */
+function openPicker(key, useCamera) {
+  if (drafts[key].length >= MAX_PHOTOS) return toast(`الحد الأقصى ${MAX_PHOTOS} صور`);
+  const input = document.getElementById('fileInput');
+  if (useCamera) input.setAttribute('capture', 'environment');
+  else input.removeAttribute('capture');
+  input.value = '';
+  input.onchange = async () => {
+    const files = [...(input.files || [])];
+    for (const f of files) {
+      if (drafts[key].length >= MAX_PHOTOS) { toast(`الحد الأقصى ${MAX_PHOTOS} صور`); break; }
+      try {
+        const blob = await compressImage(f);
+        drafts[key].push({ blob, url: URL.createObjectURL(blob), size: blob.size });
+      } catch { toast('صورة غير صالحة'); }
+    }
+    renderPhotos(key);
+  };
+  input.click();
+}
+
+function renderPhotos(key) {
+  const grid = document.getElementById('pg-' + key);
+  grid.innerHTML = drafts[key].map((p, i) => `
+    <div class="thumb">
+      <img src="${p.url}" alt="photo ${i+1}">
+      <button type="button" data-rm-photo="${i}" title="حذف">✕</button>
+    </div>`).join('');
+  document.getElementById('pc-' + key).textContent = `${drafts[key].length} / ${MAX_PHOTOS}`;
+  grid.onclick = e => {
+    const b = e.target.closest('[data-rm-photo]');
+    if (!b) return;
+    const i = Number(b.dataset.rmPhoto);
+    try { URL.revokeObjectURL(drafts[key][i].url); } catch {}
+    drafts[key].splice(i, 1);
+    renderPhotos(key);
+  };
+}
+
+/* ================================================================
+   DATALISTS
+   ================================================================ */
+function refreshDatalists() {
+  const all = loadAll();
+  const staff = [...new Set(all.map(t => t.staff).filter(Boolean))];
+  const sEl = document.getElementById('dl-staff');
+  if (sEl) sEl.innerHTML = staff.map(v => `<option value="${esc(v)}">`).join('');
+}
+
+/* ================================================================
+   CARD GENERATION
+   ================================================================ */
+function rr(ctx, x, y, w, h, r) {
+  r = Math.min(r, w/2, h/2);
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+function loadImg(src) {
+  return new Promise((res, rej) => {
+    const i = new Image();
+    i.crossOrigin = 'anonymous';
+    i.onload = () => res(i);
+    i.onerror = () => rej(new Error('img load fail'));
+    i.src = src;
+  });
+}
+
+function wrapText(ctx, text, maxW) {
+  const words = String(text).split(/\s+/);
+  const lines = []; let cur = '';
+  for (const w of words) {
+    const test = cur ? cur + ' ' + w : w;
+    if (ctx.measureText(test).width > maxW && cur) { lines.push(cur); cur = w; }
+    else cur = test;
+  }
+  if (cur) lines.push(cur);
+  return lines.length ? lines : [''];
+}
+
+async function generateCard(tx) {
+  const W = 1080, PAD = 52, CW = W - PAD * 2;
+  const accent = MODULES[tx.module].accent;
+
+  const cv = document.createElement('canvas');
+  cv.width = W; cv.height = 5200;
+  const ctx = cv.getContext('2d');
+  const F = (w, s) => `${w} ${s}px "Cairo", -apple-system, "Segoe UI", Roboto, sans-serif`;
+  ctx.textBaseline = 'alphabetic';
+  ctx.direction = 'rtl';
+
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, W, cv.height);
+
+  let y = 0;
+
+  // Header
+  const HEAD = 200;
+  const grad = ctx.createLinearGradient(0, 0, W, HEAD);
+  grad.addColorStop(0, accent);
+  grad.addColorStop(1, shade(accent, -22));
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, HEAD);
+
+  ctx.textAlign = 'right';
+  ctx.fillStyle = 'rgba(255,255,255,.85)';
+  ctx.font = F(600, 26);
+  ctx.fillText(settings.hotel || '', W - PAD, 64);
+
+  ctx.fillStyle = '#ffffff';
+  ctx.font = F(800, 48);
+  ctx.fillText(MODULES[tx.module].title, W - PAD, 126);
+
+  ctx.font = F(500, 24);
+  ctx.fillStyle = 'rgba(255,255,255,.86)';
+  ctx.fillText(MODULES[tx.module].subtitle, W - PAD, 168);
+
+  y = HEAD;
+
+  // Info strip
+  const STRIP = 92;
+  ctx.fillStyle = '#f7f9fc';
+  ctx.fillRect(0, y, W, STRIP);
+  ctx.strokeStyle = '#e3e8ef'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(0, y + STRIP + .5); ctx.lineTo(W, y + STRIP + .5); ctx.stroke();
+
+  const cells = [
+    ['الرقم المرجعي', tx.ref],
+    ['التاريخ', fmtDate(tx.createdAt)],
+    ['الساعة', fmtTime(tx.createdAt)]
+  ];
+  const cellW = CW / 3;
+  cells.forEach(([lab, val], i) => {
+    const x = W - PAD - (i + 1) * cellW + cellW;
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#8a94a6'; ctx.font = F(700, 19);
+    ctx.fillText(lab, x, y + 36);
+    ctx.fillStyle = '#0f172a'; ctx.font = F(700, 30);
+    ctx.fillText(val, x, y + 72);
+  });
+  y += STRIP;
+
+  function sectionTitle(text) {
+    y += 46;
+    ctx.fillStyle = accent;
+    ctx.fillRect(W - PAD - 5, y - 22, 5, 26);
+    ctx.fillStyle = '#0f172a';
+    ctx.font = F(800, 25);
+    ctx.textAlign = 'right';
+    ctx.fillText(text, W - PAD - 18, y);
+    y += 22;
+  }
+
+  function infoBoxes(pairs) {
+    const gap = 20;
+    const bw = (CW - gap) / 2;
+    const bh = 100;
+    for (let i = 0; i < pairs.length; i += 2) {
+      const rowItems = pairs.slice(i, i + 2);
+      rowItems.forEach(([lab, val], j) => {
+        const x = W - PAD - (j + 1) * bw - j * gap;
+        ctx.fillStyle = '#f7f9fc';
+        rr(ctx, x, y, bw, bh, 14); ctx.fill();
+        ctx.fillStyle = accent;
+        rr(ctx, x + bw - 6, y, 6, bh, 3); ctx.fill();
+
+        ctx.textAlign = 'right';
+        ctx.fillStyle = '#8a94a6'; ctx.font = F(700, 19);
+        ctx.fillText(lab, x + bw - 24, y + 36);
+
+        ctx.fillStyle = '#0f172a'; ctx.font = F(600, 29);
+        const lines = wrapText(ctx, val || '—', bw - 48);
+        ctx.fillText(lines[0], x + bw - 24, y + 74);
+      });
+      y += bh + gap;
+    }
+    y -= gap;
+  }
+
+  sectionTitle('الأفراد');
+  y += 14;
+  infoBoxes([
+    ['حارس الأمن', tx.guard],
+    ['الموظف المستخرج', tx.staff]
+  ]);
+
+  sectionTitle('تفاصيل الحركة');
+  y += 14;
+  const details = [];
+  if (tx.module === 'warehouse') {
+    details.push(['القسم المستلم', tx.department]);
+    if (tx.po) details.push(['رقم أمر الشراء', tx.po]);
+  } else {
+    details.push(['جهة الوصول', tx.destination]);
+    details.push(['السبب', tx.reason]);
+    if (tx.vehicle)      details.push(['المركبة', tx.vehicle]);
+    if (tx.authorizedBy) details.push(['المفوِّض', tx.authorizedBy]);
+  }
+  infoBoxes(details);
+
+  sectionTitle(`الأصناف (${tx.items.length})`);
+  y += 14;
+
+  const ROW_H = 54;
+  const colQty = 150, colUnit = 150;
+
+  ctx.fillStyle = '#eef2f7';
+  rr(ctx, PAD, y, CW, 46, 10); ctx.fill();
+  ctx.fillStyle = '#475569'; ctx.font = F(700, 20);
+  ctx.textAlign = 'right';
+  ctx.fillText('التسمية', W - PAD - 18, y + 30);
+  ctx.fillText('الكمية', W - PAD - CW + colQty + colUnit - 18 + CW, y + 30);
+  ctx.fillText('الوحدة', W - PAD - CW + colUnit + CW, y + 30);
+  // simpler: just right-align each
+  ctx.fillStyle = '#475569'; ctx.font = F(700, 20);
+  ctx.fillText('التسمية', W - PAD - 18, y + 30);
+  ctx.textAlign = 'center';
+  ctx.fillText('الكمية', W - PAD - colQty - colUnit/2, y + 30);
+  ctx.fillText('الوحدة', W - PAD - colUnit/2, y + 30);
+  y += 46;
+
+  tx.items.forEach((it, i) => {
+    if (i % 2 === 1) {
+      ctx.fillStyle = '#fafbfc';
+      ctx.fillRect(PAD, y, CW, ROW_H);
+    }
+    ctx.strokeStyle = '#e9edf3'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(PAD, y + ROW_H + .5); ctx.lineTo(PAD + CW, y + ROW_H + .5); ctx.stroke();
+
+    ctx.fillStyle = '#0f172a'; ctx.font = F(600, 25);
+    ctx.textAlign = 'right';
+    ctx.fillText(wrapText(ctx, it.name, CW - colQty - colUnit - 40)[0], W - PAD - 18, y + 35);
+
+    ctx.textAlign = 'center';
+    ctx.font = F(700, 25);
+    ctx.fillText(it.qty, W - PAD - colQty - colUnit/2, y + 35);
+    ctx.fillStyle = '#475569'; ctx.font = F(600, 23);
+    ctx.fillText(it.unit, W - PAD - colUnit/2, y + 35);
+
+    y += ROW_H;
+  });
+
+  if (tx.notes) {
+    sectionTitle('ملاحظات');
+    y += 16;
+    ctx.fillStyle = '#0f172a'; ctx.font = F(500, 25);
+    ctx.textAlign = 'right';
+    const lines = wrapText(ctx, tx.notes, CW - 36);
+    lines.slice(0, 5).forEach(l => { ctx.fillText(l, W - PAD - 18, y + 20); y += 36; });
+  }
+
+  // Photos with watermark
+  if (tx.photos && tx.photos.length) {
+    sectionTitle(`الصور التوثيقية (${tx.photos.length})`);
+    y += 18;
+
+    const GAP = 18, COLS = 3;
+    const cellW = (CW - GAP * (COLS - 1)) / COLS;
+    const cellH = cellW * 0.75;
+    const WM_H = 30;
+
+    const imgs = [];
+    for (const ref of tx.photos.slice(0, 6)) {
+      try {
+        const url = await photoRefToURL(ref);
+        if (url) imgs.push(await loadImg(url));
+      } catch (e) { console.warn('photo skip', e); }
+    }
+
+    imgs.forEach((img, i) => {
+      const col = i % COLS, row = Math.floor(i / COLS);
+      const x = PAD + col * (cellW + GAP);
+      const yy = y + row * (cellH + GAP);
+
+      ctx.save();
+      rr(ctx, x, yy, cellW, cellH, 12); ctx.clip();
+      const ir = img.width / img.height, br = cellW / cellH;
+      let dw, dh;
+      if (ir > br) { dh = cellH; dw = cellH * ir; }
+      else { dw = cellW; dh = cellW / ir; }
+      ctx.drawImage(img, x + (cellW - dw) / 2, yy + (cellH - dh) / 2, dw, dh);
+
+      ctx.fillStyle = 'rgba(0,0,0,.72)';
+      ctx.fillRect(x, yy + cellH - WM_H, cellW, WM_H);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = F(600, 13);
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(`${tx.ref} • ${fmtTime(tx.createdAt)}`,
+                   x + cellW/2, yy + cellH - WM_H/2);
+      ctx.textBaseline = 'alphabetic';
+      ctx.restore();
+
+      ctx.save();
+      rr(ctx, x, yy, cellW, cellH, 12);
+      ctx.strokeStyle = '#dfe5ec'; ctx.lineWidth = 2; ctx.stroke();
+      ctx.restore();
+    });
+
+    const rows = Math.ceil(imgs.length / COLS);
+    y += rows * cellH + Math.max(0, rows - 1) * GAP;
+  }
+
+  // Signatures
+  y += 64;
+  const sigW = (CW - 60) / 2;
+  const sigH = 100;
+  const sigKeys = ['guardSignature', 'staffSignature'];
+  const sigLabels = ['توقيع حارس الأمن', 'توقيع الموظف'];
+  for (let i = 0; i < 2; i++) {
+    const x = W - PAD - (i + 1) * sigW - i * 60;
+    const sigData = tx[sigKeys[i]];
+
+    if (sigData) {
+      try {
+        const sigImg = await loadImg(sigData);
+        ctx.drawImage(sigImg, x, y - sigH + 20, sigW, sigH - 20);
+      } catch {}
+    }
+
+    ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + sigW, y); ctx.stroke();
+    ctx.fillStyle = '#8a94a6'; ctx.font = F(600, 20);
+    ctx.textAlign = 'center';
+    ctx.fillText(sigLabels[i], x + sigW/2, y + 30);
+  }
+
+  y += 78;
+  ctx.strokeStyle = '#e3e8ef'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(PAD, y + .5); ctx.lineTo(PAD + CW, y + .5); ctx.stroke();
+  y += 34;
+  ctx.fillStyle = '#94a3b8'; ctx.font = F(500, 18);
+  ctx.textAlign = 'center';
+  ctx.fillText(`وثيقة مُولّدة تلقائياً • ${settings.hotel} • ${fmtDateTime(new Date())}`,
+               W/2, y);
+
+  const finalH = y + PAD;
+  const out = document.createElement('canvas');
+  out.width = W; out.height = finalH;
+  const octx = out.getContext('2d');
+  octx.fillStyle = '#ffffff';
+  octx.fillRect(0, 0, W, finalH);
+  octx.drawImage(cv, 0, 0, W, finalH, 0, 0, W, finalH);
+
+  return out.toDataURL('image/jpeg', 0.92);
+}
+
+/* ================================================================
+   PDF / JSON
+   ================================================================ */
+async function buildPdfBlob(tx, cardDataUrl) {
+  if (!window.jspdf || !window.jspdf.jsPDF) {
+    throw new Error('jsPDF غير محمّل — تحقق من الاتصال');
+  }
+  const dataUrl = cardDataUrl || await generateCard(tx);
+  const img = await loadImg(dataUrl);
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF({ unit: 'pt', format: 'a4', compress: true });
+  const pageW = pdf.internal.pageSize.getWidth();
+  const pageH = pdf.internal.pageSize.getHeight();
+  const margin = 18;
+
+  const availW = pageW - margin * 2;
+  const availH = pageH - margin * 2;
+  const ratio = img.width / img.height;
+  let w = availW, h = w / ratio;
+  if (h > availH) { h = availH; w = h * ratio; }
+
+  const x = (pageW - w) / 2;
+  const y = margin + (availH - h) / 2;
+
+  pdf.addImage(dataUrl, 'JPEG', x, y, w, h);
+  return pdf.output('blob');
+}
+
+function buildJsonBlob(tx) {
+  const portable = {
+    schema: 'digitalstock.exit.v1',
+    exportedAt: new Date().toISOString(),
+    reference: tx.ref,
+    module: tx.module,
+    hotel: tx.hotel || settings.hotel,
+    guard: tx.guard,
+    staff: tx.staff,
+    department: tx.department || null,
+    destination: tx.destination || null,
+    reason: tx.reason || null,
+    vehicle: tx.vehicle || null,
+    authorizedBy: tx.authorizedBy || null,
+    notes: tx.notes || null,
+    items: tx.items,
+    photos: tx.photos || [],
+    createdAt: tx.createdAt,
+    expireAt: tx.expireAt || null,
+    hasSignatures: {
+      guard: !!tx.guardSignature,
+      staff: !!tx.staffSignature
+    }
+  };
+  return new Blob([JSON.stringify(portable, null, 2)], { type: 'application/json' });
+}
+
+/* ================================================================
+   ARCHIVE TRANSACTION
+   ================================================================ */
+async function archiveTransaction(tx, pdfBlob, jsonBlob, cardUrl) {
+  const expires = new Date(Date.now() + RETENTION_MS).toISOString();
+
+  if (firebaseReady) {
+    const dateKey = new Date().toISOString().slice(0,10);
+    const base = `archive/${dateKey}/${tx.ref}`;
+    const pdfR  = storageRef(storage, `${base}/${tx.ref}.pdf`);
+    const jsonR = storageRef(storage, `${base}/${tx.ref}.json`);
+    await uploadBytes(pdfR,  pdfBlob,  { contentType: 'application/pdf' });
+    await uploadBytes(jsonR, jsonBlob, { contentType: 'application/json' });
+    const pdfUrl  = await getDownloadURL(pdfR);
+    const jsonUrl = await getDownloadURL(jsonR);
+
+    if (tx.id) {
+      try {
+        await updateDoc(doc(db, 'transactions', tx.id), {
+          archived: true,
+          archivedAt: serverTimestamp(),
+          archiveUrls: { pdf: pdfUrl, json: jsonUrl }
+        });
+      } catch (e) { console.warn('updateDoc archive:', e); }
+    }
+    return { pdf: pdfUrl, json: jsonUrl, engine: 'firebase' };
+  }
+
+  // Local IndexedDB
+  await idbPut({ key: `archive::${tx.ref}::pdf`, blob: pdfBlob,
+                 ref: tx.ref, kind: 'pdf', expireAt: expires,
+                 createdAt: new Date().toISOString() });
+  await idbPut({ key: `archive::${tx.ref}::json`, blob: jsonBlob,
+                 ref: tx.ref, kind: 'json', expireAt: expires,
+                 createdAt: new Date().toISOString() });
+  if (cardUrl) {
+    try {
+      await idbPut({ key: `archive::${tx.ref}::jpg`,
+                     blob: dataURLtoBlob(cardUrl),
+                     ref: tx.ref, kind: 'jpg', expireAt: expires,
+                     createdAt: new Date().toISOString() });
+    } catch (e) { console.warn('JPG archive:', e); }
+  }
+  return {
+    pdf: `idb://archive::${tx.ref}::pdf`,
+    json: `idb://archive::${tx.ref}::json`,
+    engine: 'local'
+  };
+}
+
+/* ================================================================
+   RECOVERY — re-archive any record flagged archived:false
+   ================================================================ */
+async function recoverUnarchived() {
+  const all = loadAll();
+  const unarchived = all.filter(t => !t.archived && t.id && t.ref);
+  if (!unarchived.length) return;
+
+  console.log(`[Recovery] ${unarchived.length} record(s)`);
+  for (const tx of unarchived) {
+    try {
+      if (!firebaseReady) {
+        const stored = await idbGet(`archive::${tx.ref}::pdf`);
+        if (stored && stored.blob) { tx.archived = true; continue; }
+      }
+      const cardUrl = await generateCard(tx);
+      const pdf = await buildPdfBlob(tx, cardUrl);
+      const json = buildJsonBlob(tx);
+      await archiveTransaction(tx, pdf, json, cardUrl);
+      tx.archived = true;
+    } catch (e) {
+      console.warn(`[Recovery] failed for ${tx.ref}:`, e);
+    }
+  }
+  saveAll(all);
+  renderHistory();
+}
+
+/* ================================================================
+   RETENTION PURGE — 48h
+   ================================================================ */
+async function purgeExpired() {
+  const now = Date.now();
+  const cutoff = now - RETENTION_MS;
+  const all = loadAll();
+  const keep = all.filter(t => {
+    const ts = new Date(t.createdAt).getTime();
+    return isFinite(ts) && ts > cutoff;
+  });
+  const removed = all.length - keep.length;
+  if (removed > 0) { saveAll(keep); renderHistory(); refreshDatalists(); }
+
+  let purgedBlobs = 0;
+  try { purgedBlobs = await idbPurgeExpired(); } catch (e) { console.warn(e); }
+  if (removed || purgedBlobs) console.log(`[Retention] purged ${removed} tx, ${purgedBlobs} blobs`);
+}
+
+function startRetentionScheduler() {
+  purgeExpired().catch(e => console.warn('Initial purge', e));
+  setInterval(() => purgeExpired().catch(e => console.warn('Scheduled purge', e)),
+              10 * 60 * 1000);
+}
+
+/* ================================================================
+   WHATSAPP
+   ================================================================ */
+function buildMessage(tx) {
   const m = MODULES[tx.module];
-  
-  // تصميم البطاقة كـ HTML نقي لسهولة قراءته
-  const html = `
-    <div id="printArea" style="background:#fff; color:#000; padding:30px; text-align:right; font-family:'Cairo',sans-serif; border-radius:10px; box-shadow:0 10px 30px rgba(0,0,0,0.1); width:100%;">
-      <div style="border-bottom:3px solid ${m.c}; padding-bottom:15px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center;">
-        <div><h1 style="margin:0; font-size:24px; color:${m.c}">${m.title}</h1><p style="margin:0; color:#666;">${tx.hotel}</p></div>
-        <div style="text-align:left;"><h2 style="margin:0; font-size:20px;">${tx.ref}</h2><p style="margin:0; color:#666;">${new Date(tx.createdAt).toLocaleString('ar-EG')}</p></div>
-      </div>
-      <div style="display:flex; justify-content:space-between; margin-bottom:20px; background:#f8f9fa; padding:15px; border-radius:8px;">
-        <div><strong>الحارس:</strong> ${tx.guard}</div>
-        <div><strong>المستخرج:</strong> ${tx.staff}</div>
-      </div>
-      <table style="width:100%; border-collapse:collapse; margin-bottom:20px;">
-        <thead><tr style="background:${m.c}; color:#fff;"><th style="padding:10px; border:1px solid #ddd;">التسمية</th><th style="padding:10px; border:1px solid #ddd;">الكمية</th><th style="padding:10px; border:1px solid #ddd;">الوحدة</th></tr></thead>
-        <tbody>
-          ${tx.items.map(i => `<tr><td style="padding:10px; border:1px solid #ddd;">${i.n}</td><td style="padding:10px; border:1px solid #ddd; text-align:center;">${i.q}</td><td style="padding:10px; border:1px solid #ddd; text-align:center;">${i.u}</td></tr>`).join('')}
-        </tbody>
-      </table>
-      <div style="display:flex; justify-content:space-between; margin-top:50px; color:#666;">
-        <div style="border-top:1px solid #ccc; padding-top:10px; width:40%; text-align:center;">توقيع الحارس</div>
-        <div style="border-top:1px solid #ccc; padding-top:10px; width:40%; text-align:center;">توقيع المستلم</div>
-      </div>
-    </div>
-  `;
-  $('#cardModalBody').innerHTML = html;
-  $('#cardModal').classList.add('open');
+  const L = [];
+  L.push(`*${m.title}*`);
+  L.push(`🏨 ${tx.hotel || settings.hotel}`);
+  L.push(`📄 الرقم: ${tx.ref}`);
+  L.push(`🕒 ${fmtDateTime(tx.createdAt)}`);
+  L.push('');
+  L.push(`👮 الحارس: ${tx.guard}`);
+  L.push(`👤 الموظف: ${tx.staff}`);
+  if (tx.department)   L.push(`🏷 القسم: ${tx.department}`);
+  if (tx.po)           L.push(`🔖 أمر الشراء: ${tx.po}`);
+  if (tx.destination)  L.push(`📍 جهة الوصول: ${tx.destination}`);
+  if (tx.reason)       L.push(`📌 السبب: ${tx.reason}`);
+  if (tx.vehicle)      L.push(`🚚 المركبة: ${tx.vehicle}`);
+  if (tx.authorizedBy) L.push(`✅ المفوِّض: ${tx.authorizedBy}`);
+  L.push('');
+  L.push(`*الأصناف (${tx.items.length}):*`);
+  tx.items.forEach((it, i) => L.push(`${i+1}. ${it.name || it.n} — ${it.qty || it.q} ${it.unit || it.u}`));
+  if (tx.notes) { L.push(''); L.push(`📝 ${tx.notes}`); }
+  L.push('');
+  L.push(`📷 ${(tx.photos || []).length} صور`);
+  return L.join('\n');
 }
 
-// دالة مبسطة لتحويل منطقة الـ HTML إلى صورة للواتساب
-$('#btnShareWA').onclick = () => {
-  if(!activeTx) return;
-  const t = activeTx;
-  const txt = `*${MODULES[t.module].label}*\n🏨 ${t.hotel}\n📄 ${t.ref}\n\nالحارس: ${t.guard}\nالمستلم: ${t.staff}\n\n*الأصناف:*\n${t.items.map(i=>`- ${i.n} (${i.q}${i.u})`).join('\n')}`;
-  const phone = (localStorage.getItem('ds.phone')||'').replace(/[^\d]/g,'');
-  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(txt)}`, '_blank');
-};
+function waNumber() { return (settings.phone || '').replace(/[^\d]/g, ''); }
 
-$('#btnDownloadPdf').onclick = () => {
-  if(!window.jspdf) { showToast("جاري تحميل مكتبة PDF، انتظر ثانية..."); return; }
-  const doc = new window.jspdf.jsPDF({ format: 'a4', orientation: 'p' });
-  // استخدام خط افتراضي بسيط لتفادي مشاكل ترميز اللغة في المتصفحات
-  doc.setFontSize(22); doc.text(activeTx.ref, 20, 30);
-  doc.setFontSize(12); doc.text(`Hotel: ${activeTx.hotel}`, 20, 45);
-  doc.text(`Guard: ${activeTx.guard} | Staff: ${activeTx.staff}`, 20, 55);
-  let y = 75;
-  activeTx.items.forEach(i => { doc.text(`- ${i.q} ${i.u} : ${i.n}`, 20, y); y+=10; });
-  doc.save(`${activeTx.ref}.pdf`);
-};
+async function shareWhatsApp() {
+  if (!activeTx) return toast('لا توجد بطاقة نشطة');
+  const text = buildMessage(activeTx);
 
-/* ------------------------------------------------------------------
-   7. HISTORY RENDER
-   ------------------------------------------------------------------ */
+  if (activeCardUrl && navigator.canShare && navigator.share) {
+    try {
+      const blob = dataURLtoBlob(activeCardUrl);
+      const file = new File([blob], `${activeTx.ref}.jpg`, { type: 'image/jpeg' });
+      if (navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], text, title: activeTx.ref });
+        return;
+      }
+    } catch (err) {
+      if (err && err.name === 'AbortError') return;
+      console.warn('navigator.share failed:', err);
+    }
+  }
+
+  const num = waNumber();
+  const base = num ? `https://wa.me/${num}` : 'https://wa.me/';
+  const waUrl = `${base}?text=${encodeURIComponent(text)}`;
+  const waWin = window.open(waUrl, '_blank');
+  if (!waWin) {
+    if (confirm('تم حجب النافذة. فتح واتساب يدوياً؟')) location.href = waUrl;
+  }
+  if (activeCardUrl) {
+    downloadDataUrl(activeCardUrl, `${activeTx.ref}.jpg`);
+    toast('تم تحميل JPG — أرفقه بالمحادثة', 4000);
+  }
+}
+
+function downloadDataUrl(url, filename) {
+  if (!url) return;
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+}
+function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  downloadDataUrl(url, filename);
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
+}
+
+/* ================================================================
+   SUBMIT
+   ================================================================ */
+async function handleSubmit(key) {
+  const form = document.getElementById('form-' + key);
+  const fd = new FormData(form);
+
+  const staff = (fd.get('staff') || '').trim();
+  if (!staff) { toast('اسم الموظف المستخرج مطلوب'); form.staff.focus(); return; }
+
+  const overrideCb = form.querySelector('[data-guard-override]');
+  const guardOverride = (fd.get('guardOverride') || '').trim();
+  let effectiveGuard = currentAgent;
+  if (overrideCb && overrideCb.checked) {
+    if (!guardOverride) return toast('اسم الحارس البديل مطلوب');
+    effectiveGuard = guardOverride;
+  }
+
+  const items = $$('.item-row', form).map(r => ({
+    name: r.querySelector('.i-name').value.trim(),
+    qty:  r.querySelector('.i-qty').value.trim(),
+    unit: r.querySelector('.i-unit').value
+  })).filter(i => i.name);
+
+  if (!items.length) return toast('أضف صنفاً واحداً على الأقل');
+  if (items.some(i => !i.qty)) return toast('الكمية ناقصة في أحد الأصناف');
+
+  if (key === 'bon') {
+    if (!(fd.get('destination') || '').trim()) return toast('جهة الوصول مطلوبة');
+    if (!(fd.get('reason') || '').trim())      return toast('السبب مطلوب');
+  } else {
+    if (!(fd.get('department') || '').trim()) return toast('القسم المستلم مطلوب');
+  }
+
+  if (!drafts[key].length && !confirm('لا توجد صور مرفقة. المتابعة؟')) return;
+
+  const submitBtn = form.querySelector('button[type="submit"]');
+  submitBtn.disabled = true;
+  const oldLabel = submitBtn.innerHTML;
+  submitBtn.innerHTML = '<span class="spinner-inline"></span> جارٍ الحفظ…';
+
+  const payload = {
+    module: key,
+    hotel: settings.hotel,
+    guard: effectiveGuard,
+    staff,
+    department:   (fd.get('department') || '').trim(),
+    po:           (fd.get('po') || '').trim(),
+    destination:  (fd.get('destination') || '').trim(),
+    reason:       (fd.get('reason') || '').trim(),
+    vehicle:      (fd.get('vehicle') || '').trim(),
+    authorizedBy: (fd.get('authorizedBy') || '').trim(),
+    notes:        (fd.get('notes') || '').trim(),
+    items,
+    guardSignature: signatures[key] || null,
+    staffSignature: null,
+    clientTimestamp: new Date().toISOString()
+  };
+
+  let record = null;
+  try {
+    const tempId = (crypto.randomUUID && crypto.randomUUID()) || String(Date.now());
+    let photoRefs;
+    if (firebaseReady && navigator.onLine) {
+      photoRefs = await savePhotosFirebase(tempId, drafts[key]);
+    } else {
+      photoRefs = await savePhotosLocal(tempId, drafts[key]);
+    }
+    const { id, ref } = await commitTransaction({ ...payload, photos: photoRefs });
+
+    const createdAt = new Date().toISOString();
+    const expireAt  = new Date(Date.now() + RETENTION_MS).toISOString();
+    record = {
+      id, ref, ...payload, photos: photoRefs,
+      createdAt, expireAt, archived: false, archiveUrls: null
+    };
+
+    const cached = loadAll();
+    cached.unshift(record);
+    saveAll(cached);
+
+    form.reset();
+    drafts[key].forEach(p => { try { URL.revokeObjectURL(p.url); } catch {} });
+    drafts[key] = [];
+    signatures[key] = null;
+    renderPhotos(key);
+    clearSignature(key);
+    document.getElementById('items-' + key).innerHTML = '';
+    addItemRow(key);
+    const gc = form.querySelector('[data-guard-override]');
+    if (gc) gc.checked = false;
+    const gf = form.querySelector('[data-guard-field]');
+    if (gf) gf.style.display = 'none';
+    refreshDatalists();
+    renderHistory();
+    toast(`تم الحفظ: ${ref}`);
+  } catch (err) {
+    console.error(err);
+    queueOffline(payload, key, drafts[key]);
+    toast('غير متصل — تم وضع المعاملة في قائمة الانتظار');
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = oldLabel;
+    return;
+  }
+
+  submitBtn.disabled = false;
+  submitBtn.innerHTML = oldLabel;
+
+  activeTx = record;
+  await showCard(record);
+}
+
+/* ================================================================
+   CARD MODAL
+   ================================================================ */
+async function showCard(tx) {
+  activeTx = tx;
+  activeCardUrl = null;
+
+  document.getElementById('cardModalTitle').textContent = tx.ref;
+  document.getElementById('cardModalBody').innerHTML = '<div class="spinner"></div>';
+  document.getElementById('archiveStatus').style.display = 'none';
+  document.getElementById('cardModal').classList.add('open');
+
+  try {
+    const url = await generateCard(tx);
+    activeCardUrl = url;
+    document.getElementById('cardModalBody').innerHTML =
+      `<img id="cardPreview" src="${url}" alt="بطاقة ${esc(tx.ref)}">`;
+  } catch (e) {
+    console.error('Card generation failed:', e);
+    document.getElementById('cardModalBody').innerHTML = `
+      <div class="banner warn" style="margin:0">
+        <span class="b-ic">⚠</span>
+        <span>تعذّر إنشاء البطاقة.<br><small>${esc(e.message || e)}</small></span>
+      </div>`;
+    return;
+  }
+
+  runBackgroundArchive(tx, url);
+}
+
+async function runBackgroundArchive(tx, cardUrl) {
+  const status = document.getElementById('archiveStatus');
+  const icon = document.getElementById('archiveIcon');
+  const text = document.getElementById('archiveText');
+  const sub  = document.getElementById('archiveSub');
+
+  status.style.display = 'flex';
+  status.className = 'archive-status running';
+  icon.textContent = '⟳';
+  text.textContent = 'جاري الأرشفة…';
+  sub.textContent = 'تجميع PDF + JSON';
+
+  let pdfBlob = null, jsonBlob = null;
+  try { pdfBlob = await buildPdfBlob(tx, cardUrl); } catch (e) { console.warn(e); }
+  try { jsonBlob = buildJsonBlob(tx); } catch (e) { console.warn(e); }
+
+  if (!pdfBlob || !jsonBlob) {
+    status.className = 'archive-status err';
+    icon.textContent = '✕';
+    text.textContent = 'أرشفة جزئية';
+    sub.textContent = 'فشل تجميع الملفات';
+    return;
+  }
+
+  sub.textContent = `PDF ${(pdfBlob.size/1024).toFixed(0)} KB • JSON ${(jsonBlob.size/1024).toFixed(1)} KB`;
+
+  try {
+    await archiveTransaction(tx, pdfBlob, jsonBlob, cardUrl);
+    status.className = 'archive-status done';
+    icon.textContent = '✓';
+    text.textContent = firebaseReady ? 'تمت الأرشفة في السحابة' : 'تمت الأرشفة محلياً';
+    sub.textContent = `حذف تلقائي في ${fmtTime(tx.expireAt)} (48 ساعة)`;
+
+    const all = loadAll();
+    const idx = all.findIndex(t => t.id === tx.id);
+    if (idx >= 0) { all[idx].archived = true; saveAll(all); renderHistory(); }
+  } catch (e) {
+    console.error('Archive failed:', e);
+    status.className = 'archive-status err';
+    icon.textContent = '!';
+    text.textContent = 'فشل الأرشفة';
+    sub.textContent = e.message || 'حاول لاحقاً';
+  }
+}
+
+/* ================================================================
+   HISTORY
+   ================================================================ */
+function filterRecords(all) {
+  let f = all;
+  if (historyFilter !== 'all') f = f.filter(t => t.module === historyFilter);
+  if (historyQuery) {
+    const q = historyQuery.toLowerCase();
+    f = f.filter(t =>
+      (t.ref || '').toLowerCase().includes(q) ||
+      (t.guard || '').toLowerCase().includes(q) ||
+      (t.staff || '').toLowerCase().includes(q) ||
+      (t.destination || '').toLowerCase().includes(q) ||
+      (t.department || '').toLowerCase().includes(q) ||
+      (t.items || []).some(it => (it.name || it.n || '').toLowerCase().includes(q))
+    );
+  }
+  return f;
+}
+
 function renderHistory() {
-  const all = JSON.parse(localStorage.getItem(STORE_KEY)||'[]');
-  $('#histCount').textContent = all.length;
-  $('#histList').innerHTML = all.length ? all.map(t => `
-    <div class="card" style="padding:12px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; border-right:4px solid ${MODULES[t.module].c}">
-      <div>
-        <h4 style="margin:0 0 5px;">${t.ref}</h4>
-        <div style="font-size:12px; color:var(--muted)">${new Date(t.createdAt).toLocaleString('ar-EG')} • 👤 ${t.staff}</div>
-      </div>
-      <button class="btn ghost sm" onclick='showCard(${JSON.stringify(t)})'>عرض</button>
-    </div>
-  `).join('') : '<p style="text-align:center; color:var(--muted); padding:40px;">لا توجد حركات مسجلة</p>';
+  const all = loadAll();
+  document.getElementById('histCount').textContent = all.length;
+
+  const list = document.getElementById('histList');
+  const filtered = filterRecords(all);
+
+  if (!filtered.length) {
+    list.innerHTML = all.length
+      ? `<div class="empty"><div class="ico">🔍</div><p>لا توجد نتائج مطابقة.</p></div>`
+      : `<div class="empty"><div class="ico">📋</div><p>لا توجد حركات مسجلة بعد.<br>اعتمد معاملة لتظهر هنا.</p></div>`;
+    return;
+  }
+
+  list.innerHTML = filtered.map(tx => {
+    const m = MODULES[tx.module];
+    const ttlH = tx.expireAt
+      ? Math.max(0, Math.round((new Date(tx.expireAt) - Date.now()) / 3600000))
+      : null;
+    const expiring = ttlH !== null && ttlH < 12;
+    return `
+      <div class="hist-item" style="--c:${m.accent}" data-id="${tx.id}">
+        <div class="hist-main">
+          <div class="hist-ref">
+            ${esc(tx.ref)}
+            <span class="pill" style="background:color-mix(in srgb,${m.accent} 20%,transparent);color:${m.accent}">${esc(m.tag)}</span>
+            ${tx.archived ? '<span class="pill ok">مؤرشف</span>' : '<span class="pill warn">غير مؤرشف</span>'}
+            ${expiring ? `<span class="pill warn">حذف في ${ttlH}س</span>` : ''}
+          </div>
+          <div class="hist-sub">${fmtDateTime(tx.createdAt)}</div>
+          <div class="hist-sub">👤 ${esc(tx.staff)} • 👮 ${esc(tx.guard)} • 📷 ${(tx.photos||[]).length} • 📦 ${tx.items.length}</div>
+        </div>
+        <div class="hist-actions">
+          <button class="icon-btn" data-act="view"  title="عرض">👁</button>
+          <button class="icon-btn" data-act="share" title="واتساب">📲</button>
+          <button class="icon-btn" data-act="pdf"   title="PDF">📄</button>
+          <button class="icon-btn danger" data-act="del" title="حذف">🗑</button>
+        </div>
+      </div>`;
+  }).join('');
 }
 
-// جعل showCard متاحة عالمياً لزر "عرض"
-window.showCard = showCard;
+function initHistory() {
+  document.getElementById('histList').addEventListener('click', async e => {
+    const item = e.target.closest('.hist-item');
+    if (!item) return;
+    const id = item.dataset.id;
+    const all = loadAll();
+    const tx = all.find(t => t.id === id);
+    if (!tx) return;
 
+    const btn = e.target.closest('[data-act]');
+    const act = btn ? btn.dataset.act : 'view';
+
+    if (act === 'del') {
+      if (!confirm(`حذف البطاقة ${tx.ref} نهائياً؟`)) return;
+      saveAll(all.filter(t => t.id !== id));
+      try { await idbDeleteByRef(tx.ref); } catch {}
+      try { if (tx.id) await idbDeleteByTxId(tx.id); } catch {}
+      renderHistory();
+      refreshDatalists();
+      return toast('تم الحذف');
+    }
+
+    if (act === 'pdf') {
+      toast('جاري توليد PDF…');
+      try {
+        if (!firebaseReady) {
+          const stored = await idbGet(`archive::${tx.ref}::pdf`);
+          if (stored && stored.blob) {
+            downloadBlob(stored.blob, `${tx.ref}.pdf`);
+            return toast('تم تحميل PDF');
+          }
+        }
+        const blob = await buildPdfBlob(tx);
+        downloadBlob(blob, `${tx.ref}.pdf`);
+        toast('تم تحميل PDF');
+      } catch (e) { toast('خطأ PDF: ' + e.message); }
+      return;
+    }
+
+    if (act === 'share') {
+      activeTx = tx;
+      try { activeCardUrl = await generateCard(tx); } catch {}
+      await shareWhatsApp();
+      return;
+    }
+
+    showCard(tx);
+  });
+
+  document.getElementById('histSearch').addEventListener('input', e => {
+    historyQuery = e.target.value.trim();
+    renderHistory();
+  });
+
+  $$('.hist-filter').forEach(btn => {
+    btn.addEventListener('click', () => {
+      $$('.hist-filter').forEach(b => b.classList.toggle('active', b === btn));
+      historyFilter = btn.dataset.filter;
+      renderHistory();
+    });
+  });
+
+  document.getElementById('btnExportAll').onclick = () => {
+    const all = loadAll();
+    if (!all.length) return toast('لا توجد سجلات للتصدير');
+    const payload = {
+      schema: 'digitalstock.full-export.v1',
+      exportedAt: new Date().toISOString(),
+      hotel: settings.hotel,
+      count: all.length,
+      records: all
+    };
+    downloadBlob(
+      new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' }),
+      `DS-EXPORT-${new Date().toISOString().slice(0,10)}.json`
+    );
+    toast(`تم تصدير ${all.length} سجلاً`);
+  };
+
+  document.getElementById('btnImportAll').onclick = () => document.getElementById('importInput').click();
+  document.getElementById('importInput').addEventListener('change', async e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const data = JSON.parse(text);
+      if (!data.records || !Array.isArray(data.records)) throw new Error('صيغة غير صالحة');
+      if (!confirm(`استيراد ${data.records.length} سجلاً؟ لن يتم حذف السجلات الحالية.`)) return;
+      const existing = loadAll();
+      const ids = new Set(existing.map(t => t.id));
+      let added = 0;
+      for (const rec of data.records) {
+        if (!rec.id || ids.has(rec.id)) continue;
+        existing.unshift(rec);
+        added++;
+      }
+      existing.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+      saveAll(existing);
+      renderHistory();
+      refreshDatalists();
+      toast(`تم استيراد ${added} سجلاً`);
+    } catch (err) {
+      console.error(err);
+      toast('ملف غير صالح: ' + err.message);
+    }
+    e.target.value = '';
+  });
+}
+
+/* ================================================================
+   NAVIGATION / MODALS / STATUS
+   ================================================================ */
+function closeModals() {
+  $$('.modal-overlay').forEach(m => m.classList.remove('open'));
+  activeTx = null;
+  activeCardUrl = null;
+}
+
+function initModals() {
+  $$('.close-modal').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.target.closest('.modal-overlay')?.classList.remove('open');
+    });
+  });
+
+  document.addEventListener('click', e => {
+    if (e.target.classList.contains('modal-overlay')) {
+      e.target.classList.remove('open');
+    }
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModals();
+  });
+
+  document.getElementById('btnSettings').onclick = async () => {
+    document.getElementById('setHotel').value = settings.hotel;
+    document.getElementById('setPhone').value = settings.phone;
+    const stored = localStorage.getItem('ds.fbConfig');
+    document.getElementById('setFbConfig').value = stored ? stored : '';
+    const sz = await idbSizeEstimate();
+    document.getElementById('storageInfo').textContent = sz;
+    document.getElementById('setModal').classList.add('open');
+  };
+
+  document.getElementById('btnSaveSettings').onclick = () => {
+    settings.hotel = (document.getElementById('setHotel').value || 'Les Oliviers Palace').trim();
+    settings.phone = (document.getElementById('setPhone').value || '').trim();
+    saveSettings();
+
+    const raw = document.getElementById('setFbConfig').value.trim();
+    if (raw) {
+      try {
+        JSON.parse(raw);
+        localStorage.setItem('ds.fbConfig', raw);
+        toast('تم حفظ الإعدادات — إعادة التحميل…');
+        setTimeout(() => location.reload(), 700);
+        return;
+      } catch { return toast('JSON Firebase غير صالح'); }
+    }
+    closeModals();
+    toast('تم حفظ الإعدادات');
+  };
+
+  document.getElementById('btnLogoutBtn').onclick = async () => {
+    if (!confirm('تسجيل الخروج؟')) return;
+    try { await signOut(auth); } catch {}
+    closeModals();
+  };
+
+  document.getElementById('btnShareWA').onclick = shareWhatsApp;
+
+  document.getElementById('btnDownloadJpg').onclick = () => {
+    if (!activeCardUrl) return toast('لا توجد صورة');
+    downloadDataUrl(activeCardUrl, `${activeTx.ref}.jpg`);
+    toast('تم تحميل JPG');
+  };
+
+  document.getElementById('btnDownloadPdf').onclick = async () => {
+    if (!activeTx) return;
+    toast('جاري توليد PDF…');
+    try {
+      if (!firebaseReady) {
+        const stored = await idbGet(`archive::${activeTx.ref}::pdf`);
+        if (stored && stored.blob) {
+          downloadBlob(stored.blob, `${activeTx.ref}.pdf`);
+          return toast('تم تحميل PDF');
+        }
+      }
+      const blob = await buildPdfBlob(activeTx, activeCardUrl);
+      downloadBlob(blob, `${activeTx.ref}.pdf`);
+      toast('تم تحميل PDF');
+    } catch (e) { toast('خطأ: ' + e.message); }
+  };
+
+  document.getElementById('btnDownloadJson').onclick = async () => {
+    if (!activeTx) return;
+    try {
+      if (!firebaseReady) {
+        const stored = await idbGet(`archive::${activeTx.ref}::json`);
+        if (stored && stored.blob) {
+          downloadBlob(stored.blob, `${activeTx.ref}.json`);
+          return toast('تم تحميل JSON');
+        }
+      }
+      downloadBlob(buildJsonBlob(activeTx), `${activeTx.ref}.json`);
+      toast('تم تحميل JSON');
+    } catch { toast('خطأ JSON'); }
+  };
+}
+
+function initTabs() {
+  document.getElementById('tabs').addEventListener('click', e => {
+    const t = e.target.closest('.tab');
+    if (!t) return;
+    $$('.tab').forEach(x => x.classList.toggle('active', x === t));
+    $$('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + t.dataset.view));
+    if (t.dataset.view === 'history') renderHistoryBanner();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}
+
+function updateNetStatus() {
+  const on = navigator.onLine;
+  const dot = document.getElementById('netStatusDot');
+  const txt = document.getElementById('netStatusText');
+  if (dot) dot.className = `status-dot ${on ? 'online' : ''}`;
+  if (txt) txt.textContent = on ? 'متصل (سحابي)' : 'مفصول (محلي)';
+}
+
+function renderHistoryBanner() {
+  const host = document.getElementById('histBanner');
+  if (!host) return;
+  const queue = JSON.parse(localStorage.getItem(QUEUE_KEY) || '[]');
+  const parts = [];
+
+  if (!firebaseReady) {
+    parts.push(`<div class="banner warn">
+      <span class="b-ic">⚠</span>
+      <span><b>وضع محلي.</b> الصور و PDF و JSON محفوظة في IndexedDB، تُحذف تلقائياً بعد 48 ساعة.</span>
+    </div>`);
+  } else {
+    parts.push(`<div class="banner ok">
+      <span class="b-ic">✓</span>
+      <span><b>Firebase نشط.</b> عدّادات ذرية + أرشفة سحابية + حذف تلقائي بعد 48 ساعة.</span>
+    </div>`);
+  }
+
+  if (queue.length) {
+    parts.push(`<div class="banner warn">
+      <span class="b-ic">⏳</span>
+      <span><b>${queue.length} معاملة في قائمة الانتظار</b> — ستتم المزامنة تلقائياً.</span>
+    </div>`);
+  }
+  host.innerHTML = parts.join('');
+}
+
+/* ================================================================
+   AUTH FLOW
+   ================================================================ */
+document.getElementById('btnLoginBtn').addEventListener('click', async () => {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass  = document.getElementById('loginPass').value;
+  const btn   = document.getElementById('btnLoginBtn');
+
+  if (!email || !pass) return toast('أدخل البريد وكلمة المرور');
+  btn.disabled = true;
+  const old = btn.innerHTML;
+  btn.innerHTML = '<span class="spinner-inline"></span>';
+
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+  } catch (err) {
+    console.error(err);
+    toast('بيانات خاطئة أو لا يوجد اتصال');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = old;
+  }
+});
+
+document.getElementById('loginEmail').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('loginPass').focus();
+});
+document.getElementById('loginPass').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('btnLoginBtn').click();
+});
+
+onAuthStateChanged(auth, (user) => {
+  const authScreen = document.getElementById('auth-screen');
+  const appScreen  = document.getElementById('app-screen');
+
+  if (user) {
+    firebaseReady = true;
+    currentAgent = user.displayName || user.email.split('@')[0];
+    document.getElementById('currentUserDisplay').textContent = `👤 ${currentAgent}`;
+    document.getElementById('settingEmail').textContent = user.email;
+
+    authScreen.classList.add('hidden');
+    appScreen.classList.add('visible');
+
+    if (!document.getElementById('form-warehouse').innerHTML.trim()) {
+      initForms();
+      initHistory();
+      initModals();
+      initTabs();
+    }
+    loadSettings();
+    renderHistory();
+    renderHistoryBanner();
+    startRetentionScheduler();
+
+    setTimeout(() => recoverUnarchived().catch(e => console.warn(e)), 2500);
+    setTimeout(flushOfflineQueue, 1500);
+  } else {
+    firebaseReady = false;
+    currentAgent = '';
+    authScreen.classList.remove('hidden');
+    appScreen.classList.remove('visible');
+    document.getElementById('loginPass').value = '';
+    document.getElementById('loginEmail').focus();
+
+    // Still initialize UI so history works offline
+    loadSettings();
+    if (!document.getElementById('form-warehouse').innerHTML.trim()) {
+      initForms();
+      initHistory();
+      initModals();
+      initTabs();
+    }
+    renderHistory();
+    startRetentionScheduler();
+  }
+  updateNetStatus();
+});
+
+/* ================================================================
+   THEME TOGGLE
+   ================================================================ */
+document.getElementById('btnThemeToggle').addEventListener('click', () => {
+  const root = document.documentElement;
+  const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  root.setAttribute('data-theme', next);
+  localStorage.setItem('ds.theme', next);
+});
+
+(function initTheme() {
+  const saved = localStorage.getItem('ds.theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', saved);
+})();
+
+/* ================================================================
+   BOOT
+   ================================================================ */
+loadSettings();
+updateNetStatus();
+document.getElementById('loginEmail').focus();
+
+console.log('%c Digital Stock v3 — Ready ', 'background:#3b82f6;color:#fff;padding:4px 8px;border-radius:4px;font-weight:bold;');
 </script>
 </body>
 </html>
