@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl" data-theme="dark">
 <head>
@@ -163,19 +162,6 @@ main{flex:1;width:100%;max-width:640px;margin:0 auto;padding:0 16px 24px}
 html[dir="rtl"] .tt-label select{background-position:left 14px center}
 .tt-label textarea:focus,.tt-label select:focus,.tt-label .tt-input:focus{
   border-color:var(--tt-cyan);background:var(--surface-3);box-shadow:0 0 0 4px var(--tt-cyan-glow)}
-.tt-check{display:flex;align-items:center;gap:12px;padding:12px 14px;
-  margin-bottom:12px;background:var(--surface-2);border:1.5px solid var(--line-2);
-  border-radius:14px;cursor:pointer;transition:.2s}
-.tt-check:hover{border-color:var(--tt-cyan)}
-.tt-check input{appearance:none;width:44px;height:26px;flex:0 0 44px;
-  background:var(--surface-3);border-radius:99px;position:relative;
-  cursor:pointer;transition:.25s;border:none}
-.tt-check input::after{content:'';position:absolute;top:3px;left:3px;
-  width:20px;height:20px;border-radius:50%;background:#fff;transition:.25s;
-  box-shadow:0 2px 6px rgba(0,0,0,.4)}
-.tt-check input:checked{background:linear-gradient(135deg,var(--tt-cyan),var(--tt-pink))}
-.tt-check input:checked::after{left:21px}
-.tt-check span{font-size:13.5px;font-weight:600;user-select:none;flex:1}
 .tt-items-head,.tt-item-row{display:grid;grid-template-columns:1fr 70px 82px 36px;gap:6px;align-items:center}
 .tt-items-head{font-size:11px;font-weight:800;color:var(--muted-2);
   padding:0 4px 8px;text-transform:uppercase;letter-spacing:.5px}
@@ -314,53 +300,162 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 92px 1fr;direction:rtl}
   border-radius:99px;font-size:9px;font-weight:800;display:grid;place-items:center;
   line-height:1;box-shadow:0 0 8px var(--tt-pink-glow)}
 
-/* MODE SWITCH CENTER */
+/* ═══════════════════════════════════════════════════════════════
+   MODE SWITCH — 3D LARGE ICONS + THEME-AWARE BACKGROUND
+   ═══════════════════════════════════════════════════════════════ */
 .nav-center{display:flex;flex-direction:column;align-items:center;justify-content:center;
   height:100%;position:relative;gap:2px}
-.mode-switch{position:relative;width:56px;height:56px;border-radius:18px;border:none;cursor:pointer;
-  display:grid;place-items:center;padding:0;overflow:visible;
-  background:linear-gradient(135deg,#25F4EE,#0ea5e9);
-  box-shadow:0 8px 24px rgba(37,244,238,.42),0 0 30px rgba(37,244,238,.28);
-  transition:background .55s cubic-bezier(.2,.9,.3,1.1),
+
+.mode-switch{
+  position:relative;
+  width:58px;height:58px;
+  border-radius:18px;
+  border:none;cursor:pointer;
+  display:grid;place-items:center;
+  padding:0;overflow:visible;
+  background:linear-gradient(145deg,#2dd4f0,#0891b2);
+  box-shadow:
+    0 8px 20px rgba(37,244,238,.55),
+    0 0 40px rgba(37,244,238,.35),
+    inset 0 -4px 8px rgba(0,0,0,.25),
+    inset 0 2px 2px rgba(255,255,255,.35);
+  transition:
+    background .55s cubic-bezier(.2,.9,.3,1.1),
     box-shadow .55s cubic-bezier(.2,.9,.3,1.1),
     transform .25s cubic-bezier(.2,.9,.3,1.3);
-  isolation:isolate}
-.mode-switch.bon{background:linear-gradient(135deg,#FE2C55,#f43f5e);
-  box-shadow:0 8px 24px rgba(254,44,85,.42),0 0 30px rgba(254,44,85,.28)}
-.mode-switch::before{content:'';position:absolute;inset:-4px;border-radius:22px;
-  background:inherit;z-index:-1;filter:blur(12px);opacity:.6;transition:.55s}
+  isolation:isolate;
+  perspective: 220px;
+  perspective-origin: 50% 55%;
+}
+.mode-switch.bon{
+  background:linear-gradient(145deg,#f43f5e,#be123c);
+  box-shadow:
+    0 8px 20px rgba(254,44,85,.55),
+    0 0 40px rgba(254,44,85,.35),
+    inset 0 -4px 8px rgba(0,0,0,.25),
+    inset 0 2px 2px rgba(255,255,255,.35);
+}
+.mode-switch::before{
+  content:'';position:absolute;inset:-6px;border-radius:24px;
+  background:inherit;z-index:-1;filter:blur(14px);opacity:.75;transition:.55s;
+}
+.mode-switch::after{
+  content:'';position:absolute;
+  top:4px;left:12%;right:12%;height:35%;
+  border-radius:14px;
+  background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(255,255,255,0));
+  pointer-events:none;
+  z-index:2;
+}
 .mode-switch:active{transform:scale(.94)}
-.mode-switch-inner{position:absolute;inset:0;display:grid;place-items:center;
-  transition:transform .6s cubic-bezier(.2,.9,.3,1.1)}
-.mode-switch.spin .mode-switch-inner{transform:rotate(360deg)}
 
-/* ═══════════════════════════════════════════════════════════════
-   NEW: CUSTOM IMAGE ICONS (replaces emojis)
-   ═══════════════════════════════════════════════════════════════ */
+/* THEME-AWARE VARIATIONS */
+:root[data-theme="light"] .mode-switch{
+  background:linear-gradient(145deg,#67e8f9,#06b6d4);
+  box-shadow:
+    0 10px 24px rgba(37,244,238,.45),
+    0 0 30px rgba(37,244,238,.25),
+    inset 0 -3px 6px rgba(0,0,0,.15),
+    inset 0 2px 2px rgba(255,255,255,.6);
+}
+:root[data-theme="light"] .mode-switch.bon{
+  background:linear-gradient(145deg,#fb7185,#e11d48);
+  box-shadow:
+    0 10px 24px rgba(254,44,85,.45),
+    0 0 30px rgba(254,44,85,.25),
+    inset 0 -3px 6px rgba(0,0,0,.15),
+    inset 0 2px 2px rgba(255,255,255,.6);
+}
+
+.mode-switch-inner{
+  position:absolute;inset:0;
+  display:grid;place-items:center;
+  transform-style:preserve-3d;
+  transition:transform .6s cubic-bezier(.2,.9,.3,1.1);
+}
+.mode-switch.spin .mode-switch-inner{transform:rotateY(360deg)}
+
+/* BIG 3D ICONS — FILL THE FRAME */
 .mode-icon{
   position:absolute;
-  width:34px;height:34px;
+  top:50%;left:50%;
+  width:46px;height:46px;
+  max-width:88%;max-height:88%;
   object-fit:contain;
-  transition:
-    opacity .35s ease,
-    transform .55s cubic-bezier(.2,.9,.3,1.4);
-  will-change:transform,opacity;
-  filter:drop-shadow(0 2px 6px rgba(0,0,0,.35));
+  transform-origin:center center;
   pointer-events:none;
   user-select:none;
   -webkit-user-drag:none;
+  backface-visibility:hidden;
+  will-change:transform,opacity,filter;
+  filter:
+    drop-shadow(0 1px 0 rgba(255,255,255,.55))
+    drop-shadow(0 2px 3px rgba(0,0,0,.55))
+    drop-shadow(0 5px 8px rgba(0,0,0,.5))
+    drop-shadow(0 12px 22px rgba(0,0,0,.35));
+  transition:
+    opacity .4s cubic-bezier(.2,.9,.3,1.1),
+    transform .65s cubic-bezier(.2,.9,.3,1.35),
+    filter .4s ease;
 }
+
 .mode-icon-wh{
-  opacity:1;transform:scale(1) rotate(0deg);
+  opacity:1;
+  transform:translate(-50%,-50%) perspective(200px)
+    rotateX(10deg) rotateY(-10deg) rotateZ(0deg)
+    scale(1.15) translateZ(8px);
 }
 .mode-switch.bon .mode-icon-wh{
-  opacity:0;transform:scale(.35) rotate(-180deg);
+  opacity:0;
+  transform:translate(-50%,-50%) perspective(200px)
+    rotateX(-95deg) rotateY(70deg) rotateZ(-180deg)
+    scale(.3);
 }
+
 .mode-icon-bon{
-  opacity:0;transform:scale(.35) rotate(180deg);
+  opacity:0;
+  transform:translate(-50%,-50%) perspective(200px)
+    rotateX(-95deg) rotateY(-70deg) rotateZ(180deg)
+    scale(.3);
 }
 .mode-switch.bon .mode-icon-bon{
-  opacity:1;transform:scale(1) rotate(0deg);
+  opacity:1;
+  transform:translate(-50%,-50%) perspective(200px)
+    rotateX(10deg) rotateY(10deg) rotateZ(0deg)
+    scale(1.15) translateZ(8px);
+}
+
+.mode-switch:not(.bon):hover .mode-icon-wh{
+  transform:translate(-50%,-50%) perspective(200px)
+    rotateX(18deg) rotateY(-18deg) scale(1.28) translateZ(14px);
+}
+.mode-switch.bon:hover .mode-icon-bon{
+  transform:translate(-50%,-50%) perspective(200px)
+    rotateX(18deg) rotateY(18deg) scale(1.28) translateZ(14px);
+}
+.mode-switch:active .mode-icon-wh,
+.mode-switch:active .mode-icon-bon{
+  transform:translate(-50%,-50%) perspective(200px)
+    rotateX(2deg) rotateY(0deg) scale(.95) translateZ(4px);
+}
+
+@keyframes iconFloat3D_WH{
+  0%,100%{transform:translate(-50%,-50%) perspective(200px)
+    rotateX(10deg) rotateY(-10deg) scale(1.15) translateZ(8px);}
+  50%    {transform:translate(-50%,-50%) perspective(200px)
+    rotateX(5deg) rotateY(-5deg) scale(1.15) translateZ(16px);}
+}
+@keyframes iconFloat3D_BON{
+  0%,100%{transform:translate(-50%,-50%) perspective(200px)
+    rotateX(10deg) rotateY(10deg) scale(1.15) translateZ(8px);}
+  50%    {transform:translate(-50%,-50%) perspective(200px)
+    rotateX(5deg) rotateY(5deg) scale(1.15) translateZ(16px);}
+}
+.mode-switch:not(.bon):not(:hover):not(.spin) .mode-icon-wh{
+  animation: iconFloat3D_WH 3.5s ease-in-out infinite;
+}
+.mode-switch.bon:not(:hover):not(.spin) .mode-icon-bon{
+  animation: iconFloat3D_BON 3.5s ease-in-out infinite;
 }
 
 .mode-ripple{position:absolute;inset:-6px;border-radius:24px;border:2px solid;opacity:0;
@@ -596,12 +691,10 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 92px 1fr;direction:rtl}
     <div class="nav-center">
       <button class="mode-switch wh" id="modeSwitchBtn" data-mode="warehouse" aria-label="Switch mode">
         <div class="mode-switch-inner">
-          <!-- ✅ Warehouse icon (custom image) -->
           <img class="mode-icon mode-icon-wh"
                src="https://i.ibb.co/671SFNbX/Gemini-Generated-Image-9labrq9labrq9lab-removebg-preview.png"
                alt="خروج مخزن"
                draggable="false">
-          <!-- ✅ Bon de Sortie icon (custom image) -->
           <img class="mode-icon mode-icon-bon"
                src="https://i.ibb.co/gbRhXZXW/Gemini-Generated-Image-xiyblvxiyblvxiyb-removebg-preview.png"
                alt="إذن خروج"
@@ -774,8 +867,6 @@ const I18N = {
     'mod.bon.subtitle':'خروج نهائي','mod.bon.tag':'خارجي',
     'mod.bon.hint':'الترخيص وتتبع البضاعة المغادرة.',
     'form.staff':'الموظف المستخرج *','form.staff.placeholder':'الاسم واللقب',
-    'form.guardOverride':'تسجيل باسم حارس آخر','form.guardOverrideName':'اسم الحارس البديل *',
-    'form.guardOverrideName.placeholder':'الاسم الكامل',
     'form.department':'القسم المستلم *','form.choose':'— اختر —',
     'form.po':'رقم أمر الشراء','form.po.optional':'اختياري',
     'form.destination':'جهة الوصول *','form.destination.placeholder':'مورد، ورشة، عميل…',
@@ -792,8 +883,8 @@ const I18N = {
     'form.signature.manual':'يدوي','form.signature.clear':'مسح',
     'form.submit':'✓ اعتماد البطاقة','form.submit.loading':'جارٍ الحفظ…',
     'form.reset':'إعادة','form.staff.required':'اسم الموظف مطلوب',
-    'form.guard.required':'اسم الحارس مطلوب','form.items.required':'أضف صنفاً',
-    'form.qty.required':'الكمية ناقصة','form.department.required':'القسم مطلوب',
+    'form.items.required':'أضف صنفاً','form.qty.required':'الكمية ناقصة',
+    'form.department.required':'القسم مطلوب',
     'form.destination.required':'جهة الوصول مطلوبة','form.reason.required':'السبب مطلوب',
     'form.noPhotos':'لا صور. المتابعة؟','form.maxPhotos':'الحد 5 صور',
     'form.saved':'تم الحفظ:','form.offline':'غير متصل — في الانتظار',
@@ -865,8 +956,6 @@ const I18N = {
     'mod.bon.subtitle':'Sortie définitive','mod.bon.tag':'Externe',
     'mod.bon.hint':'Autoriser la sortie définitive.',
     'form.staff':'Personnel *','form.staff.placeholder':'Nom prénom',
-    'form.guardOverride':'Autre agent','form.guardOverrideName':'Nom agent *',
-    'form.guardOverrideName.placeholder':'Nom complet',
     'form.department':'Département *','form.choose':'— Choisir —',
     'form.po':'Réf. BC','form.po.optional':'Optionnel',
     'form.destination':'Destination *','form.destination.placeholder':'Fournisseur…',
@@ -881,8 +970,8 @@ const I18N = {
     'form.signature.manual':'Manuscrite','form.signature.clear':'Effacer',
     'form.submit':'✓ Valider','form.submit.loading':'Enregistrement…',
     'form.reset':'Reset','form.staff.required':'Personnel requis',
-    'form.guard.required':'Agent requis','form.items.required':'Ajoutez un article',
-    'form.qty.required':'Qté manquante','form.department.required':'Département requis',
+    'form.items.required':'Ajoutez un article','form.qty.required':'Qté manquante',
+    'form.department.required':'Département requis',
     'form.destination.required':'Destination requise','form.reason.required':'Motif requis',
     'form.noPhotos':'Sans photos ?','form.maxPhotos':'Max 5',
     'form.saved':'Enregistré:','form.offline':'Hors ligne',
@@ -954,8 +1043,6 @@ const I18N = {
     'mod.bon.subtitle':'Permanent exit','mod.bon.tag':'External',
     'mod.bon.hint':'Authorize permanent exit.',
     'form.staff':'Staff *','form.staff.placeholder':'Full name',
-    'form.guardOverride':'Another agent','form.guardOverrideName':'Agent name *',
-    'form.guardOverrideName.placeholder':'Full name',
     'form.department':'Department *','form.choose':'— Choose —',
     'form.po':'PO ref.','form.po.optional':'Optional',
     'form.destination':'Destination *','form.destination.placeholder':'Supplier…',
@@ -970,8 +1057,8 @@ const I18N = {
     'form.signature.manual':'Handwritten','form.signature.clear':'Clear',
     'form.submit':'✓ Validate','form.submit.loading':'Saving…',
     'form.reset':'Reset','form.staff.required':'Staff required',
-    'form.guard.required':'Agent required','form.items.required':'Add an item',
-    'form.qty.required':'Missing qty','form.department.required':'Department required',
+    'form.items.required':'Add an item','form.qty.required':'Missing qty',
+    'form.department.required':'Department required',
     'form.destination.required':'Destination required','form.reason.required':'Reason required',
     'form.noPhotos':'No photos. Continue?','form.maxPhotos':'Max 5',
     'form.saved':'Saved:','form.offline':'Offline — queued',
@@ -1027,12 +1114,12 @@ let currentLang = localStorage.getItem('ds.lang') || 'ar';
 const t = k => (I18N[currentLang] && I18N[currentLang][k]) || I18N.ar[k] || k;
 
 /* CONSTANTS */
-const STORE_KEY = 'ds.transactions.v15';
-const QUEUE_KEY = 'ds.queue.v15';
-const COUNTER_KEY = 'ds.counters.v15';
-const SET_KEY = 'ds.settings.v15';
-const AVATARS_KEY = 'ds.avatars.v15';
-const LAST_MODE_KEY = 'ds.lastMode.v15';
+const STORE_KEY = 'ds.transactions.v16';
+const QUEUE_KEY = 'ds.queue.v16';
+const COUNTER_KEY = 'ds.counters.v16';
+const SET_KEY = 'ds.settings.v16';
+const AVATARS_KEY = 'ds.avatars.v16';
+const LAST_MODE_KEY = 'ds.lastMode.v16';
 const MAX_PHOTOS = 5;
 const RETENTION_MS = 48 * 3600 * 1000;
 const MODULE_DEF = {
@@ -1118,7 +1205,7 @@ const setAvatar = (dataUrl, key) => {
 };
 
 /* INDEXEDDB */
-const DB_NAME='ds.archive.v15', DB_VERSION=1;
+const DB_NAME='ds.archive.v16', DB_VERSION=1;
 let _db=null;
 function openArchive(){
   if(_db) return Promise.resolve(_db);
@@ -1413,14 +1500,6 @@ function formHtml(key){
       <p class="tt-hint">${t('mod.'+key+'.hint')}</p>
       <label class="tt-label"><span>${t('form.staff')}</span>
         <input name="staff" required placeholder="${t('form.staff.placeholder')}" list="dl-staff"></label>
-      <label class="tt-check">
-        <input type="checkbox" data-guard-override>
-        <span>${t('form.guardOverride')}</span>
-      </label>
-      <label class="tt-label" data-guard-field style="display:none">
-        <span>${t('form.guardOverrideName')}</span>
-        <input name="guardOverride" placeholder="${t('form.guardOverrideName.placeholder')}">
-      </label>
       ${moduleExtraHtml(key)}
       <label class="tt-label" style="margin-bottom:0">
         <span>${t('form.notes')}</span>
@@ -1498,12 +1577,6 @@ function renderForms(){
       const sc = e.target.closest('[data-sig-clear]');
       if(sc) return clearSignature(sc.dataset.sigClear);
     });
-    host.addEventListener('change', e => {
-      if(e.target.matches('[data-guard-override]')){
-        const f = host.querySelector('[data-guard-field]');
-        if(f) f.style.display = e.target.checked ? 'flex' : 'none';
-      }
-    });
     host.addEventListener('submit', e => { e.preventDefault(); handleSubmit(key); });
     host.addEventListener('reset', ()=>{
       setTimeout(()=>{
@@ -1515,10 +1588,6 @@ function renderForms(){
         const it = document.getElementById('items-'+key);
         if(it) it.innerHTML = '';
         addItemRow(key);
-        const gc = host.querySelector('[data-guard-override]');
-        if(gc) gc.checked = false;
-        const gf = host.querySelector('[data-guard-field]');
-        if(gf) gf.style.display = 'none';
       },0);
     });
   });
@@ -1874,7 +1943,7 @@ async function buildPdfBlob(tx, cardDataUrl){
 }
 function buildJsonBlob(tx){
   return new Blob([JSON.stringify({
-    schema:'digitalstock.exit.v8',
+    schema:'digitalstock.exit.v9',
     exportedAt:new Date().toISOString(),
     reference:tx.ref, module:tx.module,
     hotel:tx.hotel||settings.hotel,
@@ -2013,13 +2082,8 @@ async function handleSubmit(key){
   const fd = new FormData(form);
   const staff = (fd.get('staff')||'').trim();
   if(!staff){ toast(t('form.staff.required')); form.staff?.focus(); return; }
-  const overrideCb = form.querySelector('[data-guard-override]');
-  const guardOverride = (fd.get('guardOverride')||'').trim();
-  let effectiveGuard = currentAgent;
-  if(overrideCb && overrideCb.checked){
-    if(!guardOverride) return toast(t('form.guard.required'));
-    effectiveGuard = guardOverride;
-  }
+  // Each guard is responsible for their own actions — no override
+  const effectiveGuard = currentAgent;
   const items = $$('.tt-item-row', form).map(r=>({
     name: r.querySelector('.i-name').value.trim(),
     qty: r.querySelector('.i-qty').value.trim(),
@@ -2797,7 +2861,7 @@ function performModeSwitch(){
   currentModule = nextMode;
   try { localStorage.setItem(LAST_MODE_KEY, currentModule); } catch {}
 
-  // Swap views
+  // Swap views — NO FOCUS, NO KEYBOARD
   setTimeout(() => {
     $$('.view').forEach(v => {
       v.classList.remove('active', 'mode-enter');
@@ -2811,13 +2875,6 @@ function performModeSwitch(){
     $$('.nav-btn').forEach(b => b.classList.remove('active'));
     updateModeSwitchUI();
     window.scrollTo({top:0, behavior:'smooth'});
-    setTimeout(() => {
-      const form = document.getElementById('form-' + currentModule);
-      if(form){
-        const s = form.querySelector('[name="staff"]');
-        if(s) s.focus({preventScroll:true});
-      }
-    }, 400);
     toast((goingToBon ? '🚚 ' : '🏭 ') + t('mode.switched') + ' ' + (goingToBon ? t('mode.bon') : t('mode.warehouse')), 1600);
   }, 300);
 
@@ -2987,7 +3044,7 @@ function ensureUI(){
   initAuth();
   updateNetStatus();
   setTimeout(()=>document.getElementById('loginEmail')?.focus(), 300);
-  console.log('%c Digital Stock v15 — Custom Icons from user images ', 'background:linear-gradient(90deg,#25F4EE,#FE2C55);color:#000;padding:4px 10px;border-radius:8px;font-weight:900;');
+  console.log('%c Digital Stock v16 — Final ', 'background:linear-gradient(90deg,#25F4EE,#FE2C55);color:#000;padding:4px 10px;border-radius:8px;font-weight:900;');
 })();
 </script>
 </body>
