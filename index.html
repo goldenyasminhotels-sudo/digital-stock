@@ -171,7 +171,7 @@ html[dir="rtl"] .tt-label select{background-position:left 14px center}
   .tt-items-head,.tt-item-row{grid-template-columns:1fr 58px 72px 32px;gap:5px}
   .tt-item-row .tt-input{padding:9px 8px;font-size:12.5px}
 }
-.tt-photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px}
+.tt-photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px}
 .tt-photo-grid:empty{display:none}
 .tt-photo-grid:not(:empty){margin-bottom:12px}
 .tt-thumb{position:relative;aspect-ratio:1;border-radius:14px;overflow:hidden;
@@ -182,6 +182,10 @@ html[dir="rtl"] .tt-label select{background-position:left 14px center}
   border-radius:50%;border:none;background:rgba(0,0,0,.7);color:#fff;
   font-size:12px;cursor:pointer;display:grid;place-items:center;padding:0;backdrop-filter:blur(8px)}
 .tt-thumb button:hover{background:var(--tt-pink)}
+.tt-thumb .idx{position:absolute;bottom:6px;inset-inline-start:6px;
+  background:rgba(0,0,0,.65);color:#fff;font-family:'Inter',sans-serif;
+  font-size:10px;font-weight:800;padding:2px 6px;border-radius:6px;
+  backdrop-filter:blur(8px);pointer-events:none}
 
 .tt-sig-preview{position:relative;background:#fff;
   border:1.5px solid var(--line-2);border-radius:14px;
@@ -509,7 +513,7 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 92px 1fr;direction:rtl}
 .del-preview > div{display:flex;gap:6px}
 .del-preview b{color:var(--txt);font-weight:800;min-width:60px}
 .del-preview .del-ref{font-family:var(--font-en);font-weight:900;
-  background:linear-gradient(135deg, var(--tt-cyan), var(--tt-pink));
+  background:linear-gradient(135deg, #E5A823, #0e8f6f);
   -webkit-background-clip:text;background-clip:text;color:transparent}
 .del-backup{display:flex;align-items:flex-start;gap:12px;
   padding:14px;margin-bottom:4px;background:rgba(37,244,238,.06);
@@ -790,7 +794,7 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 92px 1fr;direction:rtl}
 </div>
 
 <input type="file" id="avatarInput" accept="image/*" hidden>
-<input type="file" id="fileInput" accept="image/*" hidden>
+<input type="file" id="fileInput" accept="image/*" hidden multiple>
 <input type="file" id="importInput" accept="application/json" hidden>
 <div id="toast"></div>
 
@@ -824,6 +828,25 @@ enableIndexedDbPersistence(db).catch(() => {});
 setPersistence(auth, browserLocalPersistence).catch(console.error);
 
 const ADMIN_UID = 'kszZYwapqMYc8XvY2yOYGmO3c6D3';
+
+/* ═══════════════════════════════════════════════════════════════
+   CARD THEME — GOLD & OLIVE (extracted from Les Oliviers Palace)
+   ═══════════════════════════════════════════════════════════════ */
+const CARD_THEME = {
+  gold:        '#E5A823',
+  goldLight:   '#F2C94C',
+  goldDark:    '#B8860B',
+  goldPale:    '#FDF6E3',
+  olive:       '#0e8f6f',
+  oliveDark:   '#086349',
+  oliveLight:  '#3DAD88',
+  olivePale:   '#E8F4EF',
+  cream:       '#FDFBF5',
+  ink:         '#1a1a1a',
+  inkSoft:     '#4a4a4a',
+  line:        '#e5e0d0',
+  muted:       '#8a7f6b'
+};
 
 const I18N = {
   ar: {
@@ -863,18 +886,20 @@ const I18N = {
     'form.items':'الأصناف','form.items.detail':'تفاصيل',
     'form.items.name':'التسمية','form.items.qty':'الكمية','form.items.unit':'الوحدة',
     'form.items.add':'+ إضافة صنف','form.photos':'الصور التوثيقية',
-    'form.photos.hint':'حتى 5 صور. watermark تلقائي.',
-    'form.photos.camera':'📷 كاميرا','form.photos.gallery':'🖼 معرض',
+    'form.photos.hint':'حتى 10 صور. اختيار جماعي دفعة واحدة متاح. watermark تلقائي.',
+    'form.photos.camera':'📷 كاميرا','form.photos.gallery':'🖼 معرض (متعدد)',
     'form.signature':'التوقيع','form.signature.hint':'اضغط لفتح لوحة التوقيع الكاملة',
     'form.signature.tap':'اضغط للتوقيع','form.signature.signed':'✓ موقّع',
+    'form.signature.manual':'يدوي',
     'form.submit':'✓ اعتماد البطاقة','form.submit.loading':'جارٍ الحفظ…',
     'form.reset':'إعادة','form.staff.required':'اسم الموظف مطلوب',
     'form.items.required':'أضف صنفاً','form.qty.required':'الكمية ناقصة',
     'form.department.required':'القسم مطلوب',
     'form.destination.required':'جهة الوصول مطلوبة','form.reason.required':'السبب مطلوب',
-    'form.noPhotos':'لا صور. المتابعة؟','form.maxPhotos':'الحد 5 صور',
+    'form.noPhotos':'لا صور. المتابعة؟','form.maxPhotos':'الحد 10 صور',
     'form.saved':'تم الحفظ:','form.saved.local':'تم الحفظ محلياً:',
     'form.offline':'غير متصل — في الانتظار',
+    'form.photos.added':'تمت إضافة',
     'history.title':'السجل','history.search':'🔍 بحث…',
     'history.filter.all':'الكل','history.filter.internal':'داخلي','history.filter.external':'خارجي',
     'history.export':'تصدير','history.import':'استيراد',
@@ -890,7 +915,7 @@ const I18N = {
     'card.noActive':'لا بطاقة','card.generating':'جاري التوليد…','card.genError':'تعذّر.',
     'archive.running':'أرشفة…','archive.compiling':'PDF+JSON',
     'archive.cloud':'مؤرشف سحابياً','archive.local':'مؤرشف محلياً',
-    'archive.autoPurge':'حذف','archive.hours':'س',
+    'archive.autoPurge':'حذف','archive.hours':'س','archive.days':' أيام',
     'archive.partial':'جزئي','archive.failed':'فشل','archive.failedHint':'حاول لاحقاً',
     'settings.title':'الإعدادات','settings.hotel':'اسم المنشأة',
     'settings.phone':'هاتف المشرف','settings.firebase':'Firebase (JSON)',
@@ -907,6 +932,7 @@ const I18N = {
     'profile.settings':'الإعدادات','profile.logout':'خروج',
     'profile.changeAvatar':'تغيير الصورة','profile.avatarHint':'اضغط على الصورة لتغييرها',
     'profile.avatarUpdated':'تم تحديث الصورة',
+    'profile.agentCode':'كود العون',
     'units.u':'حبة','units.kg':'كغ','units.g':'غرام','units.l':'لتر','units.cl':'سل',
     'units.carton':'كرتون','units.box':'صندوق','units.bag':'كيس','units.palette':'طبلة',
     'dev.title':'وضع المطور','dev.subtitle':'رؤية شاملة لكل الحسابات والمعاملات',
@@ -956,18 +982,21 @@ const I18N = {
     'form.notes':'Observations','form.notes.placeholder':'Remarques…',
     'form.items':'Articles','form.items.detail':'Détail',
     'form.items.name':'Désignation','form.items.qty':'Qté','form.items.unit':'Unité',
-    'form.items.add':'+ Ajouter','form.photos':'Photos','form.photos.hint':'Jusqu\'à 5 photos.',
-    'form.photos.camera':'📷 Caméra','form.photos.gallery':'🖼 Galerie',
+    'form.items.add':'+ Ajouter','form.photos':'Photos',
+    'form.photos.hint':'Jusqu\'à 10 photos. Sélection multiple disponible.',
+    'form.photos.camera':'📷 Caméra','form.photos.gallery':'🖼 Galerie (multi)',
     'form.signature':'Signature','form.signature.hint':'Touchez pour ouvrir la signature',
     'form.signature.tap':'Toucher pour signer','form.signature.signed':'✓ Signé',
+    'form.signature.manual':'Manuel',
     'form.submit':'✓ Valider','form.submit.loading':'Enregistrement…',
     'form.reset':'Reset','form.staff.required':'Personnel requis',
     'form.items.required':'Ajoutez un article','form.qty.required':'Qté manquante',
     'form.department.required':'Département requis',
     'form.destination.required':'Destination requise','form.reason.required':'Motif requis',
-    'form.noPhotos':'Sans photos ?','form.maxPhotos':'Max 5',
+    'form.noPhotos':'Sans photos ?','form.maxPhotos':'Max 10',
     'form.saved':'Enregistré:','form.saved.local':'Enregistré localement:',
     'form.offline':'Hors ligne',
+    'form.photos.added':'Ajouté',
     'history.title':'Historique','history.search':'🔍 Rechercher…',
     'history.filter.all':'Tout','history.filter.internal':'Interne','history.filter.external':'Externe',
     'history.export':'Exporter','history.import':'Importer',
@@ -983,7 +1012,7 @@ const I18N = {
     'card.noActive':'Aucune','card.generating':'Génération…','card.genError':'Erreur.',
     'archive.running':'Archivage…','archive.compiling':'PDF+JSON',
     'archive.cloud':'Archivé cloud','archive.local':'Archivé local',
-    'archive.autoPurge':'Purge','archive.hours':'h',
+    'archive.autoPurge':'Purge','archive.hours':'h','archive.days':'j',
     'archive.partial':'Partiel','archive.failed':'Échec','archive.failedHint':'Réessayez',
     'settings.title':'Paramètres','settings.hotel':'Établissement',
     'settings.phone':'WhatsApp superviseur','settings.firebase':'Firebase (JSON)',
@@ -1000,6 +1029,7 @@ const I18N = {
     'profile.settings':'Paramètres','profile.logout':'Déconnexion',
     'profile.changeAvatar':'Changer la photo','profile.avatarHint':'Touchez la photo pour la changer',
     'profile.avatarUpdated':'Photo mise à jour',
+    'profile.agentCode':'Code agent',
     'units.u':'U','units.kg':'Kg','units.g':'g','units.l':'L','units.cl':'cl',
     'units.carton':'Carton','units.box':'Caisse','units.bag':'Sac','units.palette':'Palette',
     'dev.title':'Mode développeur','dev.subtitle':'Vue complète de tous les comptes',
@@ -1049,18 +1079,21 @@ const I18N = {
     'form.notes':'Notes','form.notes.placeholder':'Remarks…',
     'form.items':'Items','form.items.detail':'Details',
     'form.items.name':'Name','form.items.qty':'Qty','form.items.unit':'Unit',
-    'form.items.add':'+ Add item','form.photos':'Photos','form.photos.hint':'Up to 5 photos.',
-    'form.photos.camera':'📷 Camera','form.photos.gallery':'🖼 Gallery',
+    'form.items.add':'+ Add item','form.photos':'Photos',
+    'form.photos.hint':'Up to 10 photos. Multi-select available.',
+    'form.photos.camera':'📷 Camera','form.photos.gallery':'🖼 Gallery (multi)',
     'form.signature':'Signature','form.signature.hint':'Tap to open signature pad',
     'form.signature.tap':'Tap to sign','form.signature.signed':'✓ Signed',
+    'form.signature.manual':'Manual',
     'form.submit':'✓ Validate','form.submit.loading':'Saving…',
     'form.reset':'Reset','form.staff.required':'Staff required',
     'form.items.required':'Add an item','form.qty.required':'Missing qty',
     'form.department.required':'Department required',
     'form.destination.required':'Destination required','form.reason.required':'Reason required',
-    'form.noPhotos':'No photos. Continue?','form.maxPhotos':'Max 5',
+    'form.noPhotos':'No photos. Continue?','form.maxPhotos':'Max 10',
     'form.saved':'Saved:','form.saved.local':'Saved locally:',
     'form.offline':'Offline — queued',
+    'form.photos.added':'Added',
     'history.title':'History','history.search':'🔍 Search…',
     'history.filter.all':'All','history.filter.internal':'Internal','history.filter.external':'External',
     'history.export':'Export','history.import':'Import',
@@ -1076,7 +1109,7 @@ const I18N = {
     'card.noActive':'None','card.generating':'Generating…','card.genError':'Error.',
     'archive.running':'Archiving…','archive.compiling':'PDF+JSON',
     'archive.cloud':'Archived cloud','archive.local':'Archived local',
-    'archive.autoPurge':'Purge','archive.hours':'h',
+    'archive.autoPurge':'Purge','archive.hours':'h','archive.days':'d',
     'archive.partial':'Partial','archive.failed':'Failed','archive.failedHint':'Retry',
     'settings.title':'Settings','settings.hotel':'Establishment',
     'settings.phone':'Supervisor WhatsApp','settings.firebase':'Firebase (JSON)',
@@ -1093,6 +1126,7 @@ const I18N = {
     'profile.settings':'Settings','profile.logout':'Sign out',
     'profile.changeAvatar':'Change photo','profile.avatarHint':'Tap photo to change',
     'profile.avatarUpdated':'Photo updated',
+    'profile.agentCode':'Agent code',
     'units.u':'U','units.kg':'Kg','units.g':'g','units.l':'L','units.cl':'cl',
     'units.carton':'Carton','units.box':'Box','units.bag':'Bag','units.palette':'Pallet',
     'dev.title':'Developer mode','dev.subtitle':'Full view of all accounts',
@@ -1113,17 +1147,18 @@ let currentLang = localStorage.getItem('ds.lang') || 'ar';
 const t = k => (I18N[currentLang] && I18N[currentLang][k]) || I18N.ar[k] || k;
 
 /* CONSTANTS */
-const STORE_KEY = 'ds.transactions.v19';
-const QUEUE_KEY = 'ds.queue.v19';
-const COUNTER_KEY = 'ds.counters.v19';
-const SET_KEY = 'ds.settings.v19';
-const AVATARS_KEY = 'ds.avatars.v19';
-const LAST_MODE_KEY = 'ds.lastMode.v19';
-const MAX_PHOTOS = 5;
-const RETENTION_MS = 48 * 3600 * 1000;
+const STORE_KEY = 'ds.transactions.v20';
+const QUEUE_KEY = 'ds.queue.v20';
+const COUNTER_KEY = 'ds.counters.v20';
+const SET_KEY = 'ds.settings.v20';
+const AVATARS_KEY = 'ds.avatars.v20';
+const AGENT_CODES_KEY = 'ds.agentCodes.v20';
+const LAST_MODE_KEY = 'ds.lastMode.v20';
+const MAX_PHOTOS = 10;
+const RETENTION_MS = 7 * 24 * 3600 * 1000;   /* 7 days */
 const MODULE_DEF = {
-  warehouse: { key:'warehouse', accent:'#25F4EE', prefix:'WER' },
-  bon:       { key:'bon',       accent:'#FE2C55', prefix:'BDS' }
+  warehouse: { key:'warehouse', accent:'#0e8f6f', prefix:'WER' },
+  bon:       { key:'bon',       accent:'#E5A823', prefix:'BDS' }
 };
 const UNITS_KEYS = ['units.u','units.kg','units.g','units.l','units.cl',
                     'units.carton','units.box','units.bag','units.palette'];
@@ -1136,6 +1171,7 @@ let activeCardUrl = null;
 let currentAgent = '';
 let currentEmail = '';
 let currentUid = '';
+let currentAgentCode = 'XXXX';
 let historyFilter = 'all';
 let historyQuery = '';
 let firebaseReady = false;
@@ -1162,11 +1198,6 @@ function toast(msg, ms=2800){
   clearTimeout(toast._t);
   toast._t = setTimeout(()=>el.classList.remove('show'), ms);
 }
-const shade = (hex,pct) => {
-  const n = parseInt(hex.slice(1),16);
-  const cl = v => Math.max(0,Math.min(255,Math.round(v)));
-  return `rgb(${cl(((n>>16)&255)*(1+pct/100))},${cl(((n>>8)&255)*(1+pct/100))},${cl((n&255)*(1+pct/100))})`;
-};
 const dataURLtoBlob = dataURL => {
   const [h,b] = dataURL.split(',');
   const mime = h.match(/:(.*?);/)[1];
@@ -1175,6 +1206,20 @@ const dataURLtoBlob = dataURL => {
   for (let i=0;i<bin.length;i++) arr[i] = bin.charCodeAt(i);
   return new Blob([arr],{type:mime});
 };
+
+/* ═══════════════════════════════════════════════════════════════
+   AGENT CODE — stable 4-char code derived from Firebase UID
+   ═══════════════════════════════════════════════════════════════ */
+function generateAgentCode(uid){
+  if(!uid) return 'XXXX';
+  const codes = JSON.parse(localStorage.getItem(AGENT_CODES_KEY) || '{}');
+  if(codes[uid]) return codes[uid];
+  const raw = uid.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+  const code = (raw.slice(0, 4) || 'XXXX').padEnd(4, '0');
+  codes[uid] = code;
+  localStorage.setItem(AGENT_CODES_KEY, JSON.stringify(codes));
+  return code;
+}
 
 /* STORAGE */
 const loadAll = () => { try { return JSON.parse(localStorage.getItem(STORE_KEY))||[]; } catch { return []; } };
@@ -1205,7 +1250,7 @@ const setAvatar = (dataUrl, key) => {
 };
 
 /* INDEXEDDB */
-const DB_NAME='ds.archive.v19', DB_VERSION=1;
+const DB_NAME='ds.archive.v20', DB_VERSION=1;
 let _db=null;
 function openArchive(){
   if(_db) return Promise.resolve(_db);
@@ -1286,33 +1331,29 @@ const idbSizeEstimate = async () => {
   return '—';
 };
 
-/* COUNTERS */
-const localNextSeq = (prefix, dateKey) => {
+/* COUNTERS — per agent, per day, per module */
+const localNextSeq = (counterKey) => {
   const c = JSON.parse(localStorage.getItem(COUNTER_KEY)||'{}');
-  const id = `${prefix}_${dateKey}`;
-  const next = (c[id]||0)+1;
-  c[id]=next;
+  const next = (c[counterKey]||0)+1;
+  c[counterKey]=next;
   localStorage.setItem(COUNTER_KEY, JSON.stringify(c));
   return next;
 };
-const formatRef = (prefix,dateKey,seq) => `${prefix}-${dateKey}-${String(seq).padStart(4,'0')}`;
 
-/* ═══════════════════════════════════════════════════════════════
-   COMMIT TRANSACTION — v19 FIXED
-   ═══════════════════════════════════════════════════════════════
-   - Tries Firebase FIRST but wraps in try/catch
-   - On ANY Firebase error → falls back to LOCAL silently
-   - Local fallback ALWAYS works
-   - Returns { id, ref, source: 'firebase' | 'local' }
-   ═══════════════════════════════════════════════════════════════ */
+/* Reference format: PREFIX-AGENTCODE-YYYYMMDD-NNNN */
+const formatRef = (prefix, agentCode, dateKey, seq) =>
+  `${prefix}-${agentCode}-${dateKey}-${String(seq).padStart(4,'0')}`;
+
+/* COMMIT TRANSACTION — per-agent counter */
 async function commitTransaction(payload){
   const prefix = MODULE_DEF[payload.module].prefix;
   const dateKey = new Date().toISOString().slice(0,10).replace(/-/g,'');
+  const agentCode = payload.guardCode || currentAgentCode || 'XXXX';
+  const counterId = `${prefix}_${agentCode}_${dateKey}`;
 
-  // ---- Try Firebase first (only if online + configured) ----
   if (firebaseReady && navigator.onLine){
     try {
-      const counterRef = doc(db,'counters',`${prefix}_${dateKey}`);
+      const counterRef = doc(db,'counters',counterId);
       const txRef = doc(collection(db,'transactions'));
       let assignedRef = null;
       await runTransaction(db, async trx => {
@@ -1320,12 +1361,12 @@ async function commitTransaction(payload){
         let nextSeq;
         if(!snap.exists()){
           nextSeq = 1;
-          trx.set(counterRef,{prefix,dateKey,seq:1,updatedAt:serverTimestamp()});
+          trx.set(counterRef,{prefix,agentCode,dateKey,seq:1,updatedAt:serverTimestamp()});
         } else {
           nextSeq = (snap.data().seq||0)+1;
           trx.update(counterRef,{seq:nextSeq,updatedAt:serverTimestamp()});
         }
-        assignedRef = formatRef(prefix,dateKey,nextSeq);
+        assignedRef = formatRef(prefix, agentCode, dateKey, nextSeq);
         trx.set(txRef,{
           ...payload, ref:assignedRef,
           createdAt:serverTimestamp(),
@@ -1337,23 +1378,24 @@ async function commitTransaction(payload){
       return { id: txRef.id, ref: assignedRef, source: 'firebase' };
     } catch(e) {
       console.warn('[Firebase commit failed → falling back to LOCAL]:', e);
-      // Fall through to local fallback below
     }
   }
 
-  // ---- Local fallback (ALWAYS works) ----
-  const seq = localNextSeq(prefix,dateKey);
-  const ref = formatRef(prefix,dateKey,seq);
+  // Local fallback
+  const seq = localNextSeq(counterId);
+  const ref = formatRef(prefix, agentCode, dateKey, seq);
   const id = (crypto.randomUUID && crypto.randomUUID()) || String(Date.now());
   return { id, ref, source: 'local' };
 }
 
-/* CLOUDINARY */
+/* CLOUDINARY — smart transformations */
 const CLOUDINARY_UPLOAD_PRESET = "digital_stock";
 const CLOUDINARY_CLOUD_NAME = "w1gyqrdx";
 const CLOUDINARY_API_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
+/* Smart transformation: limit max dim to 1600, auto quality, auto format */
+const CLOUDINARY_TRANSFORM = "c_limit,w_1600,h_1600,q_auto:good,f_auto";
 
-function compressImage(file, maxDim=1100, quality=0.78){
+function compressImage(file, maxDim=1600, quality=0.82){
   return new Promise((res,rej)=>{
     const img = new Image();
     const url = URL.createObjectURL(file);
@@ -1392,6 +1434,8 @@ async function savePhotosCloudinary(txId, items){
       formData.append("file", items[i].blob);
       formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
       formData.append("folder", `digital_stock/${dateKey}/${txId}`);
+      /* Smart size + quality + format optimization via Cloudinary */
+      formData.append("transformation", CLOUDINARY_TRANSFORM);
       const response = await fetch(CLOUDINARY_API_URL, { method: "POST", body: formData });
       if (!response.ok) throw new Error('Cloudinary HTTP ' + response.status);
       const data = await response.json();
@@ -1857,16 +1901,33 @@ function removeItemRow(btn){
 function openPicker(key, useCamera){
   if(drafts[key].length >= MAX_PHOTOS) return toast(t('form.maxPhotos'));
   const input = document.getElementById('fileInput');
-  if(useCamera) input.setAttribute('capture','environment');
-  else input.removeAttribute('capture');
+  if(useCamera){
+    input.setAttribute('capture','environment');
+    input.removeAttribute('multiple');
+  } else {
+    input.removeAttribute('capture');
+    input.setAttribute('multiple','');
+  }
   input.value = '';
   input.onchange = async ()=>{
     const files = [...(input.files||[])];
+    let added = 0;
     for(const f of files){
-      if(drafts[key].length >= MAX_PHOTOS){ toast(t('form.maxPhotos')); break; }
-      try { const blob = await compressImage(f); drafts[key].push({blob, url:URL.createObjectURL(blob), size:blob.size}); } catch {}
+      if(drafts[key].length >= MAX_PHOTOS){
+        if(added > 0) toast(`${added} / ${files.length} ${t('form.photos.added')}`);
+        toast(t('form.maxPhotos'));
+        break;
+      }
+      try {
+        const blob = await compressImage(f);
+        drafts[key].push({blob, url:URL.createObjectURL(blob), size:blob.size});
+        added++;
+      } catch(e){ console.warn('compress error', e); }
     }
     renderPhotos(key);
+    if(added > 1 && files.length === added){
+      toast(`${added} ✓`);
+    }
   };
   input.click();
 }
@@ -1876,6 +1937,7 @@ function renderPhotos(key){
   grid.innerHTML = drafts[key].map((p,i)=>`
     <div class="tt-thumb">
       <img src="${p.url}" alt="photo ${i+1}">
+      <span class="idx">${i+1}</span>
       <button type="button" data-rm-photo="${i}">✕</button>
     </div>`).join('');
   const pc = document.getElementById('pc-'+key);
@@ -1897,7 +1959,11 @@ function refreshDatalists(){
   });
 }
 
-/* CARD GENERATION */
+/* ═══════════════════════════════════════════════════════════════
+   CARD GENERATION — v21 GOLD & OLIVE ELEGANT DESIGN (10 photos + signature)
+   ═══════════════════════════════════════════════════════════════ */
+const CT = CARD_THEME;
+
 const rr = (ctx,x,y,w,h,r) => {
   r = Math.min(r,w/2,h/2);
   ctx.beginPath();
@@ -1930,20 +1996,79 @@ function wrapText(ctx, text, maxW){
   return lines.length ? lines : [''];
 }
 
+/* Elegant section title with olive bar + gold dot + optional icon */
+function drawSectionTitle(ctx, x, y, width, rtl, text){
+  const barX = rtl ? x + width - 6 : x;
+  const labelX = rtl ? x + width - 26 : x + 26;
+
+  const grad = ctx.createLinearGradient(0, y - 8, 0, y + 30);
+  grad.addColorStop(0, CT.olive);
+  grad.addColorStop(1, CT.oliveLight);
+  ctx.fillStyle = grad;
+  rr(ctx, barX, y - 8, 6, 38, 3);
+  ctx.fill();
+
+  ctx.textAlign = rtl ? 'right' : 'left';
+  ctx.fillStyle = CT.oliveDark;
+  const F = (w,s)=>`${w} ${s}px "Cairo", -apple-system, Roboto, sans-serif`;
+  ctx.font = F(800, 27);
+  ctx.fillText(text, labelX, y + 22);
+
+  const underlineY = y + 34;
+  const underlineW = Math.min(70, ctx.measureText(text).width + 10);
+  const underX = rtl ? x + width - 26 - underlineW : x + 26;
+  ctx.fillStyle = CT.gold;
+  rr(ctx, underX, underlineY, underlineW, 3, 2);
+  ctx.fill();
+}
+
+/* Elegant info box with olive border + gold corner accents */
+function drawInfoBox(ctx, x, y, w, h, label, value, rtl){
+  ctx.fillStyle = CT.cream;
+  rr(ctx, x, y, w, h, 14);
+  ctx.fill();
+
+  ctx.strokeStyle = CT.olive;
+  ctx.lineWidth = 1.5;
+  rr(ctx, x, y, w, h, 14);
+  ctx.stroke();
+
+  const barX = rtl ? x + w - 5 : x;
+  ctx.fillStyle = CT.gold;
+  rr(ctx, barX, y + 14, 5, h - 28, 3);
+  ctx.fill();
+
+  ctx.textAlign = rtl ? 'right' : 'left';
+  ctx.fillStyle = CT.goldDark;
+  const F = (w,s)=>`${w} ${s}px "Cairo", -apple-system, Roboto, sans-serif`;
+  ctx.font = F(700, 17);
+  const labelX = rtl ? x + w - 22 : x + 22;
+  ctx.fillText(label.toUpperCase(), labelX, y + 34);
+
+  ctx.fillStyle = CT.ink;
+  ctx.font = F(700, 28);
+  const lines = wrapText(ctx, value || '—', w - 44);
+  ctx.fillText(lines[0] || '—', labelX, y + 72);
+  if(lines[1]){
+    ctx.fillStyle = CT.inkSoft;
+    ctx.font = F(600, 22);
+    ctx.fillText(lines[1], labelX, y + 96);
+  }
+}
+
 async function generateCard(tx){
   const W = 1080, PAD = 56, CW = W - PAD * 2;
-  const accent = MODULE_DEF[tx.module].accent;
-  const accentDark = shade(accent, -22);
   const rtl = currentLang === 'ar';
   const F = (w,s)=>`${w} ${s}px "Cairo", -apple-system, Roboto, "Helvetica Neue", sans-serif`;
   const alignText = rtl ? 'right' : 'left';
   const alignX = rtl ? W - PAD : PAD;
   const dirInv = rtl ? 1 : -1;
 
+  /* Pre-load photos (up to MAX_PHOTOS) and signature in parallel */
   const photoImgs = [];
   if(tx.photos && tx.photos.length){
     const photoUrls = await Promise.all(
-      tx.photos.slice(0, 6).map(ref => photoRefToURL(ref))
+      tx.photos.slice(0, MAX_PHOTOS).map(ref => photoRefToURL(ref))
     );
     const loaded = await Promise.all(
       photoUrls.map(url => url ? safeLoadImg(url) : Promise.resolve(null))
@@ -1954,119 +2079,116 @@ async function generateCard(tx){
   let sigImg = null;
   if(tx.guardSignature){
     sigImg = await safeLoadImg(tx.guardSignature);
+    if(!sigImg) console.warn('[Card] guardSignature failed to load');
+  }
+  let staffSigImg = null;
+  if(tx.staffSignature){
+    staffSigImg = await safeLoadImg(tx.staffSignature);
   }
 
+  /* Canvas */
   const cv = document.createElement('canvas');
   cv.width = W;
-  cv.height = 6000;
+  cv.height = 7200;
   const ctx = cv.getContext('2d', { alpha: false });
   ctx.textBaseline = 'alphabetic';
   ctx.direction = rtl ? 'rtl' : 'ltr';
-  ctx.fillStyle = '#ffffff';
+  ctx.fillStyle = CT.cream;
   ctx.fillRect(0, 0, W, cv.height);
 
   let y = 0;
 
-  const HEAD = 220;
+  /* ══════════════ HEADER (Olive → Gold gradient) ══════════════ */
+  const HEAD = 240;
   const grad = ctx.createLinearGradient(0, 0, W, HEAD);
-  grad.addColorStop(0, accent);
-  grad.addColorStop(1, accentDark);
+  grad.addColorStop(0, CT.olive);
+  grad.addColorStop(0.5, CT.oliveDark);
+  grad.addColorStop(1, CT.gold);
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, W, HEAD);
 
+  ctx.fillStyle = CT.goldLight;
+  ctx.fillRect(0, 0, W, 6);
+
   ctx.textAlign = alignText;
-  ctx.fillStyle = 'rgba(255,255,255,.9)';
+  ctx.fillStyle = 'rgba(255,255,255,.82)';
   ctx.font = F(600, 26);
-  ctx.fillText(settings.hotel || '', alignX, 70);
+  ctx.fillText(settings.hotel || '', alignX, 72);
+
+  ctx.fillStyle = CT.goldLight;
+  const ornX = rtl ? W - PAD - 180 : PAD;
+  rr(ctx, ornX, 88, 180, 3, 2);
+  ctx.fill();
 
   ctx.fillStyle = '#ffffff';
-  ctx.font = F(800, 52);
-  ctx.fillText(t('mod.' + tx.module + '.title'), alignX, 138);
+  ctx.font = F(800, 54);
+  ctx.fillText(t('mod.' + tx.module + '.title'), alignX, 152);
 
   ctx.font = F(500, 24);
   ctx.fillStyle = 'rgba(255,255,255,.88)';
-  ctx.fillText(t('mod.' + tx.module + '.subtitle'), alignX, 182);
+  ctx.fillText(t('mod.' + tx.module + '.subtitle'), alignX, 196);
 
   y = HEAD;
 
-  const STRIP = 100;
-  ctx.fillStyle = '#f8fafc';
+  /* ══════════════ INFO STRIP (cream with gold border) ══════════════ */
+  const STRIP = 110;
+  ctx.fillStyle = CT.goldPale;
   ctx.fillRect(0, y, W, STRIP);
-  ctx.strokeStyle = '#e2e8f0';
-  ctx.lineWidth = 1;
+  ctx.strokeStyle = CT.gold;
+  ctx.lineWidth = 3;
   ctx.beginPath();
-  ctx.moveTo(0, y + STRIP + .5);
-  ctx.lineTo(W, y + STRIP + .5);
+  ctx.moveTo(0, y + STRIP + 1.5);
+  ctx.lineTo(W, y + STRIP + 1.5);
   ctx.stroke();
 
   const cells = [
-    [currentLang === 'ar' ? 'الرقم المرجعي' : currentLang === 'fr' ? 'RÉFÉRENCE' : 'REFERENCE', tx.ref],
+    [currentLang === 'ar' ? 'رقم المرجع' : currentLang === 'fr' ? 'RÉFÉRENCE' : 'REFERENCE', tx.ref],
     [currentLang === 'ar' ? 'التاريخ' : currentLang === 'fr' ? 'DATE' : 'DATE', fmtDate(tx.createdAt)],
     [currentLang === 'ar' ? 'الساعة' : currentLang === 'fr' ? 'HEURE' : 'TIME', fmtTime(tx.createdAt)]
   ];
   const cellW = CW / 3;
   cells.forEach(([lab, val], i) => {
     const x = alignX + dirInv * (i * cellW + cellW);
-    ctx.textAlign = alignText;
-    ctx.fillStyle = '#94a3b8';
-    ctx.font = F(700, 19);
-    ctx.fillText(lab, x, y + 40);
-    ctx.fillStyle = '#0f172a';
-    ctx.font = F(800, 30);
-    ctx.fillText(val, x, y + 78);
-  });
-  y += STRIP + 40;
-
-  const sectionTitle = text => {
-    y += 24;
-    ctx.fillStyle = accent;
-    const bx = rtl ? W - PAD - 6 : PAD;
-    rr(ctx, bx, y - 6, 6, 32, 3);
-    ctx.fill();
-    ctx.fillStyle = '#0f172a';
-    ctx.font = F(800, 26);
-    ctx.textAlign = alignText;
-    ctx.fillText(text, rtl ? W - PAD - 22 : PAD + 22, y + 22);
-    y += 56;
-  };
-
-  const infoBoxes = pairs => {
-    const gap = 20, bw = (CW - gap) / 2, bh = 108;
-    for(let i = 0; i < pairs.length; i += 2){
-      const row = pairs.slice(i, i + 2);
-      const yRow = y;
-      row.forEach(([lab, val], j) => {
-        const x = rtl ? W - PAD - (j + 1) * bw - j * gap : PAD + j * (bw + gap);
-        ctx.fillStyle = '#f8fafc';
-        rr(ctx, x, yRow, bw, bh, 14);
-        ctx.fill();
-        ctx.fillStyle = accent;
-        const barX = rtl ? x + bw - 6 : x;
-        rr(ctx, barX, yRow, 6, bh, 3);
-        ctx.fill();
-        ctx.textAlign = alignText;
-        ctx.fillStyle = '#94a3b8';
-        ctx.font = F(700, 19);
-        const txLab = rtl ? x + bw - 26 : x + 26;
-        ctx.fillText(lab, txLab, yRow + 38);
-        ctx.fillStyle = '#0f172a';
-        ctx.font = F(700, 30);
-        const valLines = wrapText(ctx, val || '—', bw - 56);
-        ctx.fillText(valLines[0] || '—', txLab, yRow + 80);
-      });
-      y += bh + gap;
+    if(i > 0){
+      const sepX = rtl
+        ? W - PAD - i * cellW
+        : PAD + i * cellW;
+      ctx.strokeStyle = CT.olive;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(sepX, y + 20);
+      ctx.lineTo(sepX, y + STRIP - 20);
+      ctx.stroke();
     }
-    y -= gap;
-  };
+    ctx.textAlign = alignText;
+    ctx.fillStyle = CT.goldDark;
+    ctx.font = F(700, 18);
+    ctx.fillText(lab, x, y + 42);
+    ctx.fillStyle = CT.oliveDark;
+    ctx.font = F(800, 30);
+    ctx.fillText(val, x, y + 82);
+  });
+  y += STRIP + 44;
 
-  sectionTitle(currentLang === 'ar' ? 'الأفراد' : currentLang === 'fr' ? 'PERSONNEL' : 'PERSONNEL');
-  infoBoxes([
-    [currentLang === 'ar' ? 'حارس الأمن' : currentLang === 'fr' ? 'Agent de sécurité' : 'Security Guard', tx.guard],
-    [currentLang === 'ar' ? 'الموظف المستخرج' : currentLang === 'fr' ? 'Personnel prélevant' : 'Extracting Staff', tx.staff]
-  ]);
-  y += 26;
+  /* ══════════════ PERSONNEL ══════════════ */
+  drawSectionTitle(ctx, PAD, y, CW, rtl,
+    currentLang === 'ar' ? 'الأفراد' : currentLang === 'fr' ? 'PERSONNEL' : 'PERSONNEL');
+  y += 60;
 
-  sectionTitle(currentLang === 'ar' ? 'تفاصيل الحركة' : currentLang === 'fr' ? 'DÉTAILS DU MOUVEMENT' : 'MOVEMENT DETAILS');
+  const gap = 22, bw = (CW - gap) / 2, bh = 118;
+  drawInfoBox(ctx, rtl ? W-PAD-bw : PAD, y, bw, bh,
+    currentLang === 'ar' ? 'حارس الأمن' : currentLang === 'fr' ? 'Agent sécurité' : 'Security Guard',
+    tx.guard, rtl);
+  drawInfoBox(ctx, rtl ? W-PAD-2*bw-gap : PAD+bw+gap, y, bw, bh,
+    currentLang === 'ar' ? 'الموظف المستخرج' : currentLang === 'fr' ? 'Personnel' : 'Staff',
+    tx.staff, rtl);
+  y += bh + 40;
+
+  /* ══════════════ MOVEMENT DETAILS ══════════════ */
+  drawSectionTitle(ctx, PAD, y, CW, rtl,
+    currentLang === 'ar' ? 'تفاصيل الحركة' : currentLang === 'fr' ? 'DÉTAILS' : 'DETAILS');
+  y += 60;
+
   const details = [];
   if(tx.module === 'warehouse'){
     details.push([t('form.department'), tx.department]);
@@ -2077,37 +2199,54 @@ async function generateCard(tx){
     if(tx.vehicle) details.push([t('form.vehicle'), tx.vehicle]);
     if(tx.authorizedBy) details.push([t('form.authorizedBy'), tx.authorizedBy]);
   }
-  infoBoxes(details);
-  y += 26;
+  for(let i = 0; i < details.length; i += 2){
+    const row = details.slice(i, i + 2);
+    row.forEach(([lab, val], j) => {
+      const x = rtl ? W-PAD-(j+1)*bw - j*gap : PAD + j*(bw+gap);
+      drawInfoBox(ctx, x, y, bw, bh, lab, val, rtl);
+    });
+    y += bh + gap;
+  }
+  y -= gap;
+  y += 40;
 
-  sectionTitle(
+  /* ══════════════ ITEMS TABLE ══════════════ */
+  drawSectionTitle(ctx, PAD, y, CW, rtl,
     (currentLang === 'ar' ? 'الأصناف' : currentLang === 'fr' ? 'ARTICLES' : 'ITEMS')
-    + ` (${tx.items.length})`
-  );
+    + ` (${tx.items.length})`);
+  y += 60;
 
-  const ROW_H = 56;
-  const colQty = 140, colUnit = 160;
+  const ROW_H = 58;
+  const colQty = 140, colUnit = 170;
 
-  ctx.fillStyle = '#eef2f7';
-  rr(ctx, PAD, y, CW, 48, 10);
+  const headGrad = ctx.createLinearGradient(PAD, y, PAD + CW, y);
+  headGrad.addColorStop(0, CT.oliveDark);
+  headGrad.addColorStop(1, CT.olive);
+  ctx.fillStyle = headGrad;
+  rr(ctx, PAD, y, CW, 50, 12);
   ctx.fill();
-  ctx.fillStyle = '#475569';
+
+  ctx.fillStyle = '#ffffff';
   ctx.font = F(800, 20);
   const headerY = y + 32;
   ctx.textAlign = rtl ? 'right' : 'left';
-  ctx.fillText(t('form.items.name'), rtl ? W - PAD - 20 : PAD + 20, headerY);
+  ctx.fillText(t('form.items.name'), rtl ? W - PAD - 22 : PAD + 22, headerY);
   ctx.textAlign = 'center';
   ctx.fillText(t('form.items.qty'), W / 2 - colUnit / 4, headerY);
   ctx.textAlign = rtl ? 'left' : 'right';
-  ctx.fillText(t('form.items.unit'), rtl ? PAD + 20 : W - PAD - 20, headerY);
-  y += 48;
+  ctx.fillText(t('form.items.unit'), rtl ? PAD + 22 : W - PAD - 22, headerY);
+
+  y += 50;
 
   tx.items.forEach((it, i) => {
     if(i % 2 === 1){
-      ctx.fillStyle = '#fafbfc';
+      ctx.fillStyle = CT.olivePale;
+      ctx.fillRect(PAD, y, CW, ROW_H);
+    } else {
+      ctx.fillStyle = CT.cream;
       ctx.fillRect(PAD, y, CW, ROW_H);
     }
-    ctx.strokeStyle = '#e9edf3';
+    ctx.strokeStyle = CT.line;
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(PAD, y + ROW_H + .5);
@@ -2115,49 +2254,67 @@ async function generateCard(tx){
     ctx.stroke();
 
     const midY = y + ROW_H / 2 + 9;
-    ctx.fillStyle = '#0f172a';
+
+    ctx.fillStyle = CT.ink;
     ctx.font = F(700, 26);
     ctx.textAlign = rtl ? 'right' : 'left';
-    const nameLines = wrapText(ctx, it.name, CW - colQty - colUnit - 40);
-    ctx.fillText(nameLines[0], rtl ? W - PAD - 20 : PAD + 20, midY);
+    const nameLines = wrapText(ctx, it.name, CW - colQty - colUnit - 60);
+    ctx.fillText(nameLines[0], rtl ? W - PAD - 22 : PAD + 22, midY);
 
     ctx.textAlign = 'center';
-    ctx.font = F(800, 26);
-    ctx.fillStyle = '#0f172a';
+    ctx.font = F(800, 28);
+    ctx.fillStyle = CT.goldDark;
     ctx.fillText(it.qty, W / 2 - colUnit / 4, midY);
 
-    ctx.fillStyle = '#475569';
+    ctx.fillStyle = CT.inkSoft;
     ctx.font = F(700, 24);
     ctx.textAlign = rtl ? 'left' : 'right';
-    ctx.fillText(it.unit, rtl ? PAD + 20 : W - PAD - 20, midY);
+    ctx.fillText(it.unit, rtl ? PAD + 22 : W - PAD - 22, midY);
 
     y += ROW_H;
   });
 
-  y += 32;
+  ctx.fillStyle = CT.gold;
+  rr(ctx, PAD, y, CW, 3, 2);
+  ctx.fill();
 
+  y += 44;
+
+  /* ══════════════ NOTES ══════════════ */
   if(tx.notes){
-    sectionTitle(currentLang === 'ar' ? 'ملاحظات' : currentLang === 'fr' ? 'OBSERVATIONS' : 'NOTES');
-    ctx.fillStyle = '#0f172a';
-    ctx.font = F(500, 26);
-    ctx.textAlign = alignText;
-    const lines = wrapText(ctx, tx.notes, CW - 40);
-    lines.slice(0, 6).forEach(l => {
-      ctx.fillText(l, alignX, y + 32);
-      y += 40;
+    drawSectionTitle(ctx, PAD, y, CW, rtl,
+      currentLang === 'ar' ? 'ملاحظات' : currentLang === 'fr' ? 'OBSERVATIONS' : 'NOTES');
+    y += 60;
+    const noteLines = wrapText(ctx, tx.notes, CW - 60);
+    const noteH = Math.max(60, noteLines.length * 34 + 40);
+    ctx.fillStyle = CT.olivePale;
+    rr(ctx, PAD, y, CW, noteH, 14);
+    ctx.fill();
+    ctx.strokeStyle = CT.olive;
+    ctx.lineWidth = 1.5;
+    rr(ctx, PAD, y, CW, noteH, 14);
+    ctx.stroke();
+    ctx.fillStyle = CT.ink;
+    ctx.font = F(500, 25);
+    ctx.textAlign = rtl ? 'right' : 'left';
+    noteLines.slice(0, 6).forEach((l, i) => {
+      ctx.fillText(l, rtl ? W - PAD - 28 : PAD + 28, y + 46 + i * 34);
     });
-    y += 16;
+    y += noteH + 44;
   }
 
+  /* ══════════════ PHOTOS ══════════════ */
   if(photoImgs.length){
-    sectionTitle(
+    drawSectionTitle(ctx, PAD, y, CW, rtl,
       (currentLang === 'ar' ? 'الصور التوثيقية' : currentLang === 'fr' ? 'PREUVES PHOTOGRAPHIQUES' : 'PHOTO EVIDENCE')
-      + ` (${photoImgs.length})`
-    );
+      + ` (${photoImgs.length})`);
+    y += 60;
 
-    const GAP = 20, COLS = 3;
+    /* Dynamic columns: 4 if more than 6 photos, else 3 */
+    const GAP = 18;
+    const COLS = photoImgs.length > 6 ? 4 : 3;
     const cellW = (CW - GAP * (COLS - 1)) / COLS;
-    const cellH = cellW * 0.75;
+    const cellH = cellW * 0.78;
     const WM_H = 34;
 
     photoImgs.forEach((img, i) => {
@@ -2167,7 +2324,7 @@ async function generateCard(tx){
       const yRow = y + row * (cellH + GAP);
 
       ctx.save();
-      rr(ctx, x, yRow, cellW, cellH, 14);
+      rr(ctx, x, yRow, cellW, cellH, 12);
       ctx.clip();
       const ir = img.width / img.height;
       const br = cellW / cellH;
@@ -2177,17 +2334,17 @@ async function generateCard(tx){
       ctx.drawImage(img, x + (cellW - dw) / 2, yRow + (cellH - dh) / 2, dw, dh);
 
       const wmGrad = ctx.createLinearGradient(0, yRow + cellH - WM_H, 0, yRow + cellH);
-      wmGrad.addColorStop(0, 'rgba(0,0,0,.35)');
-      wmGrad.addColorStop(1, 'rgba(0,0,0,.78)');
+      wmGrad.addColorStop(0, 'rgba(229,168,35,.15)');
+      wmGrad.addColorStop(1, 'rgba(184,134,11,.85)');
       ctx.fillStyle = wmGrad;
       ctx.fillRect(x, yRow + cellH - WM_H, cellW, WM_H);
 
       ctx.fillStyle = '#ffffff';
-      ctx.font = F(700, 14);
+      ctx.font = F(700, 12);
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(
-        `${tx.ref} • ${fmtTime(tx.createdAt)}`,
+        `${tx.ref.split('-').pop()} • ${fmtTime(tx.createdAt)}`,
         x + cellW / 2,
         yRow + cellH - WM_H / 2
       );
@@ -2195,85 +2352,150 @@ async function generateCard(tx){
       ctx.restore();
 
       ctx.save();
-      rr(ctx, x, yRow, cellW, cellH, 14);
-      ctx.strokeStyle = '#dfe5ec';
-      ctx.lineWidth = 2;
+      rr(ctx, x, yRow, cellW, cellH, 12);
+      ctx.strokeStyle = CT.olive;
+      ctx.lineWidth = 2.5;
       ctx.stroke();
+      ctx.fillStyle = CT.gold;
+      [[x+6,yRow+6],[x+cellW-6,yRow+6],[x+6,yRow+cellH-6],[x+cellW-6,yRow+cellH-6]].forEach(([cx,cy])=>{
+        ctx.beginPath();
+        ctx.arc(cx, cy, 3, 0, Math.PI*2);
+        ctx.fill();
+      });
       ctx.restore();
     });
 
     const rows = Math.ceil(photoImgs.length / COLS);
     y += rows * cellH + Math.max(0, rows - 1) * GAP;
-    y += 32;
+    y += 44;
   }
 
-  y += 24;
+  /* ══════════════ SIGNATURES (REWRITTEN — FIXED POSITION) ══════════════ */
+  y += 16;
+  drawSectionTitle(ctx, PAD, y, CW, rtl,
+    currentLang === 'ar' ? 'التوقيعات' : currentLang === 'fr' ? 'SIGNATURES' : 'SIGNATURES');
+  y += 74;
+
   const sigW = (CW - 60) / 2;
-  const sigH = 130;
+  const sigImgH = 130;      /* signature image area height */
+  const sigLineGap = 18;    /* gap between image and line */
+  const sigLabelGap = 32;   /* gap between line and label */
 
   const sigLabels = currentLang === 'ar'
-    ? ['توقيع حارس الأمن', 'توقيع الموظف']
+    ? ['حارس الأمن', 'الموظف المستلم']
     : currentLang === 'fr'
-    ? ['Signature — Agent', 'Signature — Personnel']
-    : ['Signature — Security Guard', 'Signature — Staff'];
+    ? ['Agent de sécurité', 'Personnel prélevant']
+    : ['Security Guard', 'Extracting Staff'];
 
-  const sigValues = [sigImg, null];
+  const sigValues = [sigImg, staffSigImg];
 
   for(let i = 0; i < 2; i++){
     const x = rtl
       ? W - PAD - (i + 1) * sigW - i * 60
       : PAD + i * (sigW + 60);
 
+    const imgTop = y;
+    const imgLeft = x;
+    const imgWidth = sigW;
+    const imgHeight = sigImgH;
+
     const sigImage = sigValues[i];
     if(sigImage){
       try {
-        const boxW = sigW - 20;
-        const boxH = sigH - 45;
+        const boxW = imgWidth - 16;
+        const boxH = imgHeight - 16;
         const ir = sigImage.width / sigImage.height;
         const br = boxW / boxH;
         let dw, dh;
         if(ir > br){ dw = boxW; dh = boxW / ir; }
         else       { dh = boxH; dw = boxH * ir; }
-        const dx = x + (sigW - dw) / 2;
-        const dy = y - sigH + 20 + (boxH - dh) / 2;
+        const dx = imgLeft + (imgWidth - dw) / 2;
+        const dy = imgTop + 8 + (boxH - dh) / 2;
         ctx.drawImage(sigImage, dx, dy, dw, dh);
-      } catch {}
+      } catch(e){ console.warn('Sig draw err', e); }
+    } else {
+      /* Unsigned placeholder */
+      ctx.save();
+      ctx.strokeStyle = 'rgba(138,127,107,.35)';
+      ctx.setLineDash([8, 6]);
+      ctx.lineWidth = 1.5;
+      rr(ctx, imgLeft + 8, imgTop + 8, imgWidth - 16, imgHeight - 16, 10);
+      ctx.stroke();
+      ctx.restore();
+      ctx.fillStyle = CT.muted;
+      ctx.font = F(500, 17);
+      ctx.textAlign = 'center';
+      ctx.fillText(
+        currentLang === 'ar' ? 'لا يوجد توقيع'
+        : currentLang === 'fr' ? 'Aucune signature'
+        : 'No signature',
+        imgLeft + imgWidth / 2,
+        imgTop + imgHeight / 2 + 6
+      );
     }
 
-    ctx.strokeStyle = '#94a3b8';
-    ctx.lineWidth = 2;
+    /* Signature line below image */
+    const lineY = imgTop + imgHeight + sigLineGap;
+    ctx.strokeStyle = CT.olive;
+    ctx.lineWidth = 2.5;
     ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.lineTo(x + sigW, y);
+    ctx.moveTo(x, lineY);
+    ctx.lineTo(x + sigW, lineY);
     ctx.stroke();
 
-    ctx.fillStyle = '#8a94a6';
-    ctx.font = F(600, 20);
-    ctx.textAlign = 'center';
-    ctx.fillText(sigLabels[i], x + sigW / 2, y + 34);
-  }
-  y += 70;
+    /* Gold dots at line ends */
+    ctx.fillStyle = CT.gold;
+    [x, x + sigW].forEach(px => {
+      ctx.beginPath();
+      ctx.arc(px, lineY, 4, 0, Math.PI*2);
+      ctx.fill();
+    });
 
-  ctx.strokeStyle = '#e3e8ef';
-  ctx.lineWidth = 1;
+    /* Label below line */
+    ctx.fillStyle = CT.goldDark;
+    ctx.font = F(800, 22);
+    ctx.textAlign = 'center';
+    ctx.fillText(sigLabels[i], x + sigW / 2, lineY + sigLabelGap);
+  }
+
+  y += sigImgH + sigLineGap + sigLabelGap + 30;
+
+  /* ══════════════ FOOTER ══════════════ */
+  ctx.strokeStyle = CT.olive;
+  ctx.lineWidth = 1.5;
   ctx.beginPath();
   ctx.moveTo(PAD, y + .5);
   ctx.lineTo(PAD + CW, y + .5);
   ctx.stroke();
+
+  ctx.fillStyle = CT.gold;
+  [PAD + 10, PAD + CW/2, PAD + CW - 10].forEach(dx => {
+    ctx.beginPath();
+    ctx.arc(dx, y, 3, 0, Math.PI*2);
+    ctx.fill();
+  });
+
   y += 40;
-  ctx.fillStyle = '#94a3b8';
+  ctx.fillStyle = CT.muted;
   ctx.font = F(500, 19);
   ctx.textAlign = 'center';
-  ctx.fillText(`• ${settings.hotel} • ${fmtDateTime(new Date())} •`, W / 2, y);
+  ctx.fillText(
+    `• ${settings.hotel} • ${fmtDateTime(new Date())} •`,
+    W / 2, y
+  );
+  y += 26;
+  ctx.fillStyle = CT.olive;
+  ctx.font = F(700, 17);
+  ctx.fillText('DIGITAL STOCK', W / 2, y);
   y += 30;
 
+  /* ══════════════ CROP ══════════════ */
   const finalH = y + PAD;
-
   const out = document.createElement('canvas');
   out.width = W;
   out.height = finalH;
   const octx = out.getContext('2d', { alpha: false });
-  octx.fillStyle = '#ffffff';
+  octx.fillStyle = CT.cream;
   octx.fillRect(0, 0, W, finalH);
   octx.drawImage(cv, 0, 0, W, finalH, 0, 0, W, finalH);
 
@@ -2299,11 +2521,12 @@ async function buildPdfBlob(tx, cardDataUrl){
 }
 function buildJsonBlob(tx){
   return new Blob([JSON.stringify({
-    schema:'digitalstock.exit.v12',
+    schema:'digitalstock.exit.v13',
     exportedAt:new Date().toISOString(),
     reference:tx.ref, module:tx.module,
     hotel:tx.hotel||settings.hotel,
     guard:tx.guard, staff:tx.staff,
+    guardCode:tx.guardCode||null,
     department:tx.department||null, destination:tx.destination||null,
     reason:tx.reason||null, vehicle:tx.vehicle||null,
     authorizedBy:tx.authorizedBy||null, notes:tx.notes||null,
@@ -2378,7 +2601,7 @@ async function purgeExpired(){
 }
 function startRetention(){
   purgeExpired().catch(()=>{});
-  setInterval(()=>purgeExpired().catch(()=>{}), 10*60*1000);
+  setInterval(()=>purgeExpired().catch(()=>{}), 30*60*1000);
 }
 
 /* WHATSAPP */
@@ -2436,17 +2659,7 @@ function downloadBlob(blob, fn){
   setTimeout(()=>URL.revokeObjectURL(url), 4000);
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   SUBMIT — v19 FIXED
-   ═══════════════════════════════════════════════════════════════
-   Flow:
-     1. Validate
-     2. Try Cloudinary photos (fallback: local IDB)
-     3. Try Firebase commit (fallback: local)
-     4. Save to localStorage
-     5. Show card + toast success (with source)
-     6. On TOTAL failure → offline queue
-   ═══════════════════════════════════════════════════════════════ */
+/* SUBMIT */
 async function handleSubmit(key){
   const form = document.getElementById('form-'+key);
   const fd = new FormData(form);
@@ -2477,6 +2690,7 @@ async function handleSubmit(key){
     module: key, hotel: settings.hotel,
     guard: effectiveGuard, staff,
     guardUid: currentUid,
+    guardCode: currentAgentCode,
     department: (fd.get('department')||'').trim(),
     po: (fd.get('po')||'').trim(),
     destination: (fd.get('destination')||'').trim(),
@@ -2497,15 +2711,11 @@ async function handleSubmit(key){
   try {
     const tempId = (crypto.randomUUID && crypto.randomUUID()) || String(Date.now());
 
-    /* ---- STEP 1: Photos ---- */
     let refs;
     if(firebaseReady && navigator.onLine && drafts[key].length > 0){
       try {
         refs = await savePhotosCloudinary(tempId, drafts[key]);
-        if(!refs || !refs.length){
-          // Cloudinary returned empty (config or network issue) → use local
-          throw new Error('Cloudinary empty result');
-        }
+        if(!refs || !refs.length) throw new Error('Cloudinary empty result');
         photoSource = 'cloudinary';
       } catch(photoErr){
         console.warn('[Photos] Cloudinary failed, using local IDB:', photoErr);
@@ -2517,11 +2727,9 @@ async function handleSubmit(key){
       photoSource = 'local';
     }
 
-    /* ---- STEP 2: Commit transaction ---- */
     const { id, ref, source } = await commitTransaction({...payload, photos: refs});
     commitSource = source;
 
-    /* ---- STEP 3: Save to localStorage ---- */
     const createdAt = new Date().toISOString();
     const expireAt = new Date(Date.now()+RETENTION_MS).toISOString();
     record = { id, ref, ...payload, photos: refs, createdAt, expireAt, archived:false, archiveUrls:null };
@@ -2529,7 +2737,6 @@ async function handleSubmit(key){
     all.unshift(record);
     saveAll(all);
 
-    /* ---- STEP 4: Reset form ---- */
     form.reset();
     drafts[key].forEach(p=>{try{URL.revokeObjectURL(p.url);}catch{}});
     drafts[key] = [];
@@ -2543,19 +2750,16 @@ async function handleSubmit(key){
     renderHistory();
     renderProfile();
 
-    /* ---- STEP 5: Success toast ---- */
     const isLocal = commitSource === 'local';
     const msg = isLocal
       ? `${t('form.saved.local')} ${ref}`
       : `${t('form.saved')} ${ref}`;
     toast(msg, 3000);
 
-    // Log details for debugging
-    console.log(`[Submit OK] ref=${ref} | photos=${photoSource} | commit=${commitSource}`);
+    console.log(`[Submit OK] ref=${ref} | photos=${photoSource} | commit=${commitSource} | sig=${payload.guardSignature?'yes':'no'}`);
 
   } catch (err){
-    // True failure — only reaches here if BOTH cloud AND local failed
-    console.error('[Submit FAILED — both cloud and local]:', err);
+    console.error('[Submit FAILED]:', err);
     queueOffline(payload, key, drafts[key]);
     toast(t('form.offline'), 3500);
     submitBtn.disabled = false;
@@ -2615,7 +2819,8 @@ async function runBackgroundArchive(tx, cardUrl){
     status.className = 'archive-status done';
     icon.textContent = '✓';
     text.textContent = (firebaseReady && navigator.onLine) ? t('archive.cloud') : t('archive.local');
-    sub.textContent = `${t('archive.autoPurge')} ${fmtTime(tx.expireAt)} (48${t('archive.hours')})`;
+    const daysLeft = Math.max(0, Math.round((new Date(tx.expireAt) - Date.now()) / (24*3600*1000)));
+    sub.textContent = `${t('archive.autoPurge')} ${fmtTime(tx.expireAt)} (${daysLeft}${t('archive.days')})`;
     const all = loadAll();
     const idx = all.findIndex(x=>x.id===tx.id);
     if(idx>=0){ all[idx].archived = true; saveAll(all); renderHistory(); renderProfile(); }
@@ -2730,7 +2935,8 @@ function renderHistory(){
   list.innerHTML = filtered.map(tx => {
     const m = MODULE_DEF[tx.module];
     const ttlH = tx.expireAt ? Math.max(0, Math.round((new Date(tx.expireAt)-Date.now())/3600000)) : null;
-    const expiring = ttlH !== null && ttlH < 12;
+    const ttlD = ttlH !== null ? Math.ceil(ttlH / 24) : null;
+    const expiring = ttlH !== null && ttlH < 24;
     return `
       <div class="feed-card" style="--c:${m.accent}" data-id="${tx.id}">
         <div class="feed-main">
@@ -2740,7 +2946,7 @@ function renderHistory(){
             ${tx.archived
               ? `<span class="tt-pill ok">${t('history.archived')}</span>`
               : `<span class="tt-pill warn">${t('history.unarchived')}</span>`}
-            ${expiring ? `<span class="tt-pill warn">${t('history.purgeIn')} ${ttlH}${t('history.hours')}</span>` : ''}
+            ${expiring ? `<span class="tt-pill warn">${t('history.purgeIn')} ${ttlD}${t('archive.days')}</span>` : ''}
           </div>
           <div class="feed-sub">${fmtDateTime(tx.createdAt)}</div>
           <div class="feed-sub">👤 ${esc(tx.staff)} • 👮 ${esc(tx.guard)} • 📷 ${(tx.photos||[]).length} • 📦 ${tx.items.length}</div>
@@ -2879,7 +3085,15 @@ function renderProfile(){
       <div class="profile-handle">@${esc((currentEmail||'').split('@')[0]||'agent')}</div>
       <div class="profile-role">${t('profile.role')}</div>
       ${currentEmail ? `<div class="profile-email">${esc(currentEmail)}</div>` : ''}
-      <p class="tt-hint" style="margin:10px 0 0;font-size:11px">${t('profile.avatarHint')}</p>
+      <div style="margin-top:10px;display:inline-flex;align-items:center;gap:8px;
+        padding:6px 14px;border-radius:99px;
+        background:linear-gradient(135deg,#E5A823,#0e8f6f);
+        color:#fff;font-family:'Inter',sans-serif;font-weight:900;font-size:13px;
+        letter-spacing:.5px;box-shadow:0 4px 14px rgba(229,168,35,.35)">
+        <span style="opacity:.85;font-weight:700;font-size:11px">${t('profile.agentCode')}</span>
+        <span>${esc(currentAgentCode)}</span>
+      </div>
+      <p class="tt-hint" style="margin:12px 0 0;font-size:11px">${t('profile.avatarHint')}</p>
     </div>
     <div class="stats-row">
       <div class="stat"><div class="stat-val">${total}</div><div class="stat-lbl">${t('profile.stats.total')}</div></div>
@@ -2986,6 +3200,7 @@ function renderDeveloper(){
     if(!agentsMap[key]){
       agentsMap[key] = {
         key, name: tx.guard || '—', uid: tx.guardUid || null,
+        code: tx.guardCode || '—',
         count: 0, warehouse: 0, bon: 0, archived: 0, lastAt: tx.createdAt
       };
     }
@@ -3011,7 +3226,7 @@ function renderDeveloper(){
       <div class="dev-hero-s">${t('dev.subtitle')}</div>
     </div>
     <div class="dev-stats-grid">
-      <div class="dev-stat" style="--c:#25F4EE">
+      <div class="dev-stat" style="--c:#0e8f6f">
         <span class="dev-stat-ic">📊</span>
         <div class="dev-stat-v">${total}</div>
         <div class="dev-stat-l">${t('dev.totalTx')}</div>
@@ -3021,7 +3236,7 @@ function renderDeveloper(){
         <div class="dev-stat-v">${agents.length}</div>
         <div class="dev-stat-l">${t('dev.totalAgents')}</div>
       </div>
-      <div class="dev-stat" style="--c:#FE2C55">
+      <div class="dev-stat" style="--c:#E5A823">
         <span class="dev-stat-ic">🗄️</span>
         <div class="dev-stat-v">${archived}</div>
         <div class="dev-stat-l">${t('dev.totalArchived')}</div>
@@ -3045,7 +3260,7 @@ function renderDeveloper(){
             <div class="agent-row" data-agent-key="${esc(a.key)}">
               <div class="agent-avatar">${avHtml}</div>
               <div class="agent-main">
-                <div class="agent-name">${esc(a.name)}</div>
+                <div class="agent-name">${esc(a.name)} <span style="color:#E5A823;font-family:'Inter';font-size:11px">[${esc(a.code)}]</span></div>
                 <div class="agent-meta">
                   🏭 ${a.warehouse} • 🚚 ${a.bon} • 🗄️ ${a.archived}
                   ${a.lastAt ? ' • ' + fmtDateTime(a.lastAt) : ''}
@@ -3313,7 +3528,7 @@ function renderHistoryBanner(){
   const q = JSON.parse(localStorage.getItem(QUEUE_KEY)||'[]');
   const parts = [];
   if(!firebaseReady){
-    parts.push(`<div class="tt-banner warn"><span class="b-ic">⚠</span><span>${currentLang==='ar'?'وضع محلي. البيانات محفوظة في IndexedDB، حذف تلقائي بعد 48 ساعة.':currentLang==='fr'?'Mode local. Données dans IndexedDB, purge après 48h.':'Local mode. Data in IndexedDB, purged after 48h.'}</span></div>`);
+    parts.push(`<div class="tt-banner warn"><span class="b-ic">⚠</span><span>${currentLang==='ar'?'وضع محلي. البيانات محفوظة في IndexedDB، حذف تلقائي بعد 7 أيام.':currentLang==='fr'?'Mode local. Données dans IndexedDB, purge après 7 jours.':'Local mode. Data in IndexedDB, purged after 7 days.'}</span></div>`);
   } else {
     parts.push(`<div class="tt-banner ok"><span class="b-ic">✓</span><span>${currentLang==='ar'?'Firebase نشط. عدّادات ذرية + أرشفة سحابية.':currentLang==='fr'?'Firebase actif. Compteurs atomiques + archive cloud.':'Firebase active. Atomic counters + cloud archive.'}</span></div>`);
   }
@@ -3389,6 +3604,7 @@ function initAuth(){
       currentUid = user.uid;
       currentAgent = user.displayName || user.email.split('@')[0];
       currentEmail = user.email;
+      currentAgentCode = generateAgentCode(user.uid);
       developerMode = false;
       devViewingAgent = null;
       document.getElementById('currentUserDisplay').textContent = currentAgent;
@@ -3403,6 +3619,7 @@ function initAuth(){
     } else {
       firebaseReady = false;
       currentAgent = ''; currentEmail = ''; currentUid = '';
+      currentAgentCode = 'XXXX';
       developerMode = false;
       ensureUI();
       authScreen.classList.remove('hidden');
@@ -3448,7 +3665,8 @@ function ensureUI(){
   initAuth();
   updateNetStatus();
   setTimeout(()=>document.getElementById('loginEmail')?.focus(), 300);
-  console.log('%c Digital Stock v19 — Fixed commit fallback + accurate offline handling ', 'background:linear-gradient(90deg,#25F4EE,#FE2C55);color:#000;padding:4px 10px;border-radius:8px;font-weight:900;');
+  console.log('%c Digital Stock v21 — Gold & Olive + 10 Photos + Cloudinary Smart + 7d Archive ',
+    'background:linear-gradient(90deg,#E5A823,#0e8f6f);color:#fff;padding:4px 10px;border-radius:8px;font-weight:900;');
 })();
 </script>
 </body>
