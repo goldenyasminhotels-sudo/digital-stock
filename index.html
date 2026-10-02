@@ -126,9 +126,9 @@ main{flex:1;width:100%;max-width:640px;margin:0 auto;padding:0 16px 24px}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 .view.mode-enter{animation: modeEnter .55s cubic-bezier(.2,.9,.3,1.15)}
 @keyframes modeEnter{
-  0%   { opacity:0; transform: translateY(24px) scale(.96); filter: blur(6px); }
-  50%  { opacity:1; filter: blur(0); }
-  100% { opacity:1; transform: none; }
+  0%{opacity:0;transform:translateY(24px) scale(.96);filter:blur(6px)}
+  50%{opacity:1;filter:blur(0)}
+  100%{opacity:1;transform:none}
 }
 
 .tt-card{background:var(--surface);border:1px solid var(--line);
@@ -183,120 +183,74 @@ html[dir="rtl"] .tt-label select{background-position:left 14px center}
   font-size:12px;cursor:pointer;display:grid;place-items:center;padding:0;backdrop-filter:blur(8px)}
 .tt-thumb button:hover{background:var(--tt-pink)}
 
-/* SIGNATURE PREVIEW CARD */
-.tt-sig-preview{
-  position:relative;background:#fff;
+.tt-sig-preview{position:relative;background:#fff;
   border:1.5px solid var(--line-2);border-radius:14px;
   min-height:120px;cursor:pointer;overflow:hidden;
-  transition:.25s;display:grid;place-items:center;
-}
-.tt-sig-preview:hover{
-  border-color:var(--tt-cyan);
-  box-shadow:0 0 0 4px var(--tt-cyan-glow);
-  transform:translateY(-1px);
-}
+  transition:.25s;display:grid;place-items:center}
+.tt-sig-preview:hover{border-color:var(--tt-cyan);
+  box-shadow:0 0 0 4px var(--tt-cyan-glow);transform:translateY(-1px)}
 .tt-sig-preview:active{transform:scale(.99)}
-.tt-sig-preview canvas{
-  display:block;width:100%;height:120px;pointer-events:none;
-}
-.tt-sig-empty{
-  position:absolute;inset:0;
+.tt-sig-preview canvas{display:block;width:100%;height:120px;pointer-events:none}
+.tt-sig-empty{position:absolute;inset:0;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:8px;pointer-events:none;background:#fff;color:#64748b;
-}
+  gap:8px;pointer-events:none;background:#fff;color:#64748b}
 .tt-sig-empty .ic{font-size:32px;opacity:.85}
 .tt-sig-empty .txt{font-size:13px;font-weight:700}
 .tt-sig-empty .sub{font-size:11px;opacity:.7}
-.tt-sig-preview .badge{
-  position:absolute;top:8px;inset-inline-end:8px;
+.tt-sig-preview .badge{position:absolute;top:8px;inset-inline-end:8px;
   padding:4px 10px;border-radius:99px;
   background:linear-gradient(135deg,var(--tt-cyan),var(--tt-pink));
   color:#000;font-size:10px;font-weight:900;letter-spacing:.3px;
-  box-shadow:0 4px 12px var(--tt-pink-glow);
-  display:none;
-}
+  box-shadow:0 4px 12px var(--tt-pink-glow);display:none}
 .tt-sig-preview.signed .badge{display:block}
 .tt-sig-preview.signed .tt-sig-empty{display:none}
 
-/* FULLSCREEN SIGNATURE PAD */
-#signPad{
-  position:fixed;inset:0;z-index:3000;
-  background:#ffffff;
-  display:none;flex-direction:column;
-  -webkit-user-select:none;user-select:none;
-}
+#signPad{position:fixed;inset:0;z-index:3000;background:#ffffff;
+  display:none;flex-direction:column;-webkit-user-select:none;user-select:none}
 #signPad.open{display:flex;animation:sigFadeIn .25s ease-out}
 @keyframes sigFadeIn{from{opacity:0;transform:scale(1.02)}to{opacity:1;transform:none}}
-
-#signPad .sp-top{
-  flex:0 0 auto;padding:14px 18px;
+#signPad .sp-top{flex:0 0 auto;padding:14px 18px;
   padding-top:calc(14px + env(safe-area-inset-top,0px));
-  display:flex;align-items:center;gap:12px;
-  background:#ffffff;border-bottom:1px solid #e5e7eb;
-}
-#signPad .sp-title{
-  flex:1;color:#0f172a;display:flex;flex-direction:column;gap:2px;
-}
+  display:flex;align-items:center;gap:12px;background:#ffffff;border-bottom:1px solid #e5e7eb}
+#signPad .sp-title{flex:1;color:#0f172a;display:flex;flex-direction:column;gap:2px}
 #signPad .sp-title .t1{font-size:16px;font-weight:900;letter-spacing:-.2px}
 #signPad .sp-title .t2{font-size:12px;color:#64748b;font-weight:600}
-#signPad .sp-close{
-  width:42px;height:42px;border-radius:12px;
+#signPad .sp-close{width:42px;height:42px;border-radius:12px;
   background:#f1f5f9;color:#0f172a;border:none;
   display:grid;place-items:center;font-size:18px;font-weight:800;
-  cursor:pointer;transition:.15s;
-}
+  cursor:pointer;transition:.15s}
 #signPad .sp-close:hover{background:#e2e8f0}
-
-#signPad .sp-canvas-wrap{
-  flex:1;position:relative;background:#ffffff;overflow:hidden;
-  background-image:
-    linear-gradient(#fff 31px, #f8fafc 32px);
-  background-size:100% 32px;
-  background-position:0 -8px;
-}
-#signPad .sp-canvas-wrap canvas{
-  display:block;width:100%;height:100%;
-  touch-action:none;cursor:crosshair;background:transparent;
-}
-#signPad .sp-baseline{
-  position:absolute;left:20px;right:20px;bottom:70px;
-  border-bottom:2px dashed #cbd5e1;pointer-events:none;
-}
-#signPad .sp-placeholder{
-  position:absolute;inset:0;
+#signPad .sp-canvas-wrap{flex:1;position:relative;background:#ffffff;overflow:hidden;
+  background-image:linear-gradient(#fff 31px, #f8fafc 32px);
+  background-size:100% 32px;background-position:0 -8px}
+#signPad .sp-canvas-wrap canvas{display:block;width:100%;height:100%;
+  touch-action:none;cursor:crosshair;background:transparent}
+#signPad .sp-baseline{position:absolute;left:20px;right:20px;bottom:70px;
+  border-bottom:2px dashed #cbd5e1;pointer-events:none}
+#signPad .sp-placeholder{position:absolute;inset:0;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:8px;pointer-events:none;color:#94a3b8;transition:opacity .3s;
-}
+  gap:8px;pointer-events:none;color:#94a3b8;transition:opacity .3s}
 #signPad .sp-placeholder.hide{opacity:0}
 #signPad .sp-placeholder .big{font-size:64px;opacity:.55}
 #signPad .sp-placeholder .small{font-size:16px;font-weight:800;color:#475569}
 #signPad .sp-placeholder .tiny{font-size:12.5px;font-weight:600}
-
-#signPad .sp-bar{
-  flex:0 0 auto;padding:14px 18px;
+#signPad .sp-bar{flex:0 0 auto;padding:14px 18px;
   padding-bottom:calc(14px + env(safe-area-inset-bottom,0px));
-  display:flex;gap:10px;background:#ffffff;
-  border-top:1px solid #e5e7eb;
-}
-#signPad .sp-btn{
-  display:flex;align-items:center;justify-content:center;gap:8px;
+  display:flex;gap:10px;background:#ffffff;border-top:1px solid #e5e7eb}
+#signPad .sp-btn{display:flex;align-items:center;justify-content:center;gap:8px;
   height:54px;border-radius:14px;border:none;
   font-size:15px;font-weight:900;cursor:pointer;transition:.15s;
-  font-family:inherit;letter-spacing:.2px;
-}
+  font-family:inherit;letter-spacing:.2px}
 #signPad .sp-btn:active{transform:scale(.97)}
 #signPad .sp-btn.clear{flex:0 0 auto;min-width:56px;padding:0 14px;background:#f1f5f9;color:#475569}
 #signPad .sp-btn.clear:hover{background:#e2e8f0}
 #signPad .sp-btn.cancel{flex:1;background:#fee2e2;color:#dc2626}
 #signPad .sp-btn.cancel:hover{background:#fecaca}
-#signPad .sp-btn.confirm{
-  flex:2;background:linear-gradient(135deg,#25F4EE,#FE2C55);
-  color:#000;box-shadow:0 8px 22px rgba(254,44,85,.35);
-}
+#signPad .sp-btn.confirm{flex:2;background:linear-gradient(135deg,#25F4EE,#FE2C55);
+  color:#000;box-shadow:0 8px 22px rgba(254,44,85,.35)}
 #signPad .sp-btn.confirm:hover:not(:disabled){filter:brightness(1.05)}
 #signPad .sp-btn.confirm:disabled{opacity:.4;cursor:not-allowed;filter:none;box-shadow:none}
 
-/* Card modal enhancements */
 .tt-submit-bar{display:flex;gap:10px;flex-wrap:wrap;padding:4px 0}
 .tt-submit-bar .tt-btn.primary{flex:1;min-width:200px;
   background:linear-gradient(135deg,var(--c,var(--tt-cyan)),var(--tt-pink));
@@ -405,9 +359,7 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 92px 1fr;direction:rtl}
 
 .nav-center{display:flex;flex-direction:column;align-items:center;justify-content:center;
   height:100%;position:relative;gap:2px}
-
-.mode-switch{
-  position:relative;width:58px;height:58px;border-radius:18px;
+.mode-switch{position:relative;width:58px;height:58px;border-radius:18px;
   border:none;cursor:pointer;display:grid;place-items:center;padding:0;overflow:visible;
   background:linear-gradient(145deg,#2dd4f0,#0891b2);
   box-shadow:0 8px 20px rgba(37,244,238,.55),0 0 40px rgba(37,244,238,.35),
@@ -415,13 +367,10 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 92px 1fr;direction:rtl}
   transition:background .55s cubic-bezier(.2,.9,.3,1.1),
     box-shadow .55s cubic-bezier(.2,.9,.3,1.1),
     transform .25s cubic-bezier(.2,.9,.3,1.3);
-  isolation:isolate;perspective:220px;perspective-origin:50% 55%;
-}
-.mode-switch.bon{
-  background:linear-gradient(145deg,#f43f5e,#be123c);
+  isolation:isolate;perspective:220px;perspective-origin:50% 55%}
+.mode-switch.bon{background:linear-gradient(145deg,#f43f5e,#be123c);
   box-shadow:0 8px 20px rgba(254,44,85,.55),0 0 40px rgba(254,44,85,.35),
-    inset 0 -4px 8px rgba(0,0,0,.25),inset 0 2px 2px rgba(255,255,255,.35);
-}
+    inset 0 -4px 8px rgba(0,0,0,.25),inset 0 2px 2px rgba(255,255,255,.35)}
 .mode-switch::before{content:'';position:absolute;inset:-6px;border-radius:24px;
   background:inherit;z-index:-1;filter:blur(14px);opacity:.75;transition:.55s}
 .mode-switch::after{content:'';position:absolute;top:4px;left:12%;right:12%;height:35%;
@@ -430,11 +379,9 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 92px 1fr;direction:rtl}
 .mode-switch:active{transform:scale(.94)}
 :root[data-theme="light"] .mode-switch{background:linear-gradient(145deg,#67e8f9,#06b6d4)}
 :root[data-theme="light"] .mode-switch.bon{background:linear-gradient(145deg,#fb7185,#e11d48)}
-
 .mode-switch-inner{position:absolute;inset:0;display:grid;place-items:center;
   transform-style:preserve-3d;transition:transform .6s cubic-bezier(.2,.9,.3,1.1)}
 .mode-switch.spin .mode-switch-inner{transform:rotateY(360deg)}
-
 .mode-icon{position:absolute;top:50%;left:50%;width:46px;height:46px;
   max-width:88%;max-height:88%;object-fit:contain;transform-origin:center center;
   pointer-events:none;user-select:none;-webkit-user-drag:none;backface-visibility:hidden;
@@ -445,7 +392,6 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 92px 1fr;direction:rtl}
     drop-shadow(0 12px 22px rgba(0,0,0,.35));
   transition:opacity .4s cubic-bezier(.2,.9,.3,1.1),
     transform .65s cubic-bezier(.2,.9,.3,1.35),filter .4s ease}
-
 .mode-icon-wh{opacity:1;transform:translate(-50%,-50%) perspective(200px)
     rotateX(10deg) rotateY(-10deg) rotateZ(0deg) scale(1.15) translateZ(8px)}
 .mode-switch.bon .mode-icon-wh{opacity:0;transform:translate(-50%,-50%) perspective(200px)
@@ -461,22 +407,18 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 92px 1fr;direction:rtl}
 .mode-switch:active .mode-icon-wh,.mode-switch:active .mode-icon-bon{
   transform:translate(-50%,-50%) perspective(200px)
     rotateX(2deg) rotateY(0deg) scale(.95) translateZ(4px)}
-
 @keyframes iconFloat3D_WH{
   0%,100%{transform:translate(-50%,-50%) perspective(200px)
     rotateX(10deg) rotateY(-10deg) scale(1.15) translateZ(8px)}
-  50%    {transform:translate(-50%,-50%) perspective(200px)
-    rotateX(5deg) rotateY(-5deg) scale(1.15) translateZ(16px)}
-}
+  50%{transform:translate(-50%,-50%) perspective(200px)
+    rotateX(5deg) rotateY(-5deg) scale(1.15) translateZ(16px)}}
 @keyframes iconFloat3D_BON{
   0%,100%{transform:translate(-50%,-50%) perspective(200px)
     rotateX(10deg) rotateY(10deg) scale(1.15) translateZ(8px)}
-  50%    {transform:translate(-50%,-50%) perspective(200px)
-    rotateX(5deg) rotateY(5deg) scale(1.15) translateZ(16px)}
-}
+  50%{transform:translate(-50%,-50%) perspective(200px)
+    rotateX(5deg) rotateY(5deg) scale(1.15) translateZ(16px)}}
 .mode-switch:not(.bon):not(:hover):not(.spin) .mode-icon-wh{animation:iconFloat3D_WH 3.5s ease-in-out infinite}
 .mode-switch.bon:not(:hover):not(.spin) .mode-icon-bon{animation:iconFloat3D_BON 3.5s ease-in-out infinite}
-
 .mode-ripple{position:absolute;inset:-6px;border-radius:24px;border:2px solid;opacity:0;
   pointer-events:none;z-index:-2}
 .mode-ripple.ring-a{animation:rippleOut .8s cubic-bezier(.2,.7,.3,1) forwards}
@@ -491,7 +433,6 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 92px 1fr;direction:rtl}
   opacity:1;margin-top:2px;padding:2px 8px;border-radius:8px}
 .mode-label.bon{background:linear-gradient(90deg,#FE2C55,#f43f5e);
   -webkit-background-clip:text;background-clip:text;color:transparent}
-
 .mode-flash{position:fixed;inset:0;pointer-events:none;z-index:1500;opacity:0;transition:opacity .35s}
 .mode-flash.wh{background:radial-gradient(circle at 50% 100%,rgba(37,244,238,.22),transparent 60%)}
 .mode-flash.bon{background:radial-gradient(circle at 50% 100%,rgba(254,44,85,.22),transparent 60%)}
@@ -640,7 +581,6 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 92px 1fr;direction:rtl}
 </head>
 <body>
 
-<!-- AUTH -->
 <div id="auth-screen">
   <div class="auth-bg"></div>
   <div class="auth-card">
@@ -661,7 +601,6 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 92px 1fr;direction:rtl}
   </div>
 </div>
 
-<!-- APP -->
 <div id="app-screen">
   <header class="tt-topbar">
     <div class="tt-brand">Digital Stock</div>
@@ -730,7 +669,6 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 92px 1fr;direction:rtl}
 
 <div class="mode-flash" id="modeFlash"></div>
 
-<!-- FULLSCREEN SIGNATURE PAD -->
 <div id="signPad">
   <div class="sp-top">
     <div class="sp-title">
@@ -761,7 +699,6 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 92px 1fr;direction:rtl}
   </div>
 </div>
 
-<!-- Delete confirm -->
 <div class="tt-modal" id="deleteConfirmModal">
   <div class="tt-modal-box" style="max-width:480px">
     <div class="tt-modal-head">
@@ -790,7 +727,6 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 92px 1fr;direction:rtl}
   </div>
 </div>
 
-<!-- Settings -->
 <div class="tt-modal" id="setModal">
   <div class="tt-modal-box">
     <div class="tt-modal-head">
@@ -889,7 +825,6 @@ setPersistence(auth, browserLocalPersistence).catch(console.error);
 
 const ADMIN_UID = 'kszZYwapqMYc8XvY2yOYGmO3c6D3';
 
-/* I18N (unchanged from v17) */
 const I18N = {
   ar: {
     'app.name':'Digital Stock','app.tagline':'نظام الإدارة والأمن الذكي',
@@ -938,7 +873,8 @@ const I18N = {
     'form.department.required':'القسم مطلوب',
     'form.destination.required':'جهة الوصول مطلوبة','form.reason.required':'السبب مطلوب',
     'form.noPhotos':'لا صور. المتابعة؟','form.maxPhotos':'الحد 5 صور',
-    'form.saved':'تم الحفظ:','form.offline':'غير متصل — في الانتظار',
+    'form.saved':'تم الحفظ:','form.saved.local':'تم الحفظ محلياً:',
+    'form.offline':'غير متصل — في الانتظار',
     'history.title':'السجل','history.search':'🔍 بحث…',
     'history.filter.all':'الكل','history.filter.internal':'داخلي','history.filter.external':'خارجي',
     'history.export':'تصدير','history.import':'استيراد',
@@ -1030,7 +966,8 @@ const I18N = {
     'form.department.required':'Département requis',
     'form.destination.required':'Destination requise','form.reason.required':'Motif requis',
     'form.noPhotos':'Sans photos ?','form.maxPhotos':'Max 5',
-    'form.saved':'Enregistré:','form.offline':'Hors ligne',
+    'form.saved':'Enregistré:','form.saved.local':'Enregistré localement:',
+    'form.offline':'Hors ligne',
     'history.title':'Historique','history.search':'🔍 Rechercher…',
     'history.filter.all':'Tout','history.filter.internal':'Interne','history.filter.external':'Externe',
     'history.export':'Exporter','history.import':'Importer',
@@ -1122,7 +1059,8 @@ const I18N = {
     'form.department.required':'Department required',
     'form.destination.required':'Destination required','form.reason.required':'Reason required',
     'form.noPhotos':'No photos. Continue?','form.maxPhotos':'Max 5',
-    'form.saved':'Saved:','form.offline':'Offline — queued',
+    'form.saved':'Saved:','form.saved.local':'Saved locally:',
+    'form.offline':'Offline — queued',
     'history.title':'History','history.search':'🔍 Search…',
     'history.filter.all':'All','history.filter.internal':'Internal','history.filter.external':'External',
     'history.export':'Export','history.import':'Import',
@@ -1175,12 +1113,12 @@ let currentLang = localStorage.getItem('ds.lang') || 'ar';
 const t = k => (I18N[currentLang] && I18N[currentLang][k]) || I18N.ar[k] || k;
 
 /* CONSTANTS */
-const STORE_KEY = 'ds.transactions.v18';
-const QUEUE_KEY = 'ds.queue.v18';
-const COUNTER_KEY = 'ds.counters.v18';
-const SET_KEY = 'ds.settings.v18';
-const AVATARS_KEY = 'ds.avatars.v18';
-const LAST_MODE_KEY = 'ds.lastMode.v18';
+const STORE_KEY = 'ds.transactions.v19';
+const QUEUE_KEY = 'ds.queue.v19';
+const COUNTER_KEY = 'ds.counters.v19';
+const SET_KEY = 'ds.settings.v19';
+const AVATARS_KEY = 'ds.avatars.v19';
+const LAST_MODE_KEY = 'ds.lastMode.v19';
 const MAX_PHOTOS = 5;
 const RETENTION_MS = 48 * 3600 * 1000;
 const MODULE_DEF = {
@@ -1267,7 +1205,7 @@ const setAvatar = (dataUrl, key) => {
 };
 
 /* INDEXEDDB */
-const DB_NAME='ds.archive.v18', DB_VERSION=1;
+const DB_NAME='ds.archive.v19', DB_VERSION=1;
 let _db=null;
 function openArchive(){
   if(_db) return Promise.resolve(_db);
@@ -1348,7 +1286,7 @@ const idbSizeEstimate = async () => {
   return '—';
 };
 
-/* COUNTERS & COMMIT */
+/* COUNTERS */
 const localNextSeq = (prefix, dateKey) => {
   const c = JSON.parse(localStorage.getItem(COUNTER_KEY)||'{}');
   const id = `${prefix}_${dateKey}`;
@@ -1359,38 +1297,55 @@ const localNextSeq = (prefix, dateKey) => {
 };
 const formatRef = (prefix,dateKey,seq) => `${prefix}-${dateKey}-${String(seq).padStart(4,'0')}`;
 
+/* ═══════════════════════════════════════════════════════════════
+   COMMIT TRANSACTION — v19 FIXED
+   ═══════════════════════════════════════════════════════════════
+   - Tries Firebase FIRST but wraps in try/catch
+   - On ANY Firebase error → falls back to LOCAL silently
+   - Local fallback ALWAYS works
+   - Returns { id, ref, source: 'firebase' | 'local' }
+   ═══════════════════════════════════════════════════════════════ */
 async function commitTransaction(payload){
   const prefix = MODULE_DEF[payload.module].prefix;
   const dateKey = new Date().toISOString().slice(0,10).replace(/-/g,'');
-  if (firebaseReady){
-    const counterRef = doc(db,'counters',`${prefix}_${dateKey}`);
-    const txRef = doc(collection(db,'transactions'));
-    let assignedRef=null;
-    await runTransaction(db, async trx => {
-      const snap = await trx.get(counterRef);
-      let nextSeq;
-      if(!snap.exists()){
-        nextSeq = 1;
-        trx.set(counterRef,{prefix,dateKey,seq:1,updatedAt:serverTimestamp()});
-      } else {
-        nextSeq = (snap.data().seq||0)+1;
-        trx.update(counterRef,{seq:nextSeq,updatedAt:serverTimestamp()});
-      }
-      assignedRef = formatRef(prefix,dateKey,nextSeq);
-      trx.set(txRef,{
-        ...payload, ref:assignedRef,
-        createdAt:serverTimestamp(),
-        expireAt:Timestamp.fromMillis(Date.now()+RETENTION_MS),
-        archived:false, archiveUrls:null, archivedAt:null,
-        createdBy: auth.currentUser?.uid||null
+
+  // ---- Try Firebase first (only if online + configured) ----
+  if (firebaseReady && navigator.onLine){
+    try {
+      const counterRef = doc(db,'counters',`${prefix}_${dateKey}`);
+      const txRef = doc(collection(db,'transactions'));
+      let assignedRef = null;
+      await runTransaction(db, async trx => {
+        const snap = await trx.get(counterRef);
+        let nextSeq;
+        if(!snap.exists()){
+          nextSeq = 1;
+          trx.set(counterRef,{prefix,dateKey,seq:1,updatedAt:serverTimestamp()});
+        } else {
+          nextSeq = (snap.data().seq||0)+1;
+          trx.update(counterRef,{seq:nextSeq,updatedAt:serverTimestamp()});
+        }
+        assignedRef = formatRef(prefix,dateKey,nextSeq);
+        trx.set(txRef,{
+          ...payload, ref:assignedRef,
+          createdAt:serverTimestamp(),
+          expireAt:Timestamp.fromMillis(Date.now()+RETENTION_MS),
+          archived:false, archiveUrls:null, archivedAt:null,
+          createdBy: auth.currentUser?.uid||null
+        });
       });
-    });
-    return { id: txRef.id, ref: assignedRef };
+      return { id: txRef.id, ref: assignedRef, source: 'firebase' };
+    } catch(e) {
+      console.warn('[Firebase commit failed → falling back to LOCAL]:', e);
+      // Fall through to local fallback below
+    }
   }
+
+  // ---- Local fallback (ALWAYS works) ----
   const seq = localNextSeq(prefix,dateKey);
   const ref = formatRef(prefix,dateKey,seq);
   const id = (crypto.randomUUID && crypto.randomUUID()) || String(Date.now());
-  return { id, ref };
+  return { id, ref, source: 'local' };
 }
 
 /* CLOUDINARY */
@@ -1438,9 +1393,10 @@ async function savePhotosCloudinary(txId, items){
       formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
       formData.append("folder", `digital_stock/${dateKey}/${txId}`);
       const response = await fetch(CLOUDINARY_API_URL, { method: "POST", body: formData });
+      if (!response.ok) throw new Error('Cloudinary HTTP ' + response.status);
       const data = await response.json();
       if (data.secure_url) urls.push(data.secure_url);
-    } catch (err) { console.error(err); }
+    } catch (err) { console.warn('Cloudinary upload error for item', i, err); }
   }
   return urls;
 }
@@ -1514,9 +1470,7 @@ const reasons = () => currentLang==='ar'
   ? ['Retour fournisseur','Prêt / Réparation','Don','Vente / Rebut','Déchets','Transfert site','Autre']
   : ['Supplier return','Loan / Repair','Donation','Sale / Scrap','Waste','Site transfer','Other'];
 
-/* ═══════════════════════════════════════════════════════════════
-   FULLSCREEN SIGNATURE PAD LOGIC
-   ═══════════════════════════════════════════════════════════════ */
+/* SIGNATURE PAD */
 const Sig = {
   canvas: null, ctx: null, wrap: null,
   drawing: false,
@@ -1943,9 +1897,7 @@ function refreshDatalists(){
   });
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   CARD GENERATION — v18 REWRITTEN FOR SMOOTHNESS & RELIABILITY
-   ═══════════════════════════════════════════════════════════════ */
+/* CARD GENERATION */
 const rr = (ctx,x,y,w,h,r) => {
   r = Math.min(r,w/2,h/2);
   ctx.beginPath();
@@ -1963,7 +1915,6 @@ const loadImg = src => new Promise((res,rej)=>{
   i.onerror = ()=>rej(new Error('img'));
   i.src = src;
 });
-/* Safe image load — returns null instead of throwing */
 const safeLoadImg = async (src) => {
   try { return await loadImg(src); } catch { return null; }
 };
@@ -1980,7 +1931,6 @@ function wrapText(ctx, text, maxW){
 }
 
 async function generateCard(tx){
-  // ---- Setup ----
   const W = 1080, PAD = 56, CW = W - PAD * 2;
   const accent = MODULE_DEF[tx.module].accent;
   const accentDark = shade(accent, -22);
@@ -1990,7 +1940,6 @@ async function generateCard(tx){
   const alignX = rtl ? W - PAD : PAD;
   const dirInv = rtl ? 1 : -1;
 
-  // ---- Pre-load photos in parallel (best-effort) ----
   const photoImgs = [];
   if(tx.photos && tx.photos.length){
     const photoUrls = await Promise.all(
@@ -2002,27 +1951,22 @@ async function generateCard(tx){
     loaded.forEach(img => { if(img) photoImgs.push(img); });
   }
 
-  // ---- Pre-load signature ----
   let sigImg = null;
   if(tx.guardSignature){
     sigImg = await safeLoadImg(tx.guardSignature);
   }
 
-  // ---- Create work canvas (tall, we'll crop later) ----
   const cv = document.createElement('canvas');
   cv.width = W;
   cv.height = 6000;
   const ctx = cv.getContext('2d', { alpha: false });
   ctx.textBaseline = 'alphabetic';
   ctx.direction = rtl ? 'rtl' : 'ltr';
-
-  // White background
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, W, cv.height);
 
   let y = 0;
 
-  /* ══════════ HEADER ══════════ */
   const HEAD = 220;
   const grad = ctx.createLinearGradient(0, 0, W, HEAD);
   grad.addColorStop(0, accent);
@@ -2030,25 +1974,21 @@ async function generateCard(tx){
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, W, HEAD);
 
-  // Top branding
   ctx.textAlign = alignText;
   ctx.fillStyle = 'rgba(255,255,255,.9)';
   ctx.font = F(600, 26);
   ctx.fillText(settings.hotel || '', alignX, 70);
 
-  // Main title
   ctx.fillStyle = '#ffffff';
   ctx.font = F(800, 52);
   ctx.fillText(t('mod.' + tx.module + '.title'), alignX, 138);
 
-  // Subtitle
   ctx.font = F(500, 24);
   ctx.fillStyle = 'rgba(255,255,255,.88)';
   ctx.fillText(t('mod.' + tx.module + '.subtitle'), alignX, 182);
 
   y = HEAD;
 
-  /* ══════════ INFO STRIP (Ref / Date / Time) ══════════ */
   const STRIP = 100;
   ctx.fillStyle = '#f8fafc';
   ctx.fillRect(0, y, W, STRIP);
@@ -2077,7 +2017,6 @@ async function generateCard(tx){
   });
   y += STRIP + 40;
 
-  /* ══════════ HELPERS ══════════ */
   const sectionTitle = text => {
     y += 24;
     ctx.fillStyle = accent;
@@ -2095,27 +2034,21 @@ async function generateCard(tx){
     const gap = 20, bw = (CW - gap) / 2, bh = 108;
     for(let i = 0; i < pairs.length; i += 2){
       const row = pairs.slice(i, i + 2);
-      // Compute baseline for this row
       const yRow = y;
       row.forEach(([lab, val], j) => {
-        const x = rtl
-          ? W - PAD - (j + 1) * bw - j * gap
-          : PAD + j * (bw + gap);
+        const x = rtl ? W - PAD - (j + 1) * bw - j * gap : PAD + j * (bw + gap);
         ctx.fillStyle = '#f8fafc';
         rr(ctx, x, yRow, bw, bh, 14);
         ctx.fill();
-        // Accent bar
         ctx.fillStyle = accent;
         const barX = rtl ? x + bw - 6 : x;
         rr(ctx, barX, yRow, 6, bh, 3);
         ctx.fill();
-        // Label
         ctx.textAlign = alignText;
         ctx.fillStyle = '#94a3b8';
         ctx.font = F(700, 19);
         const txLab = rtl ? x + bw - 26 : x + 26;
         ctx.fillText(lab, txLab, yRow + 38);
-        // Value
         ctx.fillStyle = '#0f172a';
         ctx.font = F(700, 30);
         const valLines = wrapText(ctx, val || '—', bw - 56);
@@ -2126,16 +2059,13 @@ async function generateCard(tx){
     y -= gap;
   };
 
-  /* ══════════ PERSONNEL ══════════ */
   sectionTitle(currentLang === 'ar' ? 'الأفراد' : currentLang === 'fr' ? 'PERSONNEL' : 'PERSONNEL');
   infoBoxes([
     [currentLang === 'ar' ? 'حارس الأمن' : currentLang === 'fr' ? 'Agent de sécurité' : 'Security Guard', tx.guard],
     [currentLang === 'ar' ? 'الموظف المستخرج' : currentLang === 'fr' ? 'Personnel prélevant' : 'Extracting Staff', tx.staff]
   ]);
-
   y += 26;
 
-  /* ══════════ MOVEMENT DETAILS ══════════ */
   sectionTitle(currentLang === 'ar' ? 'تفاصيل الحركة' : currentLang === 'fr' ? 'DÉTAILS DU MOUVEMENT' : 'MOVEMENT DETAILS');
   const details = [];
   if(tx.module === 'warehouse'){
@@ -2148,10 +2078,8 @@ async function generateCard(tx){
     if(tx.authorizedBy) details.push([t('form.authorizedBy'), tx.authorizedBy]);
   }
   infoBoxes(details);
-
   y += 26;
 
-  /* ══════════ ITEMS TABLE ══════════ */
   sectionTitle(
     (currentLang === 'ar' ? 'الأصناف' : currentLang === 'fr' ? 'ARTICLES' : 'ITEMS')
     + ` (${tx.items.length})`
@@ -2160,26 +2088,20 @@ async function generateCard(tx){
   const ROW_H = 56;
   const colQty = 140, colUnit = 160;
 
-  // Header row
   ctx.fillStyle = '#eef2f7';
   rr(ctx, PAD, y, CW, 48, 10);
   ctx.fill();
   ctx.fillStyle = '#475569';
   ctx.font = F(800, 20);
-
   const headerY = y + 32;
   ctx.textAlign = rtl ? 'right' : 'left';
   ctx.fillText(t('form.items.name'), rtl ? W - PAD - 20 : PAD + 20, headerY);
-
   ctx.textAlign = 'center';
   ctx.fillText(t('form.items.qty'), W / 2 - colUnit / 4, headerY);
-
   ctx.textAlign = rtl ? 'left' : 'right';
   ctx.fillText(t('form.items.unit'), rtl ? PAD + 20 : W - PAD - 20, headerY);
-
   y += 48;
 
-  // Item rows
   tx.items.forEach((it, i) => {
     if(i % 2 === 1){
       ctx.fillStyle = '#fafbfc';
@@ -2193,21 +2115,17 @@ async function generateCard(tx){
     ctx.stroke();
 
     const midY = y + ROW_H / 2 + 9;
-
-    // Item name
     ctx.fillStyle = '#0f172a';
     ctx.font = F(700, 26);
     ctx.textAlign = rtl ? 'right' : 'left';
     const nameLines = wrapText(ctx, it.name, CW - colQty - colUnit - 40);
     ctx.fillText(nameLines[0], rtl ? W - PAD - 20 : PAD + 20, midY);
 
-    // Qty
     ctx.textAlign = 'center';
     ctx.font = F(800, 26);
     ctx.fillStyle = '#0f172a';
     ctx.fillText(it.qty, W / 2 - colUnit / 4, midY);
 
-    // Unit
     ctx.fillStyle = '#475569';
     ctx.font = F(700, 24);
     ctx.textAlign = rtl ? 'left' : 'right';
@@ -2218,7 +2136,6 @@ async function generateCard(tx){
 
   y += 32;
 
-  /* ══════════ NOTES ══════════ */
   if(tx.notes){
     sectionTitle(currentLang === 'ar' ? 'ملاحظات' : currentLang === 'fr' ? 'OBSERVATIONS' : 'NOTES');
     ctx.fillStyle = '#0f172a';
@@ -2232,7 +2149,6 @@ async function generateCard(tx){
     y += 16;
   }
 
-  /* ══════════ PHOTOS ══════════ */
   if(photoImgs.length){
     sectionTitle(
       (currentLang === 'ar' ? 'الصور التوثيقية' : currentLang === 'fr' ? 'PREUVES PHOTOGRAPHIQUES' : 'PHOTO EVIDENCE')
@@ -2250,7 +2166,6 @@ async function generateCard(tx){
       const x = PAD + col * (cellW + GAP);
       const yRow = y + row * (cellH + GAP);
 
-      // Photo
       ctx.save();
       rr(ctx, x, yRow, cellW, cellH, 14);
       ctx.clip();
@@ -2261,7 +2176,6 @@ async function generateCard(tx){
       else       { dw = cellW; dh = cellW / ir; }
       ctx.drawImage(img, x + (cellW - dw) / 2, yRow + (cellH - dh) / 2, dw, dh);
 
-      // Watermark strip
       const wmGrad = ctx.createLinearGradient(0, yRow + cellH - WM_H, 0, yRow + cellH);
       wmGrad.addColorStop(0, 'rgba(0,0,0,.35)');
       wmGrad.addColorStop(1, 'rgba(0,0,0,.78)');
@@ -2280,7 +2194,6 @@ async function generateCard(tx){
       ctx.textBaseline = 'alphabetic';
       ctx.restore();
 
-      // Border
       ctx.save();
       rr(ctx, x, yRow, cellW, cellH, 14);
       ctx.strokeStyle = '#dfe5ec';
@@ -2294,7 +2207,6 @@ async function generateCard(tx){
     y += 32;
   }
 
-  /* ══════════ SIGNATURES ══════════ */
   y += 24;
   const sigW = (CW - 60) / 2;
   const sigH = 130;
@@ -2312,11 +2224,9 @@ async function generateCard(tx){
       ? W - PAD - (i + 1) * sigW - i * 60
       : PAD + i * (sigW + 60);
 
-    // Draw signature image above the line
     const sigImage = sigValues[i];
     if(sigImage){
       try {
-        // Fit image inside the signature area
         const boxW = sigW - 20;
         const boxH = sigH - 45;
         const ir = sigImage.width / sigImage.height;
@@ -2330,7 +2240,6 @@ async function generateCard(tx){
       } catch {}
     }
 
-    // Signature line
     ctx.strokeStyle = '#94a3b8';
     ctx.lineWidth = 2;
     ctx.beginPath();
@@ -2338,7 +2247,6 @@ async function generateCard(tx){
     ctx.lineTo(x + sigW, y);
     ctx.stroke();
 
-    // Label
     ctx.fillStyle = '#8a94a6';
     ctx.font = F(600, 20);
     ctx.textAlign = 'center';
@@ -2346,7 +2254,6 @@ async function generateCard(tx){
   }
   y += 70;
 
-  /* ══════════ FOOTER ══════════ */
   ctx.strokeStyle = '#e3e8ef';
   ctx.lineWidth = 1;
   ctx.beginPath();
@@ -2357,14 +2264,9 @@ async function generateCard(tx){
   ctx.fillStyle = '#94a3b8';
   ctx.font = F(500, 19);
   ctx.textAlign = 'center';
-  ctx.fillText(
-    `• ${settings.hotel} • ${fmtDateTime(new Date())} •`,
-    W / 2,
-    y
-  );
+  ctx.fillText(`• ${settings.hotel} • ${fmtDateTime(new Date())} •`, W / 2, y);
   y += 30;
 
-  /* ══════════ CROP TO ACTUAL CONTENT ══════════ */
   const finalH = y + PAD;
 
   const out = document.createElement('canvas');
@@ -2397,7 +2299,7 @@ async function buildPdfBlob(tx, cardDataUrl){
 }
 function buildJsonBlob(tx){
   return new Blob([JSON.stringify({
-    schema:'digitalstock.exit.v11',
+    schema:'digitalstock.exit.v12',
     exportedAt:new Date().toISOString(),
     reference:tx.ref, module:tx.module,
     hotel:tx.hotel||settings.hotel,
@@ -2414,7 +2316,7 @@ function buildJsonBlob(tx){
 /* ARCHIVE */
 async function archiveTransaction(tx, pdfBlob, jsonBlob, cardUrl){
   const expires = new Date(Date.now()+RETENTION_MS).toISOString();
-  if(firebaseReady){
+  if(firebaseReady && navigator.onLine){
     const dateKey = new Date().toISOString().slice(0,10);
     const base = `archive/${dateKey}/${tx.ref}`;
     try {
@@ -2425,13 +2327,17 @@ async function archiveTransaction(tx, pdfBlob, jsonBlob, cardUrl){
       const pu = await getDownloadURL(pr);
       const ju = await getDownloadURL(jr);
       if(tx.id){
-        await updateDoc(doc(db,'transactions',tx.id),{
-          archived:true, archivedAt:serverTimestamp(),
-          archiveUrls:{pdf:pu, json:ju}
-        });
+        try {
+          await updateDoc(doc(db,'transactions',tx.id),{
+            archived:true, archivedAt:serverTimestamp(),
+            archiveUrls:{pdf:pu, json:ju}
+          });
+        } catch(e){ console.warn('updateDoc archive failed:', e); }
       }
       return {pdf:pu, json:ju};
-    } catch(err) { console.warn('Firebase archive failed, using local', err); }
+    } catch(err) {
+      console.warn('Firebase archive failed, using local archive', err);
+    }
   }
   await idbPut({key:`archive::${tx.ref}::pdf`, blob:pdfBlob, ref:tx.ref, kind:'pdf', expireAt:expires, createdAt:new Date().toISOString()});
   await idbPut({key:`archive::${tx.ref}::json`, blob:jsonBlob, ref:tx.ref, kind:'json', expireAt:expires, createdAt:new Date().toISOString()});
@@ -2530,7 +2436,17 @@ function downloadBlob(blob, fn){
   setTimeout(()=>URL.revokeObjectURL(url), 4000);
 }
 
-/* SUBMIT */
+/* ═══════════════════════════════════════════════════════════════
+   SUBMIT — v19 FIXED
+   ═══════════════════════════════════════════════════════════════
+   Flow:
+     1. Validate
+     2. Try Cloudinary photos (fallback: local IDB)
+     3. Try Firebase commit (fallback: local)
+     4. Save to localStorage
+     5. Show card + toast success (with source)
+     6. On TOTAL failure → offline queue
+   ═══════════════════════════════════════════════════════════════ */
 async function handleSubmit(key){
   const form = document.getElementById('form-'+key);
   const fd = new FormData(form);
@@ -2539,7 +2455,7 @@ async function handleSubmit(key){
   const effectiveGuard = currentAgent;
   const items = $$('.tt-item-row', form).map(r=>({
     name: r.querySelector('.i-name').value.trim(),
-    qty: r.querySelector('.i-qty').value.trim(),
+    qty:  r.querySelector('.i-qty').value.trim(),
     unit: r.querySelector('.i-unit').value
   })).filter(i=>i.name);
   if(!items.length) return toast(t('form.items.required'));
@@ -2575,18 +2491,45 @@ async function handleSubmit(key){
   };
 
   let record = null;
+  let photoSource = 'local';
+  let commitSource = 'local';
+
   try {
     const tempId = (crypto.randomUUID && crypto.randomUUID()) || String(Date.now());
+
+    /* ---- STEP 1: Photos ---- */
     let refs;
-    if(firebaseReady && navigator.onLine) refs = await savePhotosCloudinary(tempId, drafts[key]);
-    else refs = await savePhotosLocal(tempId, drafts[key]);
-    const { id, ref } = await commitTransaction({...payload, photos: refs});
+    if(firebaseReady && navigator.onLine && drafts[key].length > 0){
+      try {
+        refs = await savePhotosCloudinary(tempId, drafts[key]);
+        if(!refs || !refs.length){
+          // Cloudinary returned empty (config or network issue) → use local
+          throw new Error('Cloudinary empty result');
+        }
+        photoSource = 'cloudinary';
+      } catch(photoErr){
+        console.warn('[Photos] Cloudinary failed, using local IDB:', photoErr);
+        refs = await savePhotosLocal(tempId, drafts[key]);
+        photoSource = 'local';
+      }
+    } else {
+      refs = await savePhotosLocal(tempId, drafts[key]);
+      photoSource = 'local';
+    }
+
+    /* ---- STEP 2: Commit transaction ---- */
+    const { id, ref, source } = await commitTransaction({...payload, photos: refs});
+    commitSource = source;
+
+    /* ---- STEP 3: Save to localStorage ---- */
     const createdAt = new Date().toISOString();
     const expireAt = new Date(Date.now()+RETENTION_MS).toISOString();
     record = { id, ref, ...payload, photos: refs, createdAt, expireAt, archived:false, archiveUrls:null };
     const all = loadAll();
     all.unshift(record);
     saveAll(all);
+
+    /* ---- STEP 4: Reset form ---- */
     form.reset();
     drafts[key].forEach(p=>{try{URL.revokeObjectURL(p.url);}catch{}});
     drafts[key] = [];
@@ -2599,15 +2542,27 @@ async function handleSubmit(key){
     refreshDatalists();
     renderHistory();
     renderProfile();
-    toast(`${t('form.saved')} ${ref}`);
+
+    /* ---- STEP 5: Success toast ---- */
+    const isLocal = commitSource === 'local';
+    const msg = isLocal
+      ? `${t('form.saved.local')} ${ref}`
+      : `${t('form.saved')} ${ref}`;
+    toast(msg, 3000);
+
+    // Log details for debugging
+    console.log(`[Submit OK] ref=${ref} | photos=${photoSource} | commit=${commitSource}`);
+
   } catch (err){
-    console.error(err);
+    // True failure — only reaches here if BOTH cloud AND local failed
+    console.error('[Submit FAILED — both cloud and local]:', err);
     queueOffline(payload, key, drafts[key]);
-    toast(t('form.offline'));
+    toast(t('form.offline'), 3500);
     submitBtn.disabled = false;
     submitBtn.innerHTML = old;
     return;
   }
+
   submitBtn.disabled = false;
   submitBtn.innerHTML = old;
   activeTx = record;
@@ -2659,7 +2614,7 @@ async function runBackgroundArchive(tx, cardUrl){
     await archiveTransaction(tx, pdf, json, cardUrl);
     status.className = 'archive-status done';
     icon.textContent = '✓';
-    text.textContent = firebaseReady ? t('archive.cloud') : t('archive.local');
+    text.textContent = (firebaseReady && navigator.onLine) ? t('archive.cloud') : t('archive.local');
     sub.textContent = `${t('archive.autoPurge')} ${fmtTime(tx.expireAt)} (48${t('archive.hours')})`;
     const all = loadAll();
     const idx = all.findIndex(x=>x.id===tx.id);
@@ -3493,7 +3448,7 @@ function ensureUI(){
   initAuth();
   updateNetStatus();
   setTimeout(()=>document.getElementById('loginEmail')?.focus(), 300);
-  console.log('%c Digital Stock v18 — Card generation rewritten ', 'background:linear-gradient(90deg,#25F4EE,#FE2C55);color:#000;padding:4px 10px;border-radius:8px;font-weight:900;');
+  console.log('%c Digital Stock v19 — Fixed commit fallback + accurate offline handling ', 'background:linear-gradient(90deg,#25F4EE,#FE2C55);color:#000;padding:4px 10px;border-radius:8px;font-weight:900;');
 })();
 </script>
 </body>
