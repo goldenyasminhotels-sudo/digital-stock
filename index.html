@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#000000">
 <title>Digital Stock</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
 
 <style>
@@ -20,8 +20,7 @@
   --radius:20px;--radius-sm:14px;
   --nav-h:64px;--top-h:56px;
   --font-ar:'Cairo',sans-serif;--font-en:'Inter',sans-serif;
-  --admin:#a855f7;
-  --admin-glow:rgba(168,85,247,.4);
+  --admin:#a855f7;--admin-glow:rgba(168,85,247,.4);
 }
 :root[data-theme="light"]{
   --bg:#fafafa;--surface:#fff;--surface-2:#f5f5f7;--surface-3:#ebebed;
@@ -127,6 +126,16 @@ main{flex:1;width:100%;max-width:640px;margin:0 auto;padding:0 16px 24px}
 .view.active{display:block}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 
+/* Special transition when switching modes */
+.view.mode-enter{
+  animation: modeEnter .55s cubic-bezier(.2,.9,.3,1.15);
+}
+@keyframes modeEnter{
+  0%   { opacity:0; transform: translateY(24px) scale(.96); filter: blur(6px); }
+  50%  { opacity:1; filter: blur(0); }
+  100% { opacity:1; transform: none; }
+}
+
 .tt-card{background:var(--surface);border:1px solid var(--line);
   border-radius:var(--radius);padding:18px;margin-bottom:14px;
   position:relative;overflow:hidden;transition:.2s}
@@ -141,7 +150,6 @@ main{flex:1;width:100%;max-width:640px;margin:0 auto;padding:0 16px 24px}
 .tt-pill.acc{background:color-mix(in srgb,var(--c,var(--tt-cyan)) 18%,transparent);color:var(--c,var(--tt-cyan))}
 .tt-pill.ok{background:rgba(37,244,238,.15);color:var(--tt-cyan)}
 .tt-pill.warn{background:rgba(254,44,85,.15);color:var(--tt-pink)}
-.tt-pill.admin{background:rgba(168,85,247,.18);color:var(--admin)}
 .tt-hint{font-size:12.5px;color:var(--muted);line-height:1.5;margin:0 0 14px}
 .tt-grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media(max-width:560px){.tt-grid2{grid-template-columns:1fr;gap:0}}
@@ -228,7 +236,6 @@ html[dir="rtl"] .tt-label select{background-position:left 14px center}
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .feed-actions{display:flex;gap:6px;flex-wrap:wrap;flex:0 0 auto}
 
-/* PROFILE */
 .profile-hero{text-align:center;padding:24px 0 20px;position:relative}
 .avatar-ring{width:120px;height:120px;margin:0 auto 16px;padding:4px;
   border-radius:50%;background:linear-gradient(135deg,var(--tt-cyan),var(--tt-pink));
@@ -243,18 +250,14 @@ html[dir="rtl"] .tt-label select{background-position:left 14px center}
 .avatar{width:100%;height:100%;border-radius:50%;
   background:linear-gradient(135deg,#1a1a1a,#0a0a0a);display:grid;place-items:center;
   font-family:var(--font-en);font-size:44px;font-weight:900;color:#fff;
-  border:3px solid var(--bg);
-  background-size:cover;background-position:center;overflow:hidden}
+  border:3px solid var(--bg);background-size:cover;background-position:center;overflow:hidden}
 .avatar img{width:100%;height:100%;object-fit:cover;display:block;border-radius:50%}
-.avatar-edit{
-  position:absolute;bottom:2px;inset-inline-end:2px;
+.avatar-edit{position:absolute;bottom:2px;inset-inline-end:2px;
   width:36px;height:36px;border-radius:50%;
   background:linear-gradient(135deg,var(--tt-cyan),var(--tt-pink));
   border:3px solid var(--bg);color:#000;font-size:15px;font-weight:900;
   display:grid;place-items:center;cursor:pointer;
-  box-shadow:0 4px 12px var(--tt-pink-glow);
-  transition:.2s;
-}
+  box-shadow:0 4px 12px var(--tt-pink-glow);transition:.2s}
 .avatar-edit:hover{transform:scale(1.1) rotate(15deg)}
 .profile-name{font-size:22px;font-weight:900;margin:0 0 4px;letter-spacing:-.3px}
 .profile-handle{font-size:13px;color:var(--muted);margin-bottom:4px}
@@ -288,16 +291,18 @@ html[dir="rtl"] .tt-label select{background-position:left 14px center}
   color:var(--muted);text-align:center;white-space:nowrap;overflow:hidden;
   text-overflow:ellipsis;max-width:100%;direction:ltr}
 
-/* BOTTOM NAV */
+/* ═══════════════════════════════════════════════════════════════
+   BOTTOM NAV — v14 with MODE SWITCH button
+   ═══════════════════════════════════════════════════════════════ */
 .tt-bottomnav{position:fixed;bottom:0;left:0;right:0;
   height:calc(var(--nav-h) + env(safe-area-inset-bottom,0px));
   padding-bottom:env(safe-area-inset-bottom,0px);
   background:rgba(0,0,0,.92);backdrop-filter:blur(24px) saturate(180%);
   -webkit-backdrop-filter:blur(24px) saturate(180%);
   border-top:1px solid var(--line-2);display:grid;
-  grid-template-columns:1fr 84px 1fr;align-items:center;z-index:100}
+  grid-template-columns:1fr 92px 1fr;align-items:center;z-index:100}
 :root[data-theme="light"] .tt-bottomnav{background:rgba(255,255,255,.92)}
-html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 84px 1fr;direction:rtl}
+html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 92px 1fr;direction:rtl}
 .nav-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
   background:none;border:none;color:var(--muted);cursor:pointer;padding:8px 4px;
   transition:.2s;font-family:inherit;height:100%;position:relative}
@@ -312,18 +317,121 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 84px 1fr;direction:rtl}
   min-width:16px;height:16px;padding:0 4px;background:var(--tt-pink);color:#fff;
   border-radius:99px;font-size:9px;font-weight:800;display:grid;place-items:center;
   line-height:1;box-shadow:0 0 8px var(--tt-pink-glow)}
-.nav-center{display:flex;align-items:center;justify-content:center;height:100%;position:relative}
-.nav-plus{width:56px;height:56px;border-radius:18px;
-  background:linear-gradient(135deg,var(--tt-cyan),var(--tt-pink));
-  border:none;cursor:pointer;display:grid;place-items:center;color:#000;
-  font-size:28px;font-weight:900;
-  box-shadow:0 8px 24px var(--tt-pink-glow),0 0 30px var(--tt-cyan-glow);
-  transition:.25s;position:relative}
-.nav-plus::before{content:'';position:absolute;inset:-4px;
-  background:linear-gradient(135deg,var(--tt-cyan),var(--tt-pink));
-  border-radius:22px;z-index:-1;filter:blur(12px);opacity:.6}
-.nav-plus:hover{transform:scale(1.08) rotate(90deg)}
-.nav-plus:active{transform:scale(.95) rotate(90deg)}
+
+/* ═══ MODE SWITCH CENTER ═══ */
+.nav-center{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  height:100%;position:relative;gap:2px;
+}
+
+.mode-switch{
+  position:relative;
+  width:56px;height:56px;
+  border-radius:18px;
+  border:none;cursor:pointer;
+  display:grid;place-items:center;
+  padding:0;
+  overflow:visible;
+  background:linear-gradient(135deg,#25F4EE,#0ea5e9);
+  box-shadow:0 8px 24px rgba(37,244,238,.42),0 0 30px rgba(37,244,238,.28);
+  transition:
+    background .55s cubic-bezier(.2,.9,.3,1.1),
+    box-shadow .55s cubic-bezier(.2,.9,.3,1.1),
+    transform .25s cubic-bezier(.2,.9,.3,1.3);
+  isolation:isolate;
+}
+.mode-switch.bon{
+  background:linear-gradient(135deg,#FE2C55,#f43f5e);
+  box-shadow:0 8px 24px rgba(254,44,85,.42),0 0 30px rgba(254,44,85,.28);
+}
+.mode-switch::before{
+  /* Outerglow aura */
+  content:'';position:absolute;inset:-4px;border-radius:22px;
+  background:inherit;z-index:-1;filter:blur(12px);opacity:.6;
+  transition:.55s;
+}
+.mode-switch:active{transform:scale(.94)}
+
+/* The spinning element */
+.mode-switch-inner{
+  position:absolute;inset:0;
+  display:grid;place-items:center;
+  transition:transform .6s cubic-bezier(.2,.9,.3,1.1);
+}
+.mode-switch.spin .mode-switch-inner{
+  transform:rotate(360deg);
+}
+
+/* Icons — both stacked, cross-fade on switch */
+.mode-icon{
+  position:absolute;
+  font-size:26px;line-height:1;
+  transition:
+    opacity .35s ease,
+    transform .55s cubic-bezier(.2,.9,.3,1.4);
+  will-change:transform,opacity;
+}
+.mode-icon-wh{
+  opacity:1;transform:scale(1) rotate(0deg);
+}
+.mode-switch.bon .mode-icon-wh{
+  opacity:0;transform:scale(.35) rotate(-180deg);
+}
+.mode-icon-bon{
+  opacity:0;transform:scale(.35) rotate(180deg);
+}
+.mode-switch.bon .mode-icon-bon{
+  opacity:1;transform:scale(1) rotate(0deg);
+}
+
+/* Ripple rings (two levels, on each switch) */
+.mode-ripple{
+  position:absolute;
+  inset:-6px;
+  border-radius:24px;
+  border:2px solid;
+  opacity:0;
+  pointer-events:none;
+  z-index:-2;
+}
+.mode-ripple.ring-a{ animation: rippleOut .8s cubic-bezier(.2,.7,.3,1) forwards; }
+.mode-ripple.ring-b{ animation: rippleOut .8s .12s cubic-bezier(.2,.7,.3,1) forwards; }
+.mode-switch.wh .mode-ripple{ border-color:rgba(37,244,238,.6); }
+.mode-switch.bon .mode-ripple{ border-color:rgba(254,44,85,.6); }
+
+@keyframes rippleOut{
+  0%   { opacity:1; transform:scale(1); }
+  100% { opacity:0; transform:scale(2.1); }
+}
+
+/* Small label under the button */
+.mode-label{
+  font-size:9.5px;font-weight:900;letter-spacing:.3px;
+  white-space:nowrap;
+  transition:color .35s, opacity .35s;
+  background:linear-gradient(90deg,#25F4EE,#22d3ee);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  opacity:1;
+  margin-top:2px;
+  padding:2px 8px;border-radius:8px;
+}
+.mode-label.bon{
+  background:linear-gradient(90deg,#FE2C55,#f43f5e);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+
+/* Flash overlay across the whole screen during switch */
+.mode-flash{
+  position:fixed;inset:0;pointer-events:none;z-index:1500;
+  opacity:0;transition:opacity .35s;
+}
+.mode-flash.wh{
+  background:radial-gradient(circle at 50% 100%,rgba(37,244,238,.22),transparent 60%);
+}
+.mode-flash.bon{
+  background:radial-gradient(circle at 50% 100%,rgba(254,44,85,.22),transparent 60%);
+}
+.mode-flash.active{opacity:1}
 
 .tt-modal{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.6);
   backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
@@ -383,39 +491,6 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 84px 1fr;direction:rtl}
 .tt-empty p{margin:0;font-size:14px;line-height:1.6}
 .tt-hr{height:1px;background:var(--line);margin:18px 0;border:0}
 
-/* MODULE PICKER */
-.pick-card{
-  display:flex;align-items:center;gap:14px;width:100%;
-  padding:20px 18px;margin-bottom:12px;
-  background:var(--surface-2);
-  border:1.5px solid var(--line-2);border-radius:18px;
-  color:var(--txt);cursor:pointer;transition:.2s;
-  font-family:inherit;text-align:start;
-}
-.pick-card:hover{
-  border-color:var(--c, var(--tt-cyan));
-  transform:translateY(-2px);
-  box-shadow:0 8px 24px rgba(0,0,0,.3);
-  background:color-mix(in srgb, var(--c) 8%, var(--surface-2));
-}
-.pick-card:active{transform:scale(.98)}
-.pick-card-ic{
-  width:64px;height:64px;flex:0 0 64px;
-  border-radius:18px;display:grid;place-items:center;font-size:32px;
-  background:color-mix(in srgb, var(--c) 20%, transparent);
-  border:1.5px solid color-mix(in srgb, var(--c) 40%, transparent);
-}
-.pick-card-main{flex:1;min-width:0}
-.pick-card-t{font-size:16px;font-weight:800;margin-bottom:4px}
-.pick-card-s{font-size:12.5px;color:var(--muted);line-height:1.4}
-.pick-card-arrow{
-  font-size:20px;color:var(--muted-2);
-  transition:.2s;
-}
-.pick-card:hover .pick-card-arrow{color:var(--c);transform:translateX(-4px)}
-html[dir="rtl"] .pick-card:hover .pick-card-arrow{transform:translateX(4px)}
-
-/* DELETE CONFIRM */
 .del-warn{text-align:center;padding:18px 12px 20px}
 .del-warn-ic{font-size:56px;margin-bottom:12px;
   filter:drop-shadow(0 8px 20px rgba(254,44,85,.4));
@@ -423,123 +498,74 @@ html[dir="rtl"] .pick-card:hover .pick-card-arrow{transform:translateX(4px)}
 @keyframes pulseWarn{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 .del-warn-t{font-size:17px;font-weight:900;margin-bottom:6px}
 .del-warn-s{font-size:12.5px;color:var(--muted)}
-.del-preview{
-  padding:14px 16px;margin-bottom:16px;
-  background:var(--surface-2);
-  border:1.5px solid var(--line-2);border-radius:14px;
-  font-size:12.5px;color:var(--muted);line-height:1.8;
-}
+.del-preview{padding:14px 16px;margin-bottom:16px;
+  background:var(--surface-2);border:1.5px solid var(--line-2);border-radius:14px;
+  font-size:12.5px;color:var(--muted);line-height:1.8}
 .del-preview > div{display:flex;gap:6px}
 .del-preview b{color:var(--txt);font-weight:800;min-width:60px}
-.del-preview .del-ref{
-  font-family:var(--font-en);font-weight:900;
+.del-preview .del-ref{font-family:var(--font-en);font-weight:900;
   background:linear-gradient(135deg, var(--tt-cyan), var(--tt-pink));
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-}
-.del-backup{
-  display:flex;align-items:flex-start;gap:12px;
-  padding:14px;margin-bottom:4px;
-  background:rgba(37,244,238,.06);
-  border:1.5px solid rgba(37,244,238,.3);
-  border-radius:14px;cursor:pointer;transition:.2s;
-}
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.del-backup{display:flex;align-items:flex-start;gap:12px;
+  padding:14px;margin-bottom:4px;background:rgba(37,244,238,.06);
+  border:1.5px solid rgba(37,244,238,.3);border-radius:14px;cursor:pointer;transition:.2s}
 .del-backup:hover{background:rgba(37,244,238,.1)}
-.del-backup input{
-  width:22px;height:22px;flex:0 0 22px;
-  accent-color:var(--tt-cyan);cursor:pointer;margin-top:1px;
-}
+.del-backup input{width:22px;height:22px;flex:0 0 22px;
+  accent-color:var(--tt-cyan);cursor:pointer;margin-top:1px}
 .del-backup > div{flex:1;min-width:0}
 .del-backup-t{font-size:13.5px;font-weight:800;margin-bottom:4px;color:var(--tt-cyan)}
 .del-backup-s{font-size:11.5px;color:var(--muted);line-height:1.4}
 
-/* ═══ DEVELOPER MODE ═══ */
-.dev-hero{
-  text-align:center;padding:20px 16px;
+.dev-hero{text-align:center;padding:20px 16px;
   background:linear-gradient(135deg, rgba(168,85,247,.15), rgba(37,244,238,.08));
-  border:1.5px solid rgba(168,85,247,.35);
-  border-radius:20px;margin-bottom:18px;
-  position:relative;overflow:hidden;
-}
-.dev-hero::before{
-  content:'';position:absolute;top:-40%;inset-inline-end:-10%;
+  border:1.5px solid rgba(168,85,247,.35);border-radius:20px;margin-bottom:18px;
+  position:relative;overflow:hidden}
+.dev-hero::before{content:'';position:absolute;top:-40%;inset-inline-end:-10%;
   width:180px;height:180px;border-radius:50%;
   background:radial-gradient(circle, var(--admin-glow), transparent);
-  filter:blur(30px);opacity:.5;
-}
-.dev-hero-ic{
-  font-size:48px;margin-bottom:8px;
+  filter:blur(30px);opacity:.5}
+.dev-hero-ic{font-size:48px;margin-bottom:8px;
   filter:drop-shadow(0 6px 20px var(--admin-glow));
-  animation:devPulse 2s ease-in-out infinite;
-}
+  animation:devPulse 2s ease-in-out infinite}
 @keyframes devPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 .dev-hero-t{font-size:18px;font-weight:900;
   background:linear-gradient(135deg, var(--admin), var(--tt-cyan));
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-  margin-bottom:6px;
-}
+  -webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:6px}
 .dev-hero-s{font-size:12.5px;color:var(--muted);position:relative}
-
 .dev-stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
-.dev-stat{
-  padding:14px 14px;border-radius:16px;
-  background:var(--surface);
-  border:1.5px solid var(--line);
-  position:relative;overflow:hidden;
-}
-.dev-stat::before{
-  content:'';position:absolute;top:0;inset-inline-start:0;width:3px;height:100%;
-  background:var(--c, var(--tt-cyan));
-}
+.dev-stat{padding:14px 14px;border-radius:16px;background:var(--surface);
+  border:1.5px solid var(--line);position:relative;overflow:hidden}
+.dev-stat::before{content:'';position:absolute;top:0;inset-inline-start:0;width:3px;height:100%;
+  background:var(--c, var(--tt-cyan))}
 .dev-stat-ic{font-size:18px;margin-bottom:6px;display:block}
-.dev-stat-v{
-  font-family:var(--font-en);font-size:24px;font-weight:900;
-  color:var(--c, var(--tt-cyan));line-height:1;margin-bottom:4px;
-}
+.dev-stat-v{font-family:var(--font-en);font-size:24px;font-weight:900;
+  color:var(--c, var(--tt-cyan));line-height:1;margin-bottom:4px}
 .dev-stat-l{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.2px}
-
-.agent-row{
-  display:flex;align-items:center;gap:12px;
-  padding:12px 14px;margin-bottom:8px;
-  background:var(--surface);
-  border:1.5px solid var(--line);border-radius:16px;
-  cursor:pointer;transition:.2s;
-}
+.agent-row{display:flex;align-items:center;gap:12px;padding:12px 14px;margin-bottom:8px;
+  background:var(--surface);border:1.5px solid var(--line);border-radius:16px;
+  cursor:pointer;transition:.2s}
 .agent-row:hover{border-color:var(--admin);transform:translateY(-1px)}
-.agent-avatar{
-  width:44px;height:44px;border-radius:50%;flex:0 0 44px;
+.agent-avatar{width:44px;height:44px;border-radius:50%;flex:0 0 44px;
   background:linear-gradient(135deg, var(--admin), var(--tt-cyan));
   display:grid;place-items:center;color:#fff;
-  font-family:var(--font-en);font-size:16px;font-weight:900;
-  overflow:hidden;
-}
+  font-family:var(--font-en);font-size:16px;font-weight:900;overflow:hidden}
 .agent-avatar img{width:100%;height:100%;object-fit:cover}
 .agent-main{flex:1;min-width:0}
 .agent-name{font-size:14px;font-weight:800;margin-bottom:3px;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .agent-meta{font-size:11.5px;color:var(--muted);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.agent-count{
-  font-family:var(--font-en);font-size:18px;font-weight:900;
-  color:var(--admin);flex:0 0 auto;text-align:center;
-}
+.agent-count{font-family:var(--font-en);font-size:18px;font-weight:900;
+  color:var(--admin);flex:0 0 auto;text-align:center}
 .agent-count-l{font-size:9.5px;color:var(--muted-2);font-weight:700;
   text-align:center;margin-top:2px}
-
-/* Dev detail view (transactions filtered by agent) */
-.dev-filter-bar{
-  display:flex;align-items:center;gap:10px;
-  padding:10px 14px;margin-bottom:14px;
-  background:rgba(168,85,247,.1);
-  border:1.5px solid rgba(168,85,247,.3);
-  border-radius:14px;
-  font-size:13px;
-}
-.dev-filter-bar .x{
-  width:28px;height:28px;border-radius:50%;
+.dev-filter-bar{display:flex;align-items:center;gap:10px;
+  padding:10px 14px;margin-bottom:14px;background:rgba(168,85,247,.1);
+  border:1.5px solid rgba(168,85,247,.3);border-radius:14px;font-size:13px}
+.dev-filter-bar .x{width:28px;height:28px;border-radius:50%;
   background:rgba(254,44,85,.2);color:var(--tt-pink);
   border:none;font-size:12px;font-weight:900;
-  display:grid;place-items:center;cursor:pointer;padding:0;
-}
+  display:grid;place-items:center;cursor:pointer;padding:0}
 
 @media(min-width:768px){
   .tt-bottomnav{max-width:640px;left:50%;transform:translateX(-50%);
@@ -573,7 +599,6 @@ html[dir="rtl"] .pick-card:hover .pick-card-arrow{transform:translateX(4px)}
 
 <!-- APP -->
 <div id="app-screen">
-  <!-- ═══ NO MORE MODULE TABS HERE ═══ -->
   <header class="tt-topbar">
     <div class="tt-brand">Digital Stock</div>
     <div class="tt-user">
@@ -607,15 +632,28 @@ html[dir="rtl"] .pick-card:hover .pick-card-arrow{transform:translateX(4px)}
     <section class="view" id="view-developer"></section>
   </main>
 
+  <!-- ═══════════════════════════════════════════════════════════
+       BOTTOM NAV — v14 with SWITCH button (replaces +)
+       ═══════════════════════════════════════════════════════════ -->
   <nav class="tt-bottomnav" id="bottomNav">
     <button class="nav-btn" data-nav="history">
       <span class="ic">📋</span>
       <span class="lbl" data-i18n="tabs.history">السجل</span>
       <span class="nav-badge" id="histCount">0</span>
     </button>
+
     <div class="nav-center">
-      <button class="nav-plus" id="navPlusBtn" title="New">＋</button>
+      <button class="mode-switch wh" id="modeSwitchBtn" data-mode="warehouse" aria-label="Switch mode">
+        <div class="mode-switch-inner">
+          <span class="mode-icon mode-icon-wh">🏭</span>
+          <span class="mode-icon mode-icon-bon">🚚</span>
+        </div>
+        <span class="mode-ripple ring-a"></span>
+        <span class="mode-ripple ring-b"></span>
+      </button>
+      <div class="mode-label" id="modeLabel" data-i18n="tabs.warehouse">خروج مخزن</div>
     </div>
+
     <button class="nav-btn" data-nav="profile">
       <span class="ic">👤</span>
       <span class="lbl" data-i18n="tabs.profile">الملف</span>
@@ -623,35 +661,10 @@ html[dir="rtl"] .pick-card:hover .pick-card-arrow{transform:translateX(4px)}
   </nav>
 </div>
 
-<!-- MODULE PICKER (simplified — no counts) -->
-<div class="tt-modal" id="modulePickModal">
-  <div class="tt-modal-box" style="max-width:480px">
-    <div class="tt-modal-head">
-      <h3 data-i18n="picker.title">اختر نوع الحركة</h3>
-      <button class="tt-iconbtn close-modal" type="button">✕</button>
-    </div>
-    <div class="tt-modal-body" style="padding:20px">
-      <button class="pick-card" data-pick-module="warehouse" style="--c:#25F4EE">
-        <div class="pick-card-ic">🏭</div>
-        <div class="pick-card-main">
-          <div class="pick-card-t" data-i18n="picker.warehouse.t">خروج مخزن (WER)</div>
-          <div class="pick-card-s" data-i18n="picker.warehouse.s">حركة داخلية — بضاعة باقية في المنشأة</div>
-        </div>
-        <div class="pick-card-arrow">←</div>
-      </button>
-      <button class="pick-card" data-pick-module="bon" style="--c:#FE2C55">
-        <div class="pick-card-ic">🚚</div>
-        <div class="pick-card-main">
-          <div class="pick-card-t" data-i18n="picker.bon.t">إذن خروج نهائي (BDS)</div>
-          <div class="pick-card-s" data-i18n="picker.bon.s">خروج نهائي — بضاعة تغادر المنشأة</div>
-        </div>
-        <div class="pick-card-arrow">←</div>
-      </button>
-    </div>
-  </div>
-</div>
+<!-- Full-screen color flash during switch -->
+<div class="mode-flash" id="modeFlash"></div>
 
-<!-- DELETE CONFIRM -->
+<!-- Delete confirm -->
 <div class="tt-modal" id="deleteConfirmModal">
   <div class="tt-modal-box" style="max-width:480px">
     <div class="tt-modal-head">
@@ -743,7 +756,6 @@ html[dir="rtl"] .pick-card:hover .pick-card-arrow{transform:translateX(4px)}
   </div>
 </div>
 
-<!-- Avatar file input -->
 <input type="file" id="avatarInput" accept="image/*" hidden>
 <input type="file" id="fileInput" accept="image/*" hidden>
 <input type="file" id="importInput" accept="application/json" hidden>
@@ -778,10 +790,9 @@ const storage = getStorage(fbApp);
 enableIndexedDbPersistence(db).catch(() => {});
 setPersistence(auth, browserLocalPersistence).catch(console.error);
 
-/* ═══ ADMIN UID ═══ */
 const ADMIN_UID = 'kszZYwapqMYc8XvY2yOYGmO3c6D3';
 
-/* ============ I18N ============ */
+/* I18N */
 const I18N = {
   ar: {
     'app.name':'Digital Stock','app.tagline':'نظام الإدارة والأمن الذكي',
@@ -791,9 +802,7 @@ const I18N = {
     'status.online':'متصل','status.offline':'مفصول',
     'tabs.warehouse':'خروج مخزن','tabs.bon':'إذن خروج',
     'tabs.history':'السجل','tabs.profile':'الملف',
-    'picker.title':'اختر نوع الحركة','picker.records':'سجل',
-    'picker.warehouse.t':'خروج مخزن (WER)','picker.warehouse.s':'حركة داخلية — بضاعة باقية في المنشأة',
-    'picker.bon.t':'إذن خروج نهائي (BDS)','picker.bon.s':'خروج نهائي — بضاعة تغادر المنشأة',
+    'picker.records':'سجل',
     'del.title':'تأكيد الحذف','del.question':'هل تريد حذف هذه البطاقة نهائياً؟',
     'del.warning':'لا يمكن التراجع عن هذه العملية',
     'del.backupTitle':'📥 تحميل نسخة احتياطية قبل الحذف',
@@ -860,8 +869,7 @@ const I18N = {
     'profile.stats.week':'أسبوع','profile.stats.archived':'مؤرشف',
     'profile.activity':'النشاط','profile.noActivity':'لا نشاط.',
     'profile.settings':'الإعدادات','profile.logout':'خروج',
-    'profile.changeAvatar':'تغيير الصورة',
-    'profile.avatarHint':'اضغط على الصورة لتغييرها',
+    'profile.changeAvatar':'تغيير الصورة','profile.avatarHint':'اضغط على الصورة لتغييرها',
     'profile.avatarUpdated':'تم تحديث الصورة',
     'units.u':'حبة','units.kg':'كغ','units.g':'غرام','units.l':'لتر','units.cl':'سل',
     'units.carton':'كرتون','units.box':'صندوق','units.bag':'كيس','units.palette':'طبلة',
@@ -873,7 +881,9 @@ const I18N = {
     'dev.agentsList':'أعضاء الفريق','dev.transactions':'جميع المعاملات',
     'dev.viewingAgent':'عرض معاملات:','dev.backToAll':'عودة للكل',
     'dev.allTx':'كل المعاملات','dev.noAgents':'لا يوجد أعضاء.',
-    'dev.accessDenied':'غير مسموح'
+    'dev.accessDenied':'غير مسموح',
+    'mode.warehouse':'خروج مخزن','mode.bon':'إذن خروج',
+    'mode.switched':'تم التبديل إلى'
   },
   fr: {
     'app.name':'Digital Stock','app.tagline':'Système de gestion et sécurité',
@@ -883,9 +893,7 @@ const I18N = {
     'status.online':'En ligne','status.offline':'Hors ligne',
     'tabs.warehouse':'Sortie dépôt','tabs.bon':'Bon sortie',
     'tabs.history':'Historique','tabs.profile':'Profil',
-    'picker.title':'Choisir le type de mouvement','picker.records':'rec.',
-    'picker.warehouse.t':'Sortie dépôt (WER)','picker.warehouse.s':'Mouvement interne',
-    'picker.bon.t':'Bon de sortie (BDS)','picker.bon.s':'Sortie définitive',
+    'picker.records':'rec.',
     'del.title':'Confirmer la suppression','del.question':'Supprimer définitivement ?',
     'del.warning':'Action irréversible',
     'del.backupTitle':'📥 Télécharger une sauvegarde avant suppression',
@@ -950,8 +958,7 @@ const I18N = {
     'profile.stats.week':'Sem.','profile.stats.archived':'Archivé',
     'profile.activity':'Activité','profile.noActivity':'Aucune activité.',
     'profile.settings':'Paramètres','profile.logout':'Déconnexion',
-    'profile.changeAvatar':'Changer la photo',
-    'profile.avatarHint':'Touchez la photo pour la changer',
+    'profile.changeAvatar':'Changer la photo','profile.avatarHint':'Touchez la photo pour la changer',
     'profile.avatarUpdated':'Photo mise à jour',
     'units.u':'U','units.kg':'Kg','units.g':'g','units.l':'L','units.cl':'cl',
     'units.carton':'Carton','units.box':'Caisse','units.bag':'Sac','units.palette':'Palette',
@@ -963,7 +970,9 @@ const I18N = {
     'dev.agentsList':'Membres de l\'équipe','dev.transactions':'Toutes les transactions',
     'dev.viewingAgent':'Transactions de:','dev.backToAll':'Retour à tout',
     'dev.allTx':'Toutes les transactions','dev.noAgents':'Aucun membre.',
-    'dev.accessDenied':'Accès refusé'
+    'dev.accessDenied':'Accès refusé',
+    'mode.warehouse':'Sortie dépôt','mode.bon':'Bon sortie',
+    'mode.switched':'Basculé vers'
   },
   en: {
     'app.name':'Digital Stock','app.tagline':'Intelligent Management & Security',
@@ -973,9 +982,7 @@ const I18N = {
     'status.online':'Online','status.offline':'Offline',
     'tabs.warehouse':'Warehouse','tabs.bon':'Exit voucher',
     'tabs.history':'History','tabs.profile':'Profile',
-    'picker.title':'Choose movement type','picker.records':'rec.',
-    'picker.warehouse.t':'Warehouse Exit (WER)','picker.warehouse.s':'Internal movement',
-    'picker.bon.t':'Exit Voucher (BDS)','picker.bon.s':'Permanent exit',
+    'picker.records':'rec.',
     'del.title':'Confirm deletion','del.question':'Delete permanently?',
     'del.warning':'Cannot be undone',
     'del.backupTitle':'📥 Download backup before deleting',
@@ -1040,8 +1047,7 @@ const I18N = {
     'profile.stats.week':'Week','profile.stats.archived':'Archived',
     'profile.activity':'Activity','profile.noActivity':'No activity.',
     'profile.settings':'Settings','profile.logout':'Sign out',
-    'profile.changeAvatar':'Change photo',
-    'profile.avatarHint':'Tap photo to change',
+    'profile.changeAvatar':'Change photo','profile.avatarHint':'Tap photo to change',
     'profile.avatarUpdated':'Photo updated',
     'units.u':'U','units.kg':'Kg','units.g':'g','units.l':'L','units.cl':'cl',
     'units.carton':'Carton','units.box':'Box','units.bag':'Bag','units.palette':'Pallet',
@@ -1053,19 +1059,22 @@ const I18N = {
     'dev.agentsList':'Team members','dev.transactions':'All transactions',
     'dev.viewingAgent':'Viewing:','dev.backToAll':'Back to all',
     'dev.allTx':'All transactions','dev.noAgents':'No members.',
-    'dev.accessDenied':'Access denied'
+    'dev.accessDenied':'Access denied',
+    'mode.warehouse':'Warehouse','mode.bon':'Exit voucher',
+    'mode.switched':'Switched to'
   }
 };
 
 let currentLang = localStorage.getItem('ds.lang') || 'ar';
 const t = k => (I18N[currentLang] && I18N[currentLang][k]) || I18N.ar[k] || k;
 
-/* ============ CONSTANTS ============ */
-const STORE_KEY = 'ds.transactions.v13';
-const QUEUE_KEY = 'ds.queue.v13';
-const COUNTER_KEY = 'ds.counters.v13';
-const SET_KEY = 'ds.settings.v13';
-const AVATARS_KEY = 'ds.avatars.v13';
+/* CONSTANTS */
+const STORE_KEY = 'ds.transactions.v14';
+const QUEUE_KEY = 'ds.queue.v14';
+const COUNTER_KEY = 'ds.counters.v14';
+const SET_KEY = 'ds.settings.v14';
+const AVATARS_KEY = 'ds.avatars.v14';
+const LAST_MODE_KEY = 'ds.lastMode.v14';
 const MAX_PHOTOS = 5;
 const RETENTION_MS = 48 * 3600 * 1000;
 const MODULE_DEF = {
@@ -1087,12 +1096,12 @@ let historyFilter = 'all';
 let historyQuery = '';
 let firebaseReady = false;
 let uiReady = false;
-let currentModule = 'warehouse';
+let currentModule = localStorage.getItem(LAST_MODE_KEY) || 'warehouse';
 let pendingDelete = null;
 let developerMode = false;
-let devViewingAgent = null;   // null = all, or specific agent name
+let devViewingAgent = null;
 
-/* ============ HELPERS ============ */
+/* HELPERS */
 const $  = (s, r=document) => r.querySelector(s);
 const $$ = (s, r=document) => [...r.querySelectorAll(s)];
 const esc = s => String(s ?? '').replace(/[&<>"']/g,
@@ -1122,7 +1131,7 @@ const dataURLtoBlob = dataURL => {
   return new Blob([arr],{type:mime});
 };
 
-/* ============ STORAGE ============ */
+/* STORAGE */
 const loadAll = () => { try { return JSON.parse(localStorage.getItem(STORE_KEY))||[]; } catch { return []; } };
 const saveAll = list => {
   try { localStorage.setItem(STORE_KEY, JSON.stringify(list)); }
@@ -1133,10 +1142,8 @@ const loadSettings = () => {
 };
 const saveSettings = () => localStorage.setItem(SET_KEY, JSON.stringify(settings));
 
-/* ============ AVATARS ============ */
-const loadAvatars = () => {
-  try { return JSON.parse(localStorage.getItem(AVATARS_KEY))||{}; } catch { return {}; }
-};
+/* AVATARS */
+const loadAvatars = () => { try { return JSON.parse(localStorage.getItem(AVATARS_KEY))||{}; } catch { return {}; } };
 const saveAvatars = obj => localStorage.setItem(AVATARS_KEY, JSON.stringify(obj));
 const getAvatarKey = () => currentUid || currentEmail || currentAgent || 'default';
 const getAvatar = (key) => {
@@ -1152,8 +1159,8 @@ const setAvatar = (dataUrl, key) => {
   saveAvatars(avatars);
 };
 
-/* ============ INDEXEDDB ============ */
-const DB_NAME='ds.archive.v13', DB_VERSION=1;
+/* INDEXEDDB */
+const DB_NAME='ds.archive.v14', DB_VERSION=1;
 let _db=null;
 function openArchive(){
   if(_db) return Promise.resolve(_db);
@@ -1234,7 +1241,7 @@ const idbSizeEstimate = async () => {
   return '—';
 };
 
-/* ============ COUNTERS & COMMIT ============ */
+/* COUNTERS */
 const localNextSeq = (prefix, dateKey) => {
   const c = JSON.parse(localStorage.getItem(COUNTER_KEY)||'{}');
   const id = `${prefix}_${dateKey}`;
@@ -1279,7 +1286,7 @@ async function commitTransaction(payload){
   return { id, ref };
 }
 
-/* ============ CLOUDINARY ============ */
+/* CLOUDINARY */
 const CLOUDINARY_UPLOAD_PRESET = "digital_stock";
 const CLOUDINARY_CLOUD_NAME = "w1gyqrdx";
 const CLOUDINARY_API_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
@@ -1342,7 +1349,7 @@ async function photoRefToURL(ref){
   return url;
 }
 
-/* ============ OFFLINE QUEUE ============ */
+/* OFFLINE QUEUE */
 function queueOffline(payload, moduleKey, items){
   const q = JSON.parse(localStorage.getItem(QUEUE_KEY)||'[]');
   const jobId = (crypto.randomUUID && crypto.randomUUID()) || String(Date.now());
@@ -1388,7 +1395,7 @@ async function flushOfflineQueue(){
   if(synced){ renderHistory(); renderProfile(); renderHistoryBanner(); }
 }
 
-/* ============ DROPDOWNS ============ */
+/* DROPDOWNS */
 const departments = () => currentLang==='ar'
   ? ['المطبخ','المطعم / F&B','التدبير الفندقي','الصيانة','الاستقبال','Spa','الإدارة','أخرى']
   : currentLang==='fr'
@@ -1400,7 +1407,7 @@ const reasons = () => currentLang==='ar'
   ? ['Retour fournisseur','Prêt / Réparation','Don','Vente / Rebut','Déchets','Transfert site','Autre']
   : ['Supplier return','Loan / Repair','Donation','Sale / Scrap','Waste','Site transfer','Other'];
 
-/* ============ FORM BUILDERS ============ */
+/* FORM BUILDERS */
 function itemRowHtml(){
   return `<div class="tt-item-row">
     <input class="tt-input i-name" placeholder="${t('form.items.name')}">
@@ -1511,7 +1518,7 @@ function formHtml(key){
   </form>`;
 }
 
-/* ============ RENDER FORMS ============ */
+/* RENDER FORMS */
 function renderForms(){
   ['warehouse','bon'].forEach(key=>{
     const host = document.getElementById('view-'+key);
@@ -1658,7 +1665,7 @@ function refreshDatalists(){
   });
 }
 
-/* ============ CARD GENERATION ============ */
+/* CARD GENERATION */
 const rr = (ctx,x,y,w,h,r) => {
   r = Math.min(r,w/2,h/2);
   ctx.beginPath();
@@ -1890,7 +1897,7 @@ async function generateCard(tx){
   return out.toDataURL('image/jpeg', 0.92);
 }
 
-/* ============ PDF / JSON ============ */
+/* PDF / JSON */
 async function buildPdfBlob(tx, cardDataUrl){
   if(!window.jspdf || !window.jspdf.jsPDF) throw new Error('jsPDF not loaded');
   const dataUrl = cardDataUrl || await generateCard(tx);
@@ -1909,7 +1916,7 @@ async function buildPdfBlob(tx, cardDataUrl){
 }
 function buildJsonBlob(tx){
   return new Blob([JSON.stringify({
-    schema:'digitalstock.exit.v6',
+    schema:'digitalstock.exit.v7',
     exportedAt:new Date().toISOString(),
     reference:tx.ref, module:tx.module,
     hotel:tx.hotel||settings.hotel,
@@ -1923,7 +1930,7 @@ function buildJsonBlob(tx){
   },null,2)],{type:'application/json'});
 }
 
-/* ============ ARCHIVE ============ */
+/* ARCHIVE */
 async function archiveTransaction(tx, pdfBlob, jsonBlob, cardUrl){
   const expires = new Date(Date.now()+RETENTION_MS).toISOString();
   if(firebaseReady){
@@ -1987,7 +1994,7 @@ function startRetention(){
   setInterval(()=>purgeExpired().catch(()=>{}), 10*60*1000);
 }
 
-/* ============ WHATSAPP ============ */
+/* WHATSAPP */
 function buildMessage(tx){
   const L=[];
   L.push(`*${t('mod.'+tx.module+'.title')}*`);
@@ -2042,7 +2049,7 @@ function downloadBlob(blob, fn){
   setTimeout(()=>URL.revokeObjectURL(url), 4000);
 }
 
-/* ============ SUBMIT ============ */
+/* SUBMIT */
 async function handleSubmit(key){
   const form = document.getElementById('form-'+key);
   const fd = new FormData(form);
@@ -2078,7 +2085,7 @@ async function handleSubmit(key){
   const payload = {
     module: key, hotel: settings.hotel,
     guard: effectiveGuard, staff,
-    guardUid: currentUid,      // for dev filtering
+    guardUid: currentUid,
     department: (fd.get('department')||'').trim(),
     po: (fd.get('po')||'').trim(),
     destination: (fd.get('destination')||'').trim(),
@@ -2132,7 +2139,7 @@ async function handleSubmit(key){
   await showCard(record);
 }
 
-/* ============ CARD MODAL ============ */
+/* CARD MODAL */
 async function showCard(tx){
   activeTx = tx;
   activeCardUrl = null;
@@ -2189,44 +2196,7 @@ async function runBackgroundArchive(tx, cardUrl){
   }
 }
 
-/* ============ MODULE PICKER (no counts) ============ */
-function openModulePicker(){
-  document.getElementById('modulePickModal').classList.add('open');
-}
-function initModulePicker(){
-  const modal = document.getElementById('modulePickModal');
-  if(!modal || modal._init) return;
-  modal._init = true;
-  modal.querySelectorAll('.close-modal').forEach(btn => {
-    btn.addEventListener('click', () => modal.classList.remove('open'));
-  });
-  modal.addEventListener('click', e => {
-    if(e.target === modal) modal.classList.remove('open');
-  });
-  modal.querySelectorAll('[data-pick-module]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const mod = btn.dataset.pickModule;
-      modal.classList.remove('open');
-      switchView(mod);
-      setTimeout(()=>{
-        const form = document.getElementById('form-'+mod);
-        if(form){
-          const staffInput = form.querySelector('[name=staff]');
-          if(staffInput){
-            staffInput.focus();
-            staffInput.animate([
-              { boxShadow: '0 0 0 0 rgba(37,244,238,.7)' },
-              { boxShadow: '0 0 0 8px rgba(37,244,238,.25)' },
-              { boxShadow: '0 0 0 0 rgba(37,244,238,0)' }
-            ], { duration: 1200, iterations: 2 });
-          }
-        }
-      }, 250);
-    });
-  });
-}
-
-/* ============ DELETE CONFIRM ============ */
+/* DELETE CONFIRM */
 function openDeleteConfirm(tx){
   pendingDelete = tx;
   const preview = document.getElementById('delPreview');
@@ -2287,14 +2257,12 @@ function initDeleteConfirm(){
   document.getElementById('delConfirmBtn').onclick = () => performDelete();
 }
 
-/* ============ HISTORY (only MY records for non-admins) ============ */
+/* HISTORY */
 function getVisibleRecords(){
   const all = loadAll();
-  // Non-developers only see their own records
   if(developerMode) return all;
   if(!currentAgent) return all;
   return all.filter(x => {
-    // Match by UID if available, else by name
     if(x.guardUid && currentUid) return x.guardUid === currentUid;
     return x.guard === currentAgent;
   });
@@ -2368,11 +2336,7 @@ function initHistory(){
     if(!tx) return;
     const btn = e.target.closest('[data-act]');
     const act = btn ? btn.dataset.act : 'view';
-
-    if(act === 'del'){
-      openDeleteConfirm(tx);
-      return;
-    }
+    if(act === 'del'){ openDeleteConfirm(tx); return; }
     if(act === 'pdf'){
       toast(t('history.pdfGenerating'));
       try {
@@ -2394,13 +2358,11 @@ function initHistory(){
     }
     showCard(tx);
   });
-
   const si = document.getElementById('histSearch');
   if(si) si.addEventListener('input', e => {
     historyQuery = e.target.value.trim();
     renderHistory();
   });
-
   $$('.hist-filter').forEach(btn => {
     if(btn._init) return;
     btn._init = true;
@@ -2410,7 +2372,6 @@ function initHistory(){
       renderHistory();
     });
   });
-
   const exp = document.getElementById('btnExportAll');
   if(exp && !exp._init){
     exp._init = true;
@@ -2445,7 +2406,6 @@ function initHistory(){
         let n = 0;
         for(const rec of data.records){
           if(!rec.id || ids.has(rec.id)) continue;
-          // Ensure the imported record is associated with the current agent
           if(!rec.guard) rec.guard = currentAgent;
           if(!rec.guardUid) rec.guardUid = currentUid;
           existing.unshift(rec); n++;
@@ -2460,7 +2420,7 @@ function initHistory(){
   }
 }
 
-/* ============ PROFILE WITH AVATAR ============ */
+/* PROFILE */
 function renderProfile(){
   const host = document.getElementById('view-profile');
   if(!host) return;
@@ -2475,11 +2435,7 @@ function renderProfile(){
   const initial = (currentAgent||'?').trim().charAt(0).toUpperCase();
   const recent = all.slice(0,9);
   const avatar = getAvatar();
-
-  const avatarHtml = avatar
-    ? `<img src="${avatar}" alt="avatar">`
-    : esc(initial);
-
+  const avatarHtml = avatar ? `<img src="${avatar}" alt="avatar">` : esc(initial);
   const isAdmin = currentUid === ADMIN_UID;
 
   host.innerHTML = `
@@ -2494,19 +2450,16 @@ function renderProfile(){
       ${currentEmail ? `<div class="profile-email">${esc(currentEmail)}</div>` : ''}
       <p class="tt-hint" style="margin:10px 0 0;font-size:11px">${t('profile.avatarHint')}</p>
     </div>
-
     <div class="stats-row">
       <div class="stat"><div class="stat-val">${total}</div><div class="stat-lbl">${t('profile.stats.total')}</div></div>
       <div class="stat"><div class="stat-val">${today}</div><div class="stat-lbl">${t('profile.stats.today')}</div></div>
       <div class="stat"><div class="stat-val">${week}</div><div class="stat-lbl">${t('profile.stats.week')}</div></div>
       <div class="stat"><div class="stat-val">${arch}</div><div class="stat-lbl">${t('profile.stats.archived')}</div></div>
     </div>
-
     <div class="tt-card-head" style="margin:0 4px 10px">
       <span class="tt-bullet"></span>
       <h2 style="font-size:14px">${t('profile.activity')}</h2>
     </div>
-
     ${recent.length
       ? `<div class="activity-grid">${recent.map(tx=>{
           const m = MODULE_DEF[tx.module];
@@ -2516,7 +2469,6 @@ function renderProfile(){
           </div>`;
         }).join('')}</div>`
       : `<div class="tt-empty"><div class="ic">📭</div><p>${t('profile.noActivity')}</p></div>`}
-
     ${isAdmin ? `
       <div class="tt-banner admin" style="margin-bottom:14px">
         <span class="b-ic">🔧</span>
@@ -2528,14 +2480,12 @@ function renderProfile(){
         </button>
       </div>
     ` : ''}
-
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px">
       <button class="tt-btn ghost" id="profSettings" style="flex:1">${t('profile.settings')}</button>
       <button class="tt-btn danger" id="profLogout" style="flex:1">${t('profile.logout')}</button>
     </div>
   `;
 
-  // Avatar editing
   const ring = document.getElementById('avatarRing');
   const editBtn = document.getElementById('avatarEditBtn');
   const triggerAvatarUpload = () => {
@@ -2562,15 +2512,12 @@ function renderProfile(){
   if(ring) ring.onclick = triggerAvatarUpload;
   if(editBtn) editBtn.onclick = (e) => { e.stopPropagation(); triggerAvatarUpload(); };
 
-  // Activity cells
   host.querySelectorAll('.activity-cell').forEach(el => {
     el.onclick = () => {
       const tx = loadAll().find(x=>x.id === el.dataset.id);
       if(tx) showCard(tx);
     };
   });
-
-  // Buttons
   const s = document.getElementById('profSettings');
   if(s) s.onclick = () => document.getElementById('btnSettings').click();
   const l = document.getElementById('profLogout');
@@ -2589,9 +2536,7 @@ function renderProfile(){
   };
 }
 
-/* ═══════════════════════════════════════════════════════════
-   DEVELOPER MODE VIEW
-   ═══════════════════════════════════════════════════════════ */
+/* DEVELOPER */
 function renderDeveloper(){
   const host = document.getElementById('view-developer');
   if(!host) return;
@@ -2600,26 +2545,17 @@ function renderDeveloper(){
     return;
   }
   const all = loadAll();
-
-  // Compute stats
   const total = all.length;
   const archived = all.filter(x=>x.archived).length;
   const totalPhotos = all.reduce((s,x)=>s+(x.photos?.length||0),0);
 
-  // Aggregate by guard (agent)
   const agentsMap = {};
   all.forEach(tx => {
     const key = tx.guardUid || tx.guard || 'unknown';
     if(!agentsMap[key]){
       agentsMap[key] = {
-        key,
-        name: tx.guard || '—',
-        uid: tx.guardUid || null,
-        count: 0,
-        warehouse: 0,
-        bon: 0,
-        archived: 0,
-        lastAt: tx.createdAt
+        key, name: tx.guard || '—', uid: tx.guardUid || null,
+        count: 0, warehouse: 0, bon: 0, archived: 0, lastAt: tx.createdAt
       };
     }
     const a = agentsMap[key];
@@ -2631,13 +2567,11 @@ function renderDeveloper(){
   });
   const agents = Object.values(agentsMap).sort((a,b)=>b.count - a.count);
 
-  // Filtered records for detail view
   let viewRecords = all;
   if(devViewingAgent){
     viewRecords = all.filter(tx => (tx.guardUid || tx.guard) === devViewingAgent);
   }
-
-  const filteredTx = viewRecords.slice(0, 100);   // limit display
+  const filteredTx = viewRecords.slice(0, 100);
 
   host.innerHTML = `
     <div class="dev-hero">
@@ -2645,7 +2579,6 @@ function renderDeveloper(){
       <div class="dev-hero-t">${t('dev.title')}</div>
       <div class="dev-hero-s">${t('dev.subtitle')}</div>
     </div>
-
     <div class="dev-stats-grid">
       <div class="dev-stat" style="--c:#25F4EE">
         <span class="dev-stat-ic">📊</span>
@@ -2668,12 +2601,10 @@ function renderDeveloper(){
         <div class="dev-stat-l">${t('dev.totalPhotos')}</div>
       </div>
     </div>
-
     <div class="tt-card-head" style="margin:14px 4px 10px">
       <span class="tt-bullet" style="--c:#a855f7"></span>
       <h2 style="font-size:14px">${t('dev.agentsList')}</h2>
     </div>
-
     ${agents.length
       ? agents.map(a => {
           const av = getAvatar(a.uid) || getAvatar(a.name);
@@ -2697,7 +2628,6 @@ function renderDeveloper(){
           `;
         }).join('')
       : `<div class="tt-empty"><div class="ic">📭</div><p>${t('dev.noAgents')}</p></div>`}
-
     <div class="tt-card-head" style="margin:20px 4px 10px">
       <span class="tt-bullet" style="--c:#a855f7"></span>
       <h2 style="font-size:14px">
@@ -2706,14 +2636,12 @@ function renderDeveloper(){
           : t('dev.transactions')}
       </h2>
     </div>
-
     ${devViewingAgent ? `
       <div class="dev-filter-bar">
         <span>${t('dev.viewingAgent')} <b>${esc((agents.find(x=>x.key===devViewingAgent)||{}).name || devViewingAgent)}</b></span>
         <button class="x" id="devClearFilter">✕</button>
       </div>
     ` : ''}
-
     ${filteredTx.length
       ? filteredTx.map(tx => {
           const m = MODULE_DEF[tx.module];
@@ -2737,14 +2665,12 @@ function renderDeveloper(){
           `;
         }).join('')
       : `<div class="tt-empty"><div class="ic">📋</div><p>${t('history.empty')}</p></div>`}
-
     <div style="display:flex;gap:10px;margin:20px 0">
       <button class="tt-btn ghost" id="devBackToProfile" style="flex:1">${t('profile.title')}</button>
       <button class="tt-btn admin" id="devExitBtn" style="flex:1">⏹ ${t('dev.deactivate')}</button>
     </div>
   `;
 
-  // Wire agent rows
   host.querySelectorAll('.agent-row').forEach(el => {
     el.onclick = () => {
       devViewingAgent = el.dataset.agentKey;
@@ -2754,8 +2680,6 @@ function renderDeveloper(){
   });
   const clearF = document.getElementById('devClearFilter');
   if(clearF) clearF.onclick = () => { devViewingAgent = null; renderDeveloper(); };
-
-  // Transactions - view opens card
   host.querySelectorAll('[data-id]').forEach(el => {
     el.addEventListener('click', (e) => {
       if(e.target.closest('[data-dev-act="view"]')){
@@ -2764,7 +2688,6 @@ function renderDeveloper(){
       }
     });
   });
-
   const back = document.getElementById('devBackToProfile');
   if(back) back.onclick = () => switchView('profile');
   const exit = document.getElementById('devExitBtn');
@@ -2776,7 +2699,7 @@ function renderDeveloper(){
   };
 }
 
-/* ============ MODALS ============ */
+/* MODALS */
 function closeModals(){
   $$('.tt-modal').forEach(m=>m.classList.remove('open'));
   activeTx = null; activeCardUrl = null; pendingDelete = null;
@@ -2860,7 +2783,9 @@ function initModals(){
   };
 }
 
-/* ============ NAVIGATION ============ */
+/* ═══════════════════════════════════════════════════════════════
+   NAVIGATION + MODE SWITCH
+   ═══════════════════════════════════════════════════════════════ */
 function switchView(view){
   $$('.view').forEach(v=>v.classList.toggle('active', v.id === 'view-'+view));
   $$('.nav-btn').forEach(b=>b.classList.toggle('active', b.dataset.nav === view));
@@ -2868,8 +2793,94 @@ function switchView(view){
   if(view === 'history') renderHistoryBanner();
   if(view === 'profile') renderProfile();
   if(view === 'developer') renderDeveloper();
+  updateModeSwitchUI();
   window.scrollTo({top:0, behavior:'smooth'});
 }
+
+/* Update the switch button visually based on currentModule */
+function updateModeSwitchUI(){
+  const btn = document.getElementById('modeSwitchBtn');
+  const lbl = document.getElementById('modeLabel');
+  if(!btn || !lbl) return;
+  const isBon = currentModule === 'bon';
+  btn.classList.toggle('bon', isBon);
+  btn.classList.toggle('wh', !isBon);
+  btn.dataset.mode = currentModule;
+  lbl.classList.toggle('bon', isBon);
+  lbl.textContent = isBon ? t('mode.bon') : t('mode.warehouse');
+}
+
+/* The actual switch action with animation */
+function performModeSwitch(){
+  const btn = document.getElementById('modeSwitchBtn');
+  const lbl = document.getElementById('modeLabel');
+  const flash = document.getElementById('modeFlash');
+  if(!btn) return;
+
+  // Determine target
+  const nextMode = currentModule === 'warehouse' ? 'bon' : 'warehouse';
+  const goingToBon = nextMode === 'bon';
+
+  // 1. Play spin animation on the button
+  btn.classList.add('spin');
+  // Reset ripples by re-triggering them
+  const ripples = btn.querySelectorAll('.mode-ripple');
+  ripples.forEach(r => {
+    r.style.animation = 'none';
+    // Force reflow
+    void r.offsetHeight;
+    r.style.animation = '';
+  });
+
+  // 2. Flash the screen with the target color
+  if(flash){
+    flash.className = 'mode-flash ' + (goingToBon ? 'bon' : 'wh') + ' active';
+    setTimeout(() => { flash.classList.remove('active'); }, 350);
+  }
+
+  // 3. Haptic feedback on supported devices
+  if(navigator.vibrate) {
+    try { navigator.vibrate(goingToBon ? [40,30,40] : 40); } catch {}
+  }
+
+  // 4. Update internal state
+  currentModule = nextMode;
+  try { localStorage.setItem(LAST_MODE_KEY, currentModule); } catch {}
+
+  // 5. Swap views with smooth animation after button starts spinning
+  setTimeout(() => {
+    $$('.view').forEach(v => {
+      v.classList.remove('active', 'mode-enter');
+      if(v.id === 'view-' + currentModule) {
+        v.classList.add('active');
+        // Force reflow then add enter animation
+        void v.offsetHeight;
+        v.classList.add('mode-enter');
+        setTimeout(() => v.classList.remove('mode-enter'), 600);
+      }
+    });
+    // Update nav-btn states (no nav-btn corresponds, so just clear)
+    $$('.nav-btn').forEach(b => b.classList.remove('active'));
+    updateModeSwitchUI();
+    window.scrollTo({top:0, behavior:'smooth'});
+    // Focus staff field after animation
+    setTimeout(() => {
+      const form = document.getElementById('form-' + currentModule);
+      if(form){
+        const s = form.querySelector('[name="staff"]');
+        if(s) s.focus({preventScroll:true});
+      }
+    }, 400);
+    // Small toast confirmation
+    toast((goingToBon ? '🚚 ' : '🏭 ') + t('mode.switched') + ' ' + (goingToBon ? t('mode.bon') : t('mode.warehouse')), 1600);
+  }, 300);
+
+  // 6. Remove spin class after animation completes
+  setTimeout(() => {
+    btn.classList.remove('spin');
+  }, 700);
+}
+
 function initNavigation(){
   const bn = document.getElementById('bottomNav');
   if(bn && !bn._init){
@@ -2880,14 +2891,15 @@ function initNavigation(){
       switchView(b.dataset.nav);
     });
   }
-  const np = document.getElementById('navPlusBtn');
-  if(np && !np._init){
-    np._init = true;
-    np.onclick = () => openModulePicker();
+  // The switch button
+  const sw = document.getElementById('modeSwitchBtn');
+  if(sw && !sw._init){
+    sw._init = true;
+    sw.addEventListener('click', performModeSwitch);
   }
 }
 
-/* ============ STATUS / LANG / THEME ============ */
+/* STATUS / LANG / THEME */
 function updateNetStatus(){
   const on = navigator.onLine;
   const dot = document.getElementById('netStatusDot');
@@ -2901,7 +2913,7 @@ function renderHistoryBanner(){
   if(!firebaseReady){
     parts.push(`<div class="tt-banner warn"><span class="b-ic">⚠</span><span>${currentLang==='ar'?'وضع محلي. البيانات محفوظة في IndexedDB، حذف تلقائي بعد 48 ساعة.':currentLang==='fr'?'Mode local. Données dans IndexedDB, purge après 48h.':'Local mode. Data in IndexedDB, purged after 48h.'}</span></div>`);
   } else {
-    parts.push(`<div class="tt-banner ok"><span class="b-ic">✓</span><span>${currentLang==='ar'?'Firebase نشط. عدّادات ذرية + أرشفة سحابية.':currentLang==='fr'?'Firebase actif. Compteurs atomiques + archive cloud.':'Firebase active. Atomic counters + cloud archive.'}</span></span></div>`);
+    parts.push(`<div class="tt-banner ok"><span class="b-ic">✓</span><span>${currentLang==='ar'?'Firebase نشط. عدّادات ذرية + أرشفة سحابية.':currentLang==='fr'?'Firebase actif. Compteurs atomiques + archive cloud.':'Firebase active. Atomic counters + cloud archive.'}</span></div>`);
   }
   if(q.length) parts.push(`<div class="tt-banner warn"><span class="b-ic">⏳</span><span><b>${q.length}</b> ${currentLang==='ar'?'في الانتظار':currentLang==='fr'?'en attente':'queued'}</span></div>`);
   host.innerHTML = parts.join('');
@@ -2918,6 +2930,7 @@ function applyLang(){
   renderHistory();
   renderProfile();
   renderHistoryBanner();
+  updateModeSwitchUI();
   if(developerMode) renderDeveloper();
 }
 function initLang(){
@@ -2946,7 +2959,7 @@ function initTheme(){
   }
 }
 
-/* ============ AUTH ============ */
+/* AUTH */
 function initAuth(){
   const btn = document.getElementById('btnLoginBtn');
   const em = document.getElementById('loginEmail');
@@ -3001,14 +3014,13 @@ function initAuth(){
   });
 }
 
-/* ============ SINGLE INIT ============ */
+/* SINGLE INIT */
 function ensureUI(){
   if(uiReady) return;
   uiReady = true;
   loadSettings();
   initNavigation();
   initModals();
-  initModulePicker();
   initDeleteConfirm();
   initLang();
   initTheme();
@@ -3019,11 +3031,12 @@ function ensureUI(){
   renderHistoryBanner();
   applyLang();
   updateNetStatus();
+  updateModeSwitchUI();
   window.addEventListener('online', ()=>{ updateNetStatus(); flushOfflineQueue(); });
   window.addEventListener('offline', updateNetStatus);
 }
 
-/* ============ BOOT ============ */
+/* BOOT */
 (function boot(){
   loadSettings();
   initTheme();
@@ -3032,7 +3045,7 @@ function ensureUI(){
   initAuth();
   updateNetStatus();
   setTimeout(()=>document.getElementById('loginEmail')?.focus(), 300);
-  console.log('%c Digital Stock v13 — Dev mode + Avatar + Simplified picker ', 'background:linear-gradient(90deg,#25F4EE,#FE2C55);color:#000;padding:4px 10px;border-radius:8px;font-weight:900;');
+  console.log('%c Digital Stock v14 — Mode Switch Button ', 'background:linear-gradient(90deg,#25F4EE,#FE2C55);color:#000;padding:4px 10px;border-radius:8px;font-weight:900;');
 })();
 </script>
 </body>
