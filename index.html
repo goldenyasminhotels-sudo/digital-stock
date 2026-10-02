@@ -11,6 +11,7 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
+  color-scheme: dark;
   --tt-cyan:#25F4EE;--tt-pink:#FE2C55;
   --tt-cyan-glow:rgba(37,244,238,.35);--tt-pink-glow:rgba(254,44,85,.35);
   --bg:#000;--surface:#121212;--surface-2:#1C1C1E;--surface-3:#2C2C2E;
@@ -21,11 +22,16 @@
   --nav-h:64px;--top-h:56px;
   --font-ar:'Cairo',sans-serif;--font-en:'Inter',sans-serif;
   --admin:#a855f7;--admin-glow:rgba(168,85,247,.4);
+  --sig-bg:#FDFBF5;
+  --sig-ink:#0a0f18;
 }
 :root[data-theme="light"]{
+  color-scheme: light;
   --bg:#fafafa;--surface:#fff;--surface-2:#f5f5f7;--surface-3:#ebebed;
   --line:rgba(0,0,0,.06);--line-2:rgba(0,0,0,.12);
   --txt:#000;--muted:rgba(0,0,0,.6);--muted-2:rgba(0,0,0,.4);
+  --sig-bg:#ffffff;
+  --sig-ink:#0a0f18;
 }
 html,body{margin:0;padding:0;width:100%;min-height:100vh;overflow-x:hidden}
 body{font-family:var(--font-ar);background:var(--bg);color:var(--txt);
@@ -68,10 +74,11 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .auth-subtitle{text-align:center;color:var(--muted);font-size:13.5px;margin:0 0 32px}
 .tt-field{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
 .tt-field>span{font-size:12.5px;font-weight:700;color:var(--muted);letter-spacing:.3px}
-.tt-input{width:100%;background:var(--surface-2);border:1.5px solid var(--line-2);
-  border-radius:14px;padding:14px 16px;font-size:15px;color:var(--txt);transition:.2s}
-.tt-input::placeholder{color:var(--muted-2)}
-.tt-input:focus{border-color:var(--tt-cyan);background:var(--surface-3);box-shadow:0 0 0 4px var(--tt-cyan-glow)}
+.tt-input{width:100%;background:var(--surface-2) !important;border:1.5px solid var(--line-2) !important;
+  border-radius:14px;padding:14px 16px;font-size:15px;color:var(--txt) !important;transition:.2s;
+  color-scheme: inherit;}
+.tt-input::placeholder{color:var(--muted-2) !important}
+.tt-input:focus{border-color:var(--tt-cyan) !important;background:var(--surface-3) !important;box-shadow:0 0 0 4px var(--tt-cyan-glow) !important}
 .tt-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
   padding:14px 22px;border-radius:14px;font-size:15px;font-weight:800;
   cursor:pointer;transition:.2s;border:none;background:var(--surface-2);
@@ -151,15 +158,16 @@ main{flex:1;width:100%;max-width:640px;margin:0 auto;padding:0 16px 24px}
 .tt-label{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
 .tt-label>span{font-size:12.5px;font-weight:700;color:var(--muted);letter-spacing:.2px}
 .tt-label .tt-input,.tt-label textarea,.tt-label select{width:100%;
-  background:var(--surface-2);border:1.5px solid var(--line-2);
-  border-radius:14px;padding:13px 15px;font-size:14.5px;color:var(--txt);transition:.2s}
+  background:var(--surface-2) !important;border:1.5px solid var(--line-2) !important;
+  border-radius:14px;padding:13px 15px;font-size:14.5px;color:var(--txt) !important;transition:.2s;
+  color-scheme: inherit;}
 .tt-label textarea{resize:vertical;min-height:60px;line-height:1.5}
 .tt-label select{cursor:pointer;appearance:none;padding-inline-end:38px;
   background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path d='M2 4l4 4 4-4' fill='none' stroke='%2394a3b8' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>");
   background-repeat:no-repeat;background-position:right 14px center}
 html[dir="rtl"] .tt-label select{background-position:left 14px center}
 .tt-label textarea:focus,.tt-label select:focus,.tt-label .tt-input:focus{
-  border-color:var(--tt-cyan);background:var(--surface-3);box-shadow:0 0 0 4px var(--tt-cyan-glow)}
+  border-color:var(--tt-cyan) !important;background:var(--surface-3) !important;box-shadow:0 0 0 4px var(--tt-cyan-glow) !important}
 .tt-items-head,.tt-item-row{display:grid;grid-template-columns:1fr 70px 82px 36px;gap:6px;align-items:center}
 .tt-items-head{font-size:11px;font-weight:800;color:var(--muted-2);
   padding:0 4px 8px;text-transform:uppercase;letter-spacing:.5px}
@@ -187,20 +195,24 @@ html[dir="rtl"] .tt-label select{background-position:left 14px center}
   font-size:10px;font-weight:800;padding:2px 6px;border-radius:6px;
   backdrop-filter:blur(8px);pointer-events:none}
 
-.tt-sig-preview{position:relative;background:#fff;
+/* ═══ SIGNATURE PREVIEW — bigger (160px) for better visibility ═══ */
+.tt-sig-preview{position:relative;
+  background:var(--sig-bg);
   border:1.5px solid var(--line-2);border-radius:14px;
-  min-height:120px;cursor:pointer;overflow:hidden;
-  transition:.25s;display:grid;place-items:center}
+  min-height:160px;cursor:pointer;overflow:hidden;
+  transition:.25s;display:grid;place-items:center;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.03)}
 .tt-sig-preview:hover{border-color:var(--tt-cyan);
-  box-shadow:0 0 0 4px var(--tt-cyan-glow);transform:translateY(-1px)}
+  box-shadow:0 0 0 4px var(--tt-cyan-glow),inset 0 0 0 1px rgba(0,0,0,.03);transform:translateY(-1px)}
 .tt-sig-preview:active{transform:scale(.99)}
-.tt-sig-preview canvas{display:block;width:100%;height:120px;pointer-events:none}
+.tt-sig-preview canvas{display:block;width:100%;height:160px;pointer-events:none}
 .tt-sig-empty{position:absolute;inset:0;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:8px;pointer-events:none;background:#fff;color:#64748b}
-.tt-sig-empty .ic{font-size:32px;opacity:.85}
-.tt-sig-empty .txt{font-size:13px;font-weight:700}
-.tt-sig-empty .sub{font-size:11px;opacity:.7}
+  gap:10px;pointer-events:none;
+  background:var(--sig-bg);color:#64748b}
+.tt-sig-empty .ic{font-size:38px;opacity:.75}
+.tt-sig-empty .txt{font-size:14.5px;font-weight:700;color:#475569}
+.tt-sig-empty .sub{font-size:12px;opacity:.65}
 .tt-sig-preview .badge{position:absolute;top:8px;inset-inline-end:8px;
   padding:4px 10px;border-radius:99px;
   background:linear-gradient(135deg,var(--tt-cyan),var(--tt-pink));
@@ -774,7 +786,7 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 92px 1fr;direction:rtl}
       <h3 id="cardModalTitle" data-i18n="card.title">بطاقة المعاملة</h3>
       <button class="tt-iconbtn close-modal" type="button">✕</button>
     </div>
-    <div class="tt-modal-body" style="background:#e2e8f0;padding:12px">
+    <div class="tt-modal-body" style="padding:12px">
       <div id="cardModalBody"></div>
       <div class="archive-status" id="archiveStatus" style="display:none">
         <div class="as-ic" id="archiveIcon">☁</div>
@@ -829,9 +841,6 @@ setPersistence(auth, browserLocalPersistence).catch(console.error);
 
 const ADMIN_UID = 'kszZYwapqMYc8XvY2yOYGmO3c6D3';
 
-/* ═══════════════════════════════════════════════════════════════
-   CARD THEME — GOLD & OLIVE (extracted from Les Oliviers Palace)
-   ═══════════════════════════════════════════════════════════════ */
 const CARD_THEME = {
   gold:        '#E5A823',
   goldLight:   '#F2C94C',
@@ -1146,7 +1155,6 @@ const I18N = {
 let currentLang = localStorage.getItem('ds.lang') || 'ar';
 const t = k => (I18N[currentLang] && I18N[currentLang][k]) || I18N.ar[k] || k;
 
-/* CONSTANTS */
 const STORE_KEY = 'ds.transactions.v20';
 const QUEUE_KEY = 'ds.queue.v20';
 const COUNTER_KEY = 'ds.counters.v20';
@@ -1182,7 +1190,6 @@ let developerMode = false;
 let devViewingAgent = null;
 let activeSigKey = null;
 
-/* HELPERS */
 const $  = (s, r=document) => r.querySelector(s);
 const $$ = (s, r=document) => [...r.querySelectorAll(s)];
 const esc = s => String(s ?? '').replace(/[&<>"']/g,
@@ -1207,9 +1214,6 @@ const dataURLtoBlob = dataURL => {
   return new Blob([arr],{type:mime});
 };
 
-/* ═══════════════════════════════════════════════════════════════
-   AGENT CODE — stable 4-char code derived from Firebase UID
-   ═══════════════════════════════════════════════════════════════ */
 function generateAgentCode(uid){
   if(!uid) return 'XXXX';
   const codes = JSON.parse(localStorage.getItem(AGENT_CODES_KEY) || '{}');
@@ -1221,7 +1225,6 @@ function generateAgentCode(uid){
   return code;
 }
 
-/* STORAGE */
 const loadAll = () => { try { return JSON.parse(localStorage.getItem(STORE_KEY))||[]; } catch { return []; } };
 const saveAll = list => {
   try { localStorage.setItem(STORE_KEY, JSON.stringify(list)); }
@@ -1232,7 +1235,6 @@ const loadSettings = () => {
 };
 const saveSettings = () => localStorage.setItem(SET_KEY, JSON.stringify(settings));
 
-/* AVATARS */
 const loadAvatars = () => { try { return JSON.parse(localStorage.getItem(AVATARS_KEY))||{}; } catch { return {}; } };
 const saveAvatars = obj => localStorage.setItem(AVATARS_KEY, JSON.stringify(obj));
 const getAvatarKey = () => currentUid || currentEmail || currentAgent || 'default';
@@ -1249,7 +1251,6 @@ const setAvatar = (dataUrl, key) => {
   saveAvatars(avatars);
 };
 
-/* INDEXEDDB */
 const DB_NAME='ds.archive.v20', DB_VERSION=1;
 let _db=null;
 function openArchive(){
@@ -1331,7 +1332,6 @@ const idbSizeEstimate = async () => {
   return '—';
 };
 
-/* COUNTERS — per agent, per day, per module */
 const localNextSeq = (counterKey) => {
   const c = JSON.parse(localStorage.getItem(COUNTER_KEY)||'{}');
   const next = (c[counterKey]||0)+1;
@@ -1340,11 +1340,9 @@ const localNextSeq = (counterKey) => {
   return next;
 };
 
-/* Reference format: PREFIX-AGENTCODE-YYYYMMDD-NNNN */
 const formatRef = (prefix, agentCode, dateKey, seq) =>
   `${prefix}-${agentCode}-${dateKey}-${String(seq).padStart(4,'0')}`;
 
-/* COMMIT TRANSACTION — per-agent counter */
 async function commitTransaction(payload){
   const prefix = MODULE_DEF[payload.module].prefix;
   const dateKey = new Date().toISOString().slice(0,10).replace(/-/g,'');
@@ -1381,18 +1379,15 @@ async function commitTransaction(payload){
     }
   }
 
-  // Local fallback
   const seq = localNextSeq(counterId);
   const ref = formatRef(prefix, agentCode, dateKey, seq);
   const id = (crypto.randomUUID && crypto.randomUUID()) || String(Date.now());
   return { id, ref, source: 'local' };
 }
 
-/* CLOUDINARY — smart transformations */
 const CLOUDINARY_UPLOAD_PRESET = "digital_stock";
 const CLOUDINARY_CLOUD_NAME = "w1gyqrdx";
 const CLOUDINARY_API_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
-/* Smart transformation: limit max dim to 1600, auto quality, auto format */
 const CLOUDINARY_TRANSFORM = "c_limit,w_1600,h_1600,q_auto:good,f_auto";
 
 function compressImage(file, maxDim=1600, quality=0.82){
@@ -1434,7 +1429,6 @@ async function savePhotosCloudinary(txId, items){
       formData.append("file", items[i].blob);
       formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
       formData.append("folder", `digital_stock/${dateKey}/${txId}`);
-      /* Smart size + quality + format optimization via Cloudinary */
       formData.append("transformation", CLOUDINARY_TRANSFORM);
       const response = await fetch(CLOUDINARY_API_URL, { method: "POST", body: formData });
       if (!response.ok) throw new Error('Cloudinary HTTP ' + response.status);
@@ -1456,7 +1450,6 @@ async function photoRefToURL(ref){
   return url;
 }
 
-/* OFFLINE QUEUE */
 function queueOffline(payload, moduleKey, items){
   const q = JSON.parse(localStorage.getItem(QUEUE_KEY)||'[]');
   const jobId = (crypto.randomUUID && crypto.randomUUID()) || String(Date.now());
@@ -1502,7 +1495,6 @@ async function flushOfflineQueue(){
   if(synced){ renderHistory(); renderProfile(); renderHistoryBanner(); }
 }
 
-/* DROPDOWNS */
 const departments = () => currentLang==='ar'
   ? ['المطبخ','المطعم / F&B','التدبير الفندقي','الصيانة','الاستقبال','Spa','الإدارة','أخرى']
   : currentLang==='fr'
@@ -1514,7 +1506,6 @@ const reasons = () => currentLang==='ar'
   ? ['Retour fournisseur','Prêt / Réparation','Don','Vente / Rebut','Déchets','Transfert site','Autre']
   : ['Supplier return','Loan / Repair','Donation','Sale / Scrap','Waste','Site transfer','Other'];
 
-/* SIGNATURE PAD */
 const Sig = {
   canvas: null, ctx: null, wrap: null,
   drawing: false,
@@ -1738,7 +1729,6 @@ function updateSigPreview(key){
   }
 }
 
-/* FORM BUILDERS */
 function itemRowHtml(){
   return `<div class="tt-item-row">
     <input class="tt-input i-name" placeholder="${t('form.items.name')}">
@@ -1751,26 +1741,26 @@ function moduleExtraHtml(key){
   if(key==='warehouse'){
     return `<div class="tt-grid2">
       <label class="tt-label"><span>${t('form.department')}</span>
-        <select name="department" required>
+        <select class="tt-input" name="department" required>
           <option value="">${t('common.choose')}</option>
           ${departments().map(d=>`<option>${esc(d)}</option>`).join('')}
         </select></label>
       <label class="tt-label"><span>${t('form.po')}</span>
-        <input name="po" placeholder="${t('form.po.optional')}"></label>
+        <input class="tt-input" name="po" placeholder="${t('form.po.optional')}"></label>
     </div>`;
   }
   return `<div class="tt-grid2">
     <label class="tt-label"><span>${t('form.destination')}</span>
-      <input name="destination" required placeholder="${t('form.destination.placeholder')}"></label>
+      <input class="tt-input" name="destination" required placeholder="${t('form.destination.placeholder')}"></label>
     <label class="tt-label"><span>${t('form.reason')}</span>
-      <select name="reason" required>
+      <select class="tt-input" name="reason" required>
         <option value="">${t('common.choose')}</option>
         ${reasons().map(r=>`<option>${esc(r)}</option>`).join('')}
       </select></label>
     <label class="tt-label"><span>${t('form.vehicle')}</span>
-      <input name="vehicle" placeholder="${t('form.vehicle.placeholder')}"></label>
+      <input class="tt-input" name="vehicle" placeholder="${t('form.vehicle.placeholder')}"></label>
     <label class="tt-label"><span>${t('form.authorizedBy')}</span>
-      <input name="authorizedBy" placeholder="${t('form.authorizedBy.placeholder')}"></label>
+      <input class="tt-input" name="authorizedBy" placeholder="${t('form.authorizedBy.placeholder')}"></label>
   </div>`;
 }
 function formHtml(key){
@@ -1786,11 +1776,11 @@ function formHtml(key){
       </div>
       <p class="tt-hint">${t('mod.'+key+'.hint')}</p>
       <label class="tt-label"><span>${t('form.staff')}</span>
-        <input name="staff" required placeholder="${t('form.staff.placeholder')}" list="dl-staff"></label>
+        <input class="tt-input" name="staff" required placeholder="${t('form.staff.placeholder')}" list="dl-staff"></label>
       ${moduleExtraHtml(key)}
       <label class="tt-label" style="margin-bottom:0">
         <span>${t('form.notes')}</span>
-        <textarea name="notes" rows="2" placeholder="${t('form.notes.placeholder')}"></textarea>
+        <textarea class="tt-input" name="notes" rows="2" placeholder="${t('form.notes.placeholder')}"></textarea>
       </label>
     </div>
     <div class="tt-card" style="--c:${a}">
@@ -1847,7 +1837,6 @@ function formHtml(key){
   </form>`;
 }
 
-/* RENDER FORMS */
 function renderForms(){
   ['warehouse','bon'].forEach(key=>{
     const host = document.getElementById('view-'+key);
@@ -1959,9 +1948,6 @@ function refreshDatalists(){
   });
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   CARD GENERATION — v21 GOLD & OLIVE ELEGANT DESIGN (10 photos + signature)
-   ═══════════════════════════════════════════════════════════════ */
 const CT = CARD_THEME;
 
 const rr = (ctx,x,y,w,h,r) => {
@@ -1996,7 +1982,6 @@ function wrapText(ctx, text, maxW){
   return lines.length ? lines : [''];
 }
 
-/* Elegant section title with olive bar + gold dot + optional icon */
 function drawSectionTitle(ctx, x, y, width, rtl, text){
   const barX = rtl ? x + width - 6 : x;
   const labelX = rtl ? x + width - 26 : x + 26;
@@ -2022,7 +2007,6 @@ function drawSectionTitle(ctx, x, y, width, rtl, text){
   ctx.fill();
 }
 
-/* Elegant info box with olive border + gold corner accents */
 function drawInfoBox(ctx, x, y, w, h, label, value, rtl){
   ctx.fillStyle = CT.cream;
   rr(ctx, x, y, w, h, 14);
@@ -2064,7 +2048,6 @@ async function generateCard(tx){
   const alignX = rtl ? W - PAD : PAD;
   const dirInv = rtl ? 1 : -1;
 
-  /* Pre-load photos (up to MAX_PHOTOS) and signature in parallel */
   const photoImgs = [];
   if(tx.photos && tx.photos.length){
     const photoUrls = await Promise.all(
@@ -2086,7 +2069,6 @@ async function generateCard(tx){
     staffSigImg = await safeLoadImg(tx.staffSignature);
   }
 
-  /* Canvas */
   const cv = document.createElement('canvas');
   cv.width = W;
   cv.height = 7200;
@@ -2098,7 +2080,6 @@ async function generateCard(tx){
 
   let y = 0;
 
-  /* ══════════════ HEADER (Olive → Gold gradient) ══════════════ */
   const HEAD = 240;
   const grad = ctx.createLinearGradient(0, 0, W, HEAD);
   grad.addColorStop(0, CT.olive);
@@ -2130,7 +2111,6 @@ async function generateCard(tx){
 
   y = HEAD;
 
-  /* ══════════════ INFO STRIP (cream with gold border) ══════════════ */
   const STRIP = 110;
   ctx.fillStyle = CT.goldPale;
   ctx.fillRect(0, y, W, STRIP);
@@ -2170,7 +2150,6 @@ async function generateCard(tx){
   });
   y += STRIP + 44;
 
-  /* ══════════════ PERSONNEL ══════════════ */
   drawSectionTitle(ctx, PAD, y, CW, rtl,
     currentLang === 'ar' ? 'الأفراد' : currentLang === 'fr' ? 'PERSONNEL' : 'PERSONNEL');
   y += 60;
@@ -2184,7 +2163,6 @@ async function generateCard(tx){
     tx.staff, rtl);
   y += bh + 40;
 
-  /* ══════════════ MOVEMENT DETAILS ══════════════ */
   drawSectionTitle(ctx, PAD, y, CW, rtl,
     currentLang === 'ar' ? 'تفاصيل الحركة' : currentLang === 'fr' ? 'DÉTAILS' : 'DETAILS');
   y += 60;
@@ -2210,7 +2188,6 @@ async function generateCard(tx){
   y -= gap;
   y += 40;
 
-  /* ══════════════ ITEMS TABLE ══════════════ */
   drawSectionTitle(ctx, PAD, y, CW, rtl,
     (currentLang === 'ar' ? 'الأصناف' : currentLang === 'fr' ? 'ARTICLES' : 'ITEMS')
     + ` (${tx.items.length})`);
@@ -2280,7 +2257,6 @@ async function generateCard(tx){
 
   y += 44;
 
-  /* ══════════════ NOTES ══════════════ */
   if(tx.notes){
     drawSectionTitle(ctx, PAD, y, CW, rtl,
       currentLang === 'ar' ? 'ملاحظات' : currentLang === 'fr' ? 'OBSERVATIONS' : 'NOTES');
@@ -2303,14 +2279,12 @@ async function generateCard(tx){
     y += noteH + 44;
   }
 
-  /* ══════════════ PHOTOS ══════════════ */
   if(photoImgs.length){
     drawSectionTitle(ctx, PAD, y, CW, rtl,
       (currentLang === 'ar' ? 'الصور التوثيقية' : currentLang === 'fr' ? 'PREUVES PHOTOGRAPHIQUES' : 'PHOTO EVIDENCE')
       + ` (${photoImgs.length})`);
     y += 60;
 
-    /* Dynamic columns: 4 if more than 6 photos, else 3 */
     const GAP = 18;
     const COLS = photoImgs.length > 6 ? 4 : 3;
     const cellW = (CW - GAP * (COLS - 1)) / COLS;
@@ -2370,16 +2344,16 @@ async function generateCard(tx){
     y += 44;
   }
 
-  /* ══════════════ SIGNATURES (REWRITTEN — FIXED POSITION) ══════════════ */
-  y += 16;
+  /* ══════════════ SIGNATURES — BIGGER & CLEARER ══════════════ */
+  y += 24;
   drawSectionTitle(ctx, PAD, y, CW, rtl,
     currentLang === 'ar' ? 'التوقيعات' : currentLang === 'fr' ? 'SIGNATURES' : 'SIGNATURES');
-  y += 74;
+  y += 96;
 
   const sigW = (CW - 60) / 2;
-  const sigImgH = 130;      /* signature image area height */
-  const sigLineGap = 18;    /* gap between image and line */
-  const sigLabelGap = 32;   /* gap between line and label */
+  const sigImgH = 240;       /* ← LARGER: was 130 */
+  const sigLineGap = 26;     /* ← slightly more breathing room */
+  const sigLabelGap = 40;    /* ← more space for larger labels */
 
   const sigLabels = currentLang === 'ar'
     ? ['حارس الأمن', 'الموظف المستلم']
@@ -2402,65 +2376,64 @@ async function generateCard(tx){
     const sigImage = sigValues[i];
     if(sigImage){
       try {
-        const boxW = imgWidth - 16;
-        const boxH = imgHeight - 16;
+        /* Reduce padding so signature fills the box more */
+        const boxW = imgWidth - 8;
+        const boxH = imgHeight - 8;
         const ir = sigImage.width / sigImage.height;
         const br = boxW / boxH;
         let dw, dh;
         if(ir > br){ dw = boxW; dh = boxW / ir; }
         else       { dh = boxH; dw = boxH * ir; }
         const dx = imgLeft + (imgWidth - dw) / 2;
-        const dy = imgTop + 8 + (boxH - dh) / 2;
+        const dy = imgTop + 4 + (boxH - dh) / 2;
         ctx.drawImage(sigImage, dx, dy, dw, dh);
       } catch(e){ console.warn('Sig draw err', e); }
     } else {
-      /* Unsigned placeholder */
       ctx.save();
       ctx.strokeStyle = 'rgba(138,127,107,.35)';
-      ctx.setLineDash([8, 6]);
-      ctx.lineWidth = 1.5;
-      rr(ctx, imgLeft + 8, imgTop + 8, imgWidth - 16, imgHeight - 16, 10);
+      ctx.setLineDash([10, 8]);
+      ctx.lineWidth = 2;
+      rr(ctx, imgLeft + 8, imgTop + 8, imgWidth - 16, imgHeight - 16, 12);
       ctx.stroke();
       ctx.restore();
       ctx.fillStyle = CT.muted;
-      ctx.font = F(500, 17);
+      ctx.font = F(600, 20);
       ctx.textAlign = 'center';
       ctx.fillText(
         currentLang === 'ar' ? 'لا يوجد توقيع'
         : currentLang === 'fr' ? 'Aucune signature'
         : 'No signature',
         imgLeft + imgWidth / 2,
-        imgTop + imgHeight / 2 + 6
+        imgTop + imgHeight / 2 + 7
       );
     }
 
-    /* Signature line below image */
+    /* Signature line below image — thicker & longer */
     const lineY = imgTop + imgHeight + sigLineGap;
     ctx.strokeStyle = CT.olive;
-    ctx.lineWidth = 2.5;
+    ctx.lineWidth = 3;
     ctx.beginPath();
     ctx.moveTo(x, lineY);
     ctx.lineTo(x + sigW, lineY);
     ctx.stroke();
 
-    /* Gold dots at line ends */
+    /* Gold dots at line ends — bigger */
     ctx.fillStyle = CT.gold;
     [x, x + sigW].forEach(px => {
       ctx.beginPath();
-      ctx.arc(px, lineY, 4, 0, Math.PI*2);
+      ctx.arc(px, lineY, 5, 0, Math.PI*2);
       ctx.fill();
     });
 
-    /* Label below line */
+    /* Label below line — BIGGER font */
     ctx.fillStyle = CT.goldDark;
-    ctx.font = F(800, 22);
+    ctx.font = F(900, 28);
     ctx.textAlign = 'center';
     ctx.fillText(sigLabels[i], x + sigW / 2, lineY + sigLabelGap);
   }
 
-  y += sigImgH + sigLineGap + sigLabelGap + 30;
+  y += sigImgH + sigLineGap + sigLabelGap + 40;
 
-  /* ══════════════ FOOTER ══════════════ */
   ctx.strokeStyle = CT.olive;
   ctx.lineWidth = 1.5;
   ctx.beginPath();
@@ -2489,7 +2462,6 @@ async function generateCard(tx){
   ctx.fillText('DIGITAL STOCK', W / 2, y);
   y += 30;
 
-  /* ══════════════ CROP ══════════════ */
   const finalH = y + PAD;
   const out = document.createElement('canvas');
   out.width = W;
@@ -2502,7 +2474,6 @@ async function generateCard(tx){
   return out.toDataURL('image/jpeg', 0.92);
 }
 
-/* PDF / JSON */
 async function buildPdfBlob(tx, cardDataUrl){
   if(!window.jspdf || !window.jspdf.jsPDF) throw new Error('jsPDF not loaded');
   const dataUrl = cardDataUrl || await generateCard(tx);
@@ -2536,7 +2507,6 @@ function buildJsonBlob(tx){
   },null,2)],{type:'application/json'});
 }
 
-/* ARCHIVE */
 async function archiveTransaction(tx, pdfBlob, jsonBlob, cardUrl){
   const expires = new Date(Date.now()+RETENTION_MS).toISOString();
   if(firebaseReady && navigator.onLine){
@@ -2604,7 +2574,6 @@ function startRetention(){
   setInterval(()=>purgeExpired().catch(()=>{}), 30*60*1000);
 }
 
-/* WHATSAPP */
 function buildMessage(tx){
   const L=[];
   L.push(`*${t('mod.'+tx.module+'.title')}*`);
@@ -2659,7 +2628,6 @@ function downloadBlob(blob, fn){
   setTimeout(()=>URL.revokeObjectURL(url), 4000);
 }
 
-/* SUBMIT */
 async function handleSubmit(key){
   const form = document.getElementById('form-'+key);
   const fd = new FormData(form);
@@ -2773,7 +2741,6 @@ async function handleSubmit(key){
   await showCard(record);
 }
 
-/* CARD MODAL */
 async function showCard(tx){
   activeTx = tx;
   activeCardUrl = null;
@@ -2832,7 +2799,6 @@ async function runBackgroundArchive(tx, cardUrl){
   }
 }
 
-/* DELETE CONFIRM */
 function openDeleteConfirm(tx){
   pendingDelete = tx;
   const preview = document.getElementById('delPreview');
@@ -2893,7 +2859,6 @@ function initDeleteConfirm(){
   document.getElementById('delConfirmBtn').onclick = () => performDelete();
 }
 
-/* HISTORY */
 function getVisibleRecords(){
   const all = loadAll();
   if(developerMode) return all;
@@ -3057,7 +3022,6 @@ function initHistory(){
   }
 }
 
-/* PROFILE */
 function renderProfile(){
   const host = document.getElementById('view-profile');
   if(!host) return;
@@ -3181,7 +3145,6 @@ function renderProfile(){
   };
 }
 
-/* DEVELOPER */
 function renderDeveloper(){
   const host = document.getElementById('view-developer');
   if(!host) return;
@@ -3345,7 +3308,6 @@ function renderDeveloper(){
   };
 }
 
-/* MODALS */
 function closeModals(){
   $$('.tt-modal').forEach(m=>m.classList.remove('open'));
   activeTx = null; activeCardUrl = null; pendingDelete = null;
@@ -3438,7 +3400,6 @@ function initModals(){
   };
 }
 
-/* NAVIGATION + MODE SWITCH */
 function switchView(view){
   $$('.view').forEach(v=>v.classList.toggle('active', v.id === 'view-'+view));
   $$('.nav-btn').forEach(b=>b.classList.toggle('active', b.dataset.nav === view));
@@ -3516,7 +3477,6 @@ function initNavigation(){
   }
 }
 
-/* STATUS / LANG / THEME */
 function updateNetStatus(){
   const on = navigator.onLine;
   const dot = document.getElementById('netStatusDot');
@@ -3576,7 +3536,6 @@ function initTheme(){
   }
 }
 
-/* AUTH */
 function initAuth(){
   const btn = document.getElementById('btnLoginBtn');
   const em = document.getElementById('loginEmail');
@@ -3633,7 +3592,6 @@ function initAuth(){
   });
 }
 
-/* SINGLE INIT */
 function ensureUI(){
   if(uiReady) return;
   uiReady = true;
@@ -3656,7 +3614,6 @@ function ensureUI(){
   window.addEventListener('offline', updateNetStatus);
 }
 
-/* BOOT */
 (function boot(){
   loadSettings();
   initTheme();
@@ -3665,7 +3622,7 @@ function ensureUI(){
   initAuth();
   updateNetStatus();
   setTimeout(()=>document.getElementById('loginEmail')?.focus(), 300);
-  console.log('%c Digital Stock v21 — Gold & Olive + 10 Photos + Cloudinary Smart + 7d Archive ',
+  console.log('%c Digital Stock v21.3 — Bigger & clearer signatures on card ',
     'background:linear-gradient(90deg,#E5A823,#0e8f6f);color:#fff;padding:4px 10px;border-radius:8px;font-weight:900;');
 })();
 </script>
