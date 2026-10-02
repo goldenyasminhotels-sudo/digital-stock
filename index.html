@@ -20,6 +20,8 @@
   --radius:20px;--radius-sm:14px;
   --nav-h:64px;--top-h:56px;
   --font-ar:'Cairo',sans-serif;--font-en:'Inter',sans-serif;
+  --admin:#a855f7;
+  --admin-glow:rgba(168,85,247,.4);
 }
 :root[data-theme="light"]{
   --bg:#fafafa;--surface:#fff;--surface-2:#f5f5f7;--surface-3:#ebebed;
@@ -39,6 +41,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   transition:opacity .4s}
 :root[data-theme="light"] body::before{opacity:.6}
 
+/* AUTH */
 #auth-screen{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;
   justify-content:center;background:var(--bg);padding:24px;transition:opacity .5s,visibility .5s}
 #auth-screen.hidden{opacity:0;visibility:hidden;pointer-events:none}
@@ -84,6 +87,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .tt-btn.ghost:hover{background:var(--surface-2);border-color:var(--tt-cyan)}
 .tt-btn.wa{background:#25D366;color:#fff;box-shadow:0 6px 20px rgba(37,211,102,.35)}
 .tt-btn.danger{background:rgba(254,44,85,.15);color:var(--tt-pink);border:1.5px solid rgba(254,44,85,.3)}
+.tt-btn.admin{background:linear-gradient(135deg,var(--admin),#7c3aed);color:#fff;box-shadow:0 8px 24px var(--admin-glow)}
 .tt-btn.sm{padding:9px 15px;font-size:13px;border-radius:11px}
 .spinner-inline{display:inline-block;width:18px;height:18px;
   border:2px solid rgba(0,0,0,.2);border-top-color:#000;border-radius:50%;
@@ -118,17 +122,6 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   font-weight:700;cursor:pointer;transition:.2s}
 .tt-lang:hover{border-color:var(--tt-cyan)}
 
-.tt-modtabs{display:flex;justify-content:center;align-items:center;
-  gap:32px;padding:6px 20px 14px;position:relative}
-.tt-modtab{background:none;border:none;padding:8px 0;font-size:15px;font-weight:700;
-  color:var(--muted-2);cursor:pointer;transition:.2s;position:relative;font-family:inherit}
-.tt-modtab.active{color:var(--txt);font-weight:800}
-.tt-modtab.active::after{content:'';position:absolute;bottom:-4px;left:50%;
-  transform:translateX(-50%);width:32px;height:3px;border-radius:3px;
-  background:linear-gradient(90deg,var(--tt-cyan),var(--tt-pink));
-  box-shadow:0 0 12px var(--tt-pink-glow)}
-.tt-modtab:hover{color:var(--txt)}
-
 main{flex:1;width:100%;max-width:640px;margin:0 auto;padding:0 16px 24px}
 .view{display:none;animation:fadeUp .35s cubic-bezier(.2,.9,.3,1.1)}
 .view.active{display:block}
@@ -148,6 +141,7 @@ main{flex:1;width:100%;max-width:640px;margin:0 auto;padding:0 16px 24px}
 .tt-pill.acc{background:color-mix(in srgb,var(--c,var(--tt-cyan)) 18%,transparent);color:var(--c,var(--tt-cyan))}
 .tt-pill.ok{background:rgba(37,244,238,.15);color:var(--tt-cyan)}
 .tt-pill.warn{background:rgba(254,44,85,.15);color:var(--tt-pink)}
+.tt-pill.admin{background:rgba(168,85,247,.18);color:var(--admin)}
 .tt-hint{font-size:12.5px;color:var(--muted);line-height:1.5;margin:0 0 14px}
 .tt-grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media(max-width:560px){.tt-grid2{grid-template-columns:1fr;gap:0}}
@@ -234,17 +228,34 @@ html[dir="rtl"] .tt-label select{background-position:left 14px center}
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .feed-actions{display:flex;gap:6px;flex-wrap:wrap;flex:0 0 auto}
 
+/* PROFILE */
 .profile-hero{text-align:center;padding:24px 0 20px;position:relative}
-.avatar-ring{width:108px;height:108px;margin:0 auto 16px;padding:4px;
+.avatar-ring{width:120px;height:120px;margin:0 auto 16px;padding:4px;
   border-radius:50%;background:linear-gradient(135deg,var(--tt-cyan),var(--tt-pink));
-  box-shadow:0 0 40px var(--tt-pink-glow),0 0 60px var(--tt-cyan-glow);position:relative}
+  box-shadow:0 0 40px var(--tt-pink-glow),0 0 60px var(--tt-cyan-glow);
+  position:relative;cursor:pointer;transition:.25s}
+.avatar-ring:hover{transform:scale(1.03)}
+.avatar-ring:active{transform:scale(.98)}
 .avatar-ring::after{content:'';position:absolute;inset:-6px;border-radius:50%;
   background:linear-gradient(135deg,var(--tt-cyan),var(--tt-pink));z-index:-1;
   filter:blur(16px);opacity:.5;animation:glow 3s ease-in-out infinite}
 @keyframes glow{0%,100%{opacity:.4}50%{opacity:.8}}
 .avatar{width:100%;height:100%;border-radius:50%;
   background:linear-gradient(135deg,#1a1a1a,#0a0a0a);display:grid;place-items:center;
-  font-family:var(--font-en);font-size:42px;font-weight:900;color:#fff;border:3px solid var(--bg)}
+  font-family:var(--font-en);font-size:44px;font-weight:900;color:#fff;
+  border:3px solid var(--bg);
+  background-size:cover;background-position:center;overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover;display:block;border-radius:50%}
+.avatar-edit{
+  position:absolute;bottom:2px;inset-inline-end:2px;
+  width:36px;height:36px;border-radius:50%;
+  background:linear-gradient(135deg,var(--tt-cyan),var(--tt-pink));
+  border:3px solid var(--bg);color:#000;font-size:15px;font-weight:900;
+  display:grid;place-items:center;cursor:pointer;
+  box-shadow:0 4px 12px var(--tt-pink-glow);
+  transition:.2s;
+}
+.avatar-edit:hover{transform:scale(1.1) rotate(15deg)}
 .profile-name{font-size:22px;font-weight:900;margin:0 0 4px;letter-spacing:-.3px}
 .profile-handle{font-size:13px;color:var(--muted);margin-bottom:4px}
 .profile-role{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;
@@ -277,6 +288,7 @@ html[dir="rtl"] .tt-label select{background-position:left 14px center}
   color:var(--muted);text-align:center;white-space:nowrap;overflow:hidden;
   text-overflow:ellipsis;max-width:100%;direction:ltr}
 
+/* BOTTOM NAV */
 .tt-bottomnav{position:fixed;bottom:0;left:0;right:0;
   height:calc(var(--nav-h) + env(safe-area-inset-bottom,0px));
   padding-bottom:env(safe-area-inset-bottom,0px);
@@ -364,33 +376,17 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 84px 1fr;direction:rtl}
   display:flex;gap:10px;align-items:flex-start;line-height:1.5}
 .tt-banner.warn{background:rgba(254,44,85,.1);border:1.5px solid rgba(254,44,85,.28);color:#fca5a5}
 .tt-banner.ok{background:rgba(37,244,238,.1);border:1.5px solid rgba(37,244,238,.28);color:#67e8f9}
+.tt-banner.admin{background:rgba(168,85,247,.12);border:1.5px solid rgba(168,85,247,.35);color:#d8b4fe}
 .tt-banner .b-ic{flex:0 0 20px;text-align:center;font-size:15px}
 .tt-empty{text-align:center;padding:60px 20px;color:var(--muted)}
 .tt-empty .ic{font-size:48px;opacity:.3;margin-bottom:14px}
 .tt-empty p{margin:0;font-size:14px;line-height:1.6}
 .tt-hr{height:1px;background:var(--line);margin:18px 0;border:0}
 
-/* ═══ NEW: Module Picker ═══ */
-.pick-summary{
-  display:flex;align-items:center;gap:14px;padding:16px 18px;margin-bottom:16px;
-  background:linear-gradient(135deg, rgba(37,244,238,.08), rgba(254,44,85,.08));
-  border:1.5px solid var(--line-2);border-radius:18px;
-}
-.pick-summary-ic{
-  width:52px;height:52px;border-radius:16px;display:grid;place-items:center;
-  font-size:26px;background:var(--surface);border:1.5px solid var(--line-2);
-}
-.pick-summary-main{flex:1;min-width:0}
-.pick-summary-t{font-size:12px;color:var(--muted);font-weight:700;letter-spacing:.2px}
-.pick-summary-v{
-  font-family:var(--font-en);font-size:26px;font-weight:900;
-  background:linear-gradient(135deg, var(--tt-cyan), var(--tt-pink));
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-  line-height:1;margin-top:4px;
-}
+/* MODULE PICKER */
 .pick-card{
   display:flex;align-items:center;gap:14px;width:100%;
-  padding:18px 16px;margin-bottom:12px;
+  padding:20px 18px;margin-bottom:12px;
   background:var(--surface-2);
   border:1.5px solid var(--line-2);border-radius:18px;
   color:var(--txt);cursor:pointer;transition:.2s;
@@ -399,27 +395,27 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 84px 1fr;direction:rtl}
 .pick-card:hover{
   border-color:var(--c, var(--tt-cyan));
   transform:translateY(-2px);
-  box-shadow:0 8px 24px rgba(0,0,0,.25);
+  box-shadow:0 8px 24px rgba(0,0,0,.3);
+  background:color-mix(in srgb, var(--c) 8%, var(--surface-2));
 }
 .pick-card:active{transform:scale(.98)}
 .pick-card-ic{
-  width:58px;height:58px;flex:0 0 58px;
-  border-radius:16px;display:grid;place-items:center;font-size:30px;
+  width:64px;height:64px;flex:0 0 64px;
+  border-radius:18px;display:grid;place-items:center;font-size:32px;
   background:color-mix(in srgb, var(--c) 20%, transparent);
   border:1.5px solid color-mix(in srgb, var(--c) 40%, transparent);
 }
 .pick-card-main{flex:1;min-width:0}
-.pick-card-t{font-size:15.5px;font-weight:800;margin-bottom:3px}
-.pick-card-s{font-size:12px;color:var(--muted);line-height:1.4}
-.pick-card-count{text-align:center;flex:0 0 auto;min-width:52px}
-.pick-card-count-v{
-  font-family:var(--font-en);font-size:24px;font-weight:900;
-  color:var(--c, var(--tt-cyan));line-height:1;
+.pick-card-t{font-size:16px;font-weight:800;margin-bottom:4px}
+.pick-card-s{font-size:12.5px;color:var(--muted);line-height:1.4}
+.pick-card-arrow{
+  font-size:20px;color:var(--muted-2);
+  transition:.2s;
 }
-.pick-card-count-l{font-size:10px;color:var(--muted-2);font-weight:700;
-  margin-top:3px;text-transform:uppercase;letter-spacing:.5px}
+.pick-card:hover .pick-card-arrow{color:var(--c);transform:translateX(-4px)}
+html[dir="rtl"] .pick-card:hover .pick-card-arrow{transform:translateX(4px)}
 
-/* ═══ NEW: Delete Confirm ═══ */
+/* DELETE CONFIRM */
 .del-warn{text-align:center;padding:18px 12px 20px}
 .del-warn-ic{font-size:56px;margin-bottom:12px;
   filter:drop-shadow(0 8px 20px rgba(254,44,85,.4));
@@ -456,6 +452,95 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 84px 1fr;direction:rtl}
 .del-backup-t{font-size:13.5px;font-weight:800;margin-bottom:4px;color:var(--tt-cyan)}
 .del-backup-s{font-size:11.5px;color:var(--muted);line-height:1.4}
 
+/* ═══ DEVELOPER MODE ═══ */
+.dev-hero{
+  text-align:center;padding:20px 16px;
+  background:linear-gradient(135deg, rgba(168,85,247,.15), rgba(37,244,238,.08));
+  border:1.5px solid rgba(168,85,247,.35);
+  border-radius:20px;margin-bottom:18px;
+  position:relative;overflow:hidden;
+}
+.dev-hero::before{
+  content:'';position:absolute;top:-40%;inset-inline-end:-10%;
+  width:180px;height:180px;border-radius:50%;
+  background:radial-gradient(circle, var(--admin-glow), transparent);
+  filter:blur(30px);opacity:.5;
+}
+.dev-hero-ic{
+  font-size:48px;margin-bottom:8px;
+  filter:drop-shadow(0 6px 20px var(--admin-glow));
+  animation:devPulse 2s ease-in-out infinite;
+}
+@keyframes devPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.dev-hero-t{font-size:18px;font-weight:900;
+  background:linear-gradient(135deg, var(--admin), var(--tt-cyan));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  margin-bottom:6px;
+}
+.dev-hero-s{font-size:12.5px;color:var(--muted);position:relative}
+
+.dev-stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.dev-stat{
+  padding:14px 14px;border-radius:16px;
+  background:var(--surface);
+  border:1.5px solid var(--line);
+  position:relative;overflow:hidden;
+}
+.dev-stat::before{
+  content:'';position:absolute;top:0;inset-inline-start:0;width:3px;height:100%;
+  background:var(--c, var(--tt-cyan));
+}
+.dev-stat-ic{font-size:18px;margin-bottom:6px;display:block}
+.dev-stat-v{
+  font-family:var(--font-en);font-size:24px;font-weight:900;
+  color:var(--c, var(--tt-cyan));line-height:1;margin-bottom:4px;
+}
+.dev-stat-l{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.2px}
+
+.agent-row{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 14px;margin-bottom:8px;
+  background:var(--surface);
+  border:1.5px solid var(--line);border-radius:16px;
+  cursor:pointer;transition:.2s;
+}
+.agent-row:hover{border-color:var(--admin);transform:translateY(-1px)}
+.agent-avatar{
+  width:44px;height:44px;border-radius:50%;flex:0 0 44px;
+  background:linear-gradient(135deg, var(--admin), var(--tt-cyan));
+  display:grid;place-items:center;color:#fff;
+  font-family:var(--font-en);font-size:16px;font-weight:900;
+  overflow:hidden;
+}
+.agent-avatar img{width:100%;height:100%;object-fit:cover}
+.agent-main{flex:1;min-width:0}
+.agent-name{font-size:14px;font-weight:800;margin-bottom:3px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.agent-meta{font-size:11.5px;color:var(--muted);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.agent-count{
+  font-family:var(--font-en);font-size:18px;font-weight:900;
+  color:var(--admin);flex:0 0 auto;text-align:center;
+}
+.agent-count-l{font-size:9.5px;color:var(--muted-2);font-weight:700;
+  text-align:center;margin-top:2px}
+
+/* Dev detail view (transactions filtered by agent) */
+.dev-filter-bar{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;margin-bottom:14px;
+  background:rgba(168,85,247,.1);
+  border:1.5px solid rgba(168,85,247,.3);
+  border-radius:14px;
+  font-size:13px;
+}
+.dev-filter-bar .x{
+  width:28px;height:28px;border-radius:50%;
+  background:rgba(254,44,85,.2);color:var(--tt-pink);
+  border:none;font-size:12px;font-weight:900;
+  display:grid;place-items:center;cursor:pointer;padding:0;
+}
+
 @media(min-width:768px){
   .tt-bottomnav{max-width:640px;left:50%;transform:translateX(-50%);
     border-radius:24px 24px 0 0;border-left:1px solid var(--line-2);border-right:1px solid var(--line-2)}
@@ -488,6 +573,7 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 84px 1fr;direction:rtl}
 
 <!-- APP -->
 <div id="app-screen">
+  <!-- ═══ NO MORE MODULE TABS HERE ═══ -->
   <header class="tt-topbar">
     <div class="tt-brand">Digital Stock</div>
     <div class="tt-user">
@@ -501,11 +587,6 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 84px 1fr;direction:rtl}
     </select>
     <button class="tt-iconbtn" id="btnThemeToggle" title="Theme">🌓</button>
   </header>
-
-  <nav class="tt-modtabs" id="moduleTabs">
-    <button class="tt-modtab active" data-view="warehouse" data-i18n="tabs.warehouse">خروج مخزن</button>
-    <button class="tt-modtab" data-view="bon" data-i18n="tabs.bon">إذن خروج</button>
-  </nav>
 
   <main>
     <section class="view active" id="view-warehouse"></section>
@@ -523,6 +604,7 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 84px 1fr;direction:rtl}
       <div id="histList"></div>
     </section>
     <section class="view" id="view-profile"></section>
+    <section class="view" id="view-developer"></section>
   </main>
 
   <nav class="tt-bottomnav" id="bottomNav">
@@ -541,50 +623,35 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 84px 1fr;direction:rtl}
   </nav>
 </div>
 
-<!-- ═══ NEW: MODULE PICKER MODAL ═══ -->
+<!-- MODULE PICKER (simplified — no counts) -->
 <div class="tt-modal" id="modulePickModal">
-  <div class="tt-modal-box" style="max-width:520px">
+  <div class="tt-modal-box" style="max-width:480px">
     <div class="tt-modal-head">
       <h3 data-i18n="picker.title">اختر نوع الحركة</h3>
       <button class="tt-iconbtn close-modal" type="button">✕</button>
     </div>
-    <div class="tt-modal-body" style="padding:16px">
-      <div class="pick-summary">
-        <div class="pick-summary-ic">📊</div>
-        <div class="pick-summary-main">
-          <div class="pick-summary-t" data-i18n="picker.total">إجمالي السجلات</div>
-          <div class="pick-summary-v" id="pickTotalCount">0</div>
-        </div>
-      </div>
-
+    <div class="tt-modal-body" style="padding:20px">
       <button class="pick-card" data-pick-module="warehouse" style="--c:#25F4EE">
         <div class="pick-card-ic">🏭</div>
         <div class="pick-card-main">
           <div class="pick-card-t" data-i18n="picker.warehouse.t">خروج مخزن (WER)</div>
           <div class="pick-card-s" data-i18n="picker.warehouse.s">حركة داخلية — بضاعة باقية في المنشأة</div>
         </div>
-        <div class="pick-card-count">
-          <div class="pick-card-count-v" id="count-warehouse">0</div>
-          <div class="pick-card-count-l" data-i18n="picker.records">سجل</div>
-        </div>
+        <div class="pick-card-arrow">←</div>
       </button>
-
       <button class="pick-card" data-pick-module="bon" style="--c:#FE2C55">
         <div class="pick-card-ic">🚚</div>
         <div class="pick-card-main">
           <div class="pick-card-t" data-i18n="picker.bon.t">إذن خروج نهائي (BDS)</div>
           <div class="pick-card-s" data-i18n="picker.bon.s">خروج نهائي — بضاعة تغادر المنشأة</div>
         </div>
-        <div class="pick-card-count">
-          <div class="pick-card-count-v" id="count-bon">0</div>
-          <div class="pick-card-count-l" data-i18n="picker.records">سجل</div>
-        </div>
+        <div class="pick-card-arrow">←</div>
       </button>
     </div>
   </div>
 </div>
 
-<!-- ═══ NEW: DELETE CONFIRM MODAL ═══ -->
+<!-- DELETE CONFIRM -->
 <div class="tt-modal" id="deleteConfirmModal">
   <div class="tt-modal-box" style="max-width:480px">
     <div class="tt-modal-head">
@@ -676,6 +743,8 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 84px 1fr;direction:rtl}
   </div>
 </div>
 
+<!-- Avatar file input -->
+<input type="file" id="avatarInput" accept="image/*" hidden>
 <input type="file" id="fileInput" accept="image/*" hidden>
 <input type="file" id="importInput" accept="application/json" hidden>
 <div id="toast"></div>
@@ -709,6 +778,9 @@ const storage = getStorage(fbApp);
 enableIndexedDbPersistence(db).catch(() => {});
 setPersistence(auth, browserLocalPersistence).catch(console.error);
 
+/* ═══ ADMIN UID ═══ */
+const ADMIN_UID = 'kszZYwapqMYc8XvY2yOYGmO3c6D3';
+
 /* ============ I18N ============ */
 const I18N = {
   ar: {
@@ -719,7 +791,7 @@ const I18N = {
     'status.online':'متصل','status.offline':'مفصول',
     'tabs.warehouse':'خروج مخزن','tabs.bon':'إذن خروج',
     'tabs.history':'السجل','tabs.profile':'الملف',
-    'picker.title':'اختر نوع الحركة','picker.total':'إجمالي السجلات','picker.records':'سجل',
+    'picker.title':'اختر نوع الحركة','picker.records':'سجل',
     'picker.warehouse.t':'خروج مخزن (WER)','picker.warehouse.s':'حركة داخلية — بضاعة باقية في المنشأة',
     'picker.bon.t':'إذن خروج نهائي (BDS)','picker.bon.s':'خروج نهائي — بضاعة تغادر المنشأة',
     'del.title':'تأكيد الحذف','del.question':'هل تريد حذف هذه البطاقة نهائياً؟',
@@ -788,8 +860,20 @@ const I18N = {
     'profile.stats.week':'أسبوع','profile.stats.archived':'مؤرشف',
     'profile.activity':'النشاط','profile.noActivity':'لا نشاط.',
     'profile.settings':'الإعدادات','profile.logout':'خروج',
+    'profile.changeAvatar':'تغيير الصورة',
+    'profile.avatarHint':'اضغط على الصورة لتغييرها',
+    'profile.avatarUpdated':'تم تحديث الصورة',
     'units.u':'حبة','units.kg':'كغ','units.g':'غرام','units.l':'لتر','units.cl':'سل',
-    'units.carton':'كرتون','units.box':'صندوق','units.bag':'كيس','units.palette':'طبلة'
+    'units.carton':'كرتون','units.box':'صندوق','units.bag':'كيس','units.palette':'طبلة',
+    'dev.title':'وضع المطور','dev.subtitle':'رؤية شاملة لكل الحسابات والمعاملات',
+    'dev.activate':'🔧 تفعيل وضع المطور','dev.deactivate':'إيقاف وضع المطور',
+    'dev.active':'وضع المطور نشط',
+    'dev.totalTx':'إجمالي المعاملات','dev.totalAgents':'عدد الأعضاء',
+    'dev.totalArchived':'مؤرشفة','dev.totalPhotos':'صور',
+    'dev.agentsList':'أعضاء الفريق','dev.transactions':'جميع المعاملات',
+    'dev.viewingAgent':'عرض معاملات:','dev.backToAll':'عودة للكل',
+    'dev.allTx':'كل المعاملات','dev.noAgents':'لا يوجد أعضاء.',
+    'dev.accessDenied':'غير مسموح'
   },
   fr: {
     'app.name':'Digital Stock','app.tagline':'Système de gestion et sécurité',
@@ -799,13 +883,13 @@ const I18N = {
     'status.online':'En ligne','status.offline':'Hors ligne',
     'tabs.warehouse':'Sortie dépôt','tabs.bon':'Bon sortie',
     'tabs.history':'Historique','tabs.profile':'Profil',
-    'picker.title':'Choisir le type de mouvement','picker.total':'Total enregistrements','picker.records':'rec.',
+    'picker.title':'Choisir le type de mouvement','picker.records':'rec.',
     'picker.warehouse.t':'Sortie dépôt (WER)','picker.warehouse.s':'Mouvement interne',
     'picker.bon.t':'Bon de sortie (BDS)','picker.bon.s':'Sortie définitive',
-    'del.title':'Confirmer la suppression','del.question':'Supprimer définitivement cette fiche ?',
-    'del.warning':'Cette action est irréversible',
+    'del.title':'Confirmer la suppression','del.question':'Supprimer définitivement ?',
+    'del.warning':'Action irréversible',
     'del.backupTitle':'📥 Télécharger une sauvegarde avant suppression',
-    'del.backupSub':'Un fichier JSON sera enregistré pour restauration ultérieure',
+    'del.backupSub':'Un fichier JSON sera enregistré',
     'del.confirm':'🗑 Supprimer',
     'del.ref':'Réf','del.type':'Type','del.staff':'Personnel','del.date':'Date','del.items':'Articles',
     'mod.warehouse.label':'Sortie Économat','mod.warehouse.title':'RAPPORT SORTIE',
@@ -866,8 +950,20 @@ const I18N = {
     'profile.stats.week':'Sem.','profile.stats.archived':'Archivé',
     'profile.activity':'Activité','profile.noActivity':'Aucune activité.',
     'profile.settings':'Paramètres','profile.logout':'Déconnexion',
+    'profile.changeAvatar':'Changer la photo',
+    'profile.avatarHint':'Touchez la photo pour la changer',
+    'profile.avatarUpdated':'Photo mise à jour',
     'units.u':'U','units.kg':'Kg','units.g':'g','units.l':'L','units.cl':'cl',
-    'units.carton':'Carton','units.box':'Caisse','units.bag':'Sac','units.palette':'Palette'
+    'units.carton':'Carton','units.box':'Caisse','units.bag':'Sac','units.palette':'Palette',
+    'dev.title':'Mode développeur','dev.subtitle':'Vue complète de tous les comptes',
+    'dev.activate':'🔧 Activer le mode dev','dev.deactivate':'Désactiver le mode dev',
+    'dev.active':'Mode développeur actif',
+    'dev.totalTx':'Total transactions','dev.totalAgents':'Membres',
+    'dev.totalArchived':'Archivées','dev.totalPhotos':'Photos',
+    'dev.agentsList':'Membres de l\'équipe','dev.transactions':'Toutes les transactions',
+    'dev.viewingAgent':'Transactions de:','dev.backToAll':'Retour à tout',
+    'dev.allTx':'Toutes les transactions','dev.noAgents':'Aucun membre.',
+    'dev.accessDenied':'Accès refusé'
   },
   en: {
     'app.name':'Digital Stock','app.tagline':'Intelligent Management & Security',
@@ -877,13 +973,13 @@ const I18N = {
     'status.online':'Online','status.offline':'Offline',
     'tabs.warehouse':'Warehouse','tabs.bon':'Exit voucher',
     'tabs.history':'History','tabs.profile':'Profile',
-    'picker.title':'Choose movement type','picker.total':'Total records','picker.records':'rec.',
+    'picker.title':'Choose movement type','picker.records':'rec.',
     'picker.warehouse.t':'Warehouse Exit (WER)','picker.warehouse.s':'Internal movement',
     'picker.bon.t':'Exit Voucher (BDS)','picker.bon.s':'Permanent exit',
-    'del.title':'Confirm deletion','del.question':'Delete this card permanently?',
-    'del.warning':'This action cannot be undone',
+    'del.title':'Confirm deletion','del.question':'Delete permanently?',
+    'del.warning':'Cannot be undone',
     'del.backupTitle':'📥 Download backup before deleting',
-    'del.backupSub':'A JSON file will be saved for later recovery',
+    'del.backupSub':'A JSON file will be saved',
     'del.confirm':'🗑 Delete',
     'del.ref':'Ref','del.type':'Type','del.staff':'Staff','del.date':'Date','del.items':'Items',
     'mod.warehouse.label':'Warehouse Exit','mod.warehouse.title':'WAREHOUSE EXIT',
@@ -944,8 +1040,20 @@ const I18N = {
     'profile.stats.week':'Week','profile.stats.archived':'Archived',
     'profile.activity':'Activity','profile.noActivity':'No activity.',
     'profile.settings':'Settings','profile.logout':'Sign out',
+    'profile.changeAvatar':'Change photo',
+    'profile.avatarHint':'Tap photo to change',
+    'profile.avatarUpdated':'Photo updated',
     'units.u':'U','units.kg':'Kg','units.g':'g','units.l':'L','units.cl':'cl',
-    'units.carton':'Carton','units.box':'Box','units.bag':'Bag','units.palette':'Pallet'
+    'units.carton':'Carton','units.box':'Box','units.bag':'Bag','units.palette':'Pallet',
+    'dev.title':'Developer mode','dev.subtitle':'Full view of all accounts',
+    'dev.activate':'🔧 Activate developer mode','dev.deactivate':'Deactivate developer mode',
+    'dev.active':'Developer mode active',
+    'dev.totalTx':'Total transactions','dev.totalAgents':'Members',
+    'dev.totalArchived':'Archived','dev.totalPhotos':'Photos',
+    'dev.agentsList':'Team members','dev.transactions':'All transactions',
+    'dev.viewingAgent':'Viewing:','dev.backToAll':'Back to all',
+    'dev.allTx':'All transactions','dev.noAgents':'No members.',
+    'dev.accessDenied':'Access denied'
   }
 };
 
@@ -953,10 +1061,11 @@ let currentLang = localStorage.getItem('ds.lang') || 'ar';
 const t = k => (I18N[currentLang] && I18N[currentLang][k]) || I18N.ar[k] || k;
 
 /* ============ CONSTANTS ============ */
-const STORE_KEY = 'ds.transactions.v12';
-const QUEUE_KEY = 'ds.queue.v12';
-const COUNTER_KEY = 'ds.counters.v12';
-const SET_KEY = 'ds.settings.v12';
+const STORE_KEY = 'ds.transactions.v13';
+const QUEUE_KEY = 'ds.queue.v13';
+const COUNTER_KEY = 'ds.counters.v13';
+const SET_KEY = 'ds.settings.v13';
+const AVATARS_KEY = 'ds.avatars.v13';
 const MAX_PHOTOS = 5;
 const RETENTION_MS = 48 * 3600 * 1000;
 const MODULE_DEF = {
@@ -973,12 +1082,15 @@ let activeTx = null;
 let activeCardUrl = null;
 let currentAgent = '';
 let currentEmail = '';
+let currentUid = '';
 let historyFilter = 'all';
 let historyQuery = '';
 let firebaseReady = false;
 let uiReady = false;
 let currentModule = 'warehouse';
 let pendingDelete = null;
+let developerMode = false;
+let devViewingAgent = null;   // null = all, or specific agent name
 
 /* ============ HELPERS ============ */
 const $  = (s, r=document) => r.querySelector(s);
@@ -1021,8 +1133,27 @@ const loadSettings = () => {
 };
 const saveSettings = () => localStorage.setItem(SET_KEY, JSON.stringify(settings));
 
+/* ============ AVATARS ============ */
+const loadAvatars = () => {
+  try { return JSON.parse(localStorage.getItem(AVATARS_KEY))||{}; } catch { return {}; }
+};
+const saveAvatars = obj => localStorage.setItem(AVATARS_KEY, JSON.stringify(obj));
+const getAvatarKey = () => currentUid || currentEmail || currentAgent || 'default';
+const getAvatar = (key) => {
+  const k = key || getAvatarKey();
+  const avatars = loadAvatars();
+  return avatars[k] || null;
+};
+const setAvatar = (dataUrl, key) => {
+  const k = key || getAvatarKey();
+  const avatars = loadAvatars();
+  if(dataUrl) avatars[k] = dataUrl;
+  else delete avatars[k];
+  saveAvatars(avatars);
+};
+
 /* ============ INDEXEDDB ============ */
-const DB_NAME='ds.archive.v12', DB_VERSION=1;
+const DB_NAME='ds.archive.v13', DB_VERSION=1;
 let _db=null;
 function openArchive(){
   if(_db) return Promise.resolve(_db);
@@ -1778,7 +1909,7 @@ async function buildPdfBlob(tx, cardDataUrl){
 }
 function buildJsonBlob(tx){
   return new Blob([JSON.stringify({
-    schema:'digitalstock.exit.v5',
+    schema:'digitalstock.exit.v6',
     exportedAt:new Date().toISOString(),
     reference:tx.ref, module:tx.module,
     hotel:tx.hotel||settings.hotel,
@@ -1947,6 +2078,7 @@ async function handleSubmit(key){
   const payload = {
     module: key, hotel: settings.hotel,
     guard: effectiveGuard, staff,
+    guardUid: currentUid,      // for dev filtering
     department: (fd.get('department')||'').trim(),
     po: (fd.get('po')||'').trim(),
     destination: (fd.get('destination')||'').trim(),
@@ -1973,7 +2105,6 @@ async function handleSubmit(key){
     const all = loadAll();
     all.unshift(record);
     saveAll(all);
-
     form.reset();
     drafts[key].forEach(p=>{try{URL.revokeObjectURL(p.url);}catch{}});
     drafts[key] = [];
@@ -2058,34 +2189,20 @@ async function runBackgroundArchive(tx, cardUrl){
   }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   NEW: MODULE PICKER
-   ═══════════════════════════════════════════════════════════ */
+/* ============ MODULE PICKER (no counts) ============ */
 function openModulePicker(){
-  const all = loadAll();
-  const whCount = all.filter(x=>x.module==='warehouse').length;
-  const bonCount = all.filter(x=>x.module==='bon').length;
-  const totalEl = document.getElementById('pickTotalCount');
-  const whEl = document.getElementById('count-warehouse');
-  const bonEl = document.getElementById('count-bon');
-  if(totalEl) totalEl.textContent = all.length;
-  if(whEl) whEl.textContent = whCount;
-  if(bonEl) bonEl.textContent = bonCount;
   document.getElementById('modulePickModal').classList.add('open');
 }
 function initModulePicker(){
   const modal = document.getElementById('modulePickModal');
   if(!modal || modal._init) return;
   modal._init = true;
-  // Close button
   modal.querySelectorAll('.close-modal').forEach(btn => {
     btn.addEventListener('click', () => modal.classList.remove('open'));
   });
-  // Click on backdrop
   modal.addEventListener('click', e => {
     if(e.target === modal) modal.classList.remove('open');
   });
-  // Pick cards
   modal.querySelectorAll('[data-pick-module]').forEach(btn => {
     btn.addEventListener('click', () => {
       const mod = btn.dataset.pickModule;
@@ -2109,12 +2226,9 @@ function initModulePicker(){
   });
 }
 
-/* ═══════════════════════════════════════════════════════════
-   NEW: DELETE CONFIRM WITH BACKUP OPTION
-   ═══════════════════════════════════════════════════════════ */
+/* ============ DELETE CONFIRM ============ */
 function openDeleteConfirm(tx){
   pendingDelete = tx;
-  const isAr = currentLang === 'ar';
   const preview = document.getElementById('delPreview');
   if(preview){
     preview.innerHTML = `
@@ -2134,8 +2248,6 @@ async function performDelete(){
   const tx = pendingDelete;
   const all = loadAll();
   const doBackup = document.getElementById('delBackupChk')?.checked;
-
-  // Download backup before deleting
   if(doBackup){
     const payload = {
       schema: 'digitalstock.record-backup.v1',
@@ -2149,14 +2261,12 @@ async function performDelete(){
       `DS-BACKUP-${tx.ref}.json`
     );
   }
-
-  // Delete
   saveAll(all.filter(x=>x.id !== tx.id));
   try { await idbDeleteByRef(tx.ref); } catch {}
   try { if(tx.id) await idbDeleteByTxId(tx.id); } catch {}
-
   document.getElementById('deleteConfirmModal').classList.remove('open');
   renderHistory(); renderProfile(); refreshDatalists();
+  if(developerMode) renderDeveloper();
   pendingDelete = null;
   toast(t('history.deleted'));
 }
@@ -2177,9 +2287,20 @@ function initDeleteConfirm(){
   document.getElementById('delConfirmBtn').onclick = () => performDelete();
 }
 
-/* ============ HISTORY ============ */
-function filterRecords(all){
-  let f = all;
+/* ============ HISTORY (only MY records for non-admins) ============ */
+function getVisibleRecords(){
+  const all = loadAll();
+  // Non-developers only see their own records
+  if(developerMode) return all;
+  if(!currentAgent) return all;
+  return all.filter(x => {
+    // Match by UID if available, else by name
+    if(x.guardUid && currentUid) return x.guardUid === currentUid;
+    return x.guard === currentAgent;
+  });
+}
+function filterRecords(records){
+  let f = records;
   if(historyFilter !== 'all') f = f.filter(x=>x.module === historyFilter);
   if(historyQuery){
     const q = historyQuery.toLowerCase();
@@ -2195,14 +2316,14 @@ function filterRecords(all){
   return f;
 }
 function renderHistory(){
-  const all = loadAll();
+  const visible = getVisibleRecords();
   const cnt = document.getElementById('histCount');
-  if(cnt) cnt.textContent = all.length;
+  if(cnt) cnt.textContent = visible.length;
   const list = document.getElementById('histList');
   if(!list) return;
-  const filtered = filterRecords(all);
+  const filtered = filterRecords(visible);
   if(!filtered.length){
-    list.innerHTML = all.length
+    list.innerHTML = visible.length
       ? `<div class="tt-empty"><div class="ic">🔍</div><p>${t('history.noResults')}</p></div>`
       : `<div class="tt-empty"><div class="ic">📋</div><p>${t('history.empty')}<br>${t('history.empty.hint')}</p></div>`;
     return;
@@ -2294,7 +2415,7 @@ function initHistory(){
   if(exp && !exp._init){
     exp._init = true;
     exp.onclick = () => {
-      const all = loadAll();
+      const all = getVisibleRecords();
       if(!all.length) return toast(t('history.noExport'));
       downloadBlob(
         new Blob([JSON.stringify({
@@ -2324,6 +2445,9 @@ function initHistory(){
         let n = 0;
         for(const rec of data.records){
           if(!rec.id || ids.has(rec.id)) continue;
+          // Ensure the imported record is associated with the current agent
+          if(!rec.guard) rec.guard = currentAgent;
+          if(!rec.guardUid) rec.guardUid = currentUid;
           existing.unshift(rec); n++;
         }
         existing.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
@@ -2336,39 +2460,53 @@ function initHistory(){
   }
 }
 
-/* ============ PROFILE ============ */
+/* ============ PROFILE WITH AVATAR ============ */
 function renderProfile(){
   const host = document.getElementById('view-profile');
   if(!host) return;
-  const all = loadAll();
+  const all = getVisibleRecords();
   const now = new Date();
   const todayStart = new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime();
   const weekStart = todayStart - 6*24*3600*1000;
-  const my = all.filter(x=>x.guard === currentAgent);
-  const total = my.length;
-  const today = my.filter(x=>new Date(x.createdAt).getTime()>=todayStart).length;
-  const week = my.filter(x=>new Date(x.createdAt).getTime()>=weekStart).length;
-  const arch = my.filter(x=>x.archived).length;
+  const total = all.length;
+  const today = all.filter(x=>new Date(x.createdAt).getTime()>=todayStart).length;
+  const week = all.filter(x=>new Date(x.createdAt).getTime()>=weekStart).length;
+  const arch = all.filter(x=>x.archived).length;
   const initial = (currentAgent||'?').trim().charAt(0).toUpperCase();
-  const recent = my.slice(0,9);
+  const recent = all.slice(0,9);
+  const avatar = getAvatar();
+
+  const avatarHtml = avatar
+    ? `<img src="${avatar}" alt="avatar">`
+    : esc(initial);
+
+  const isAdmin = currentUid === ADMIN_UID;
+
   host.innerHTML = `
     <div class="profile-hero">
-      <div class="avatar-ring"><div class="avatar">${esc(initial)}</div></div>
+      <div class="avatar-ring" id="avatarRing">
+        <div class="avatar" id="avatarDisplay">${avatarHtml}</div>
+        <div class="avatar-edit" id="avatarEditBtn" title="${t('profile.changeAvatar')}">📷</div>
+      </div>
       <h2 class="profile-name">${esc(currentAgent||'—')}</h2>
       <div class="profile-handle">@${esc((currentEmail||'').split('@')[0]||'agent')}</div>
       <div class="profile-role">${t('profile.role')}</div>
       ${currentEmail ? `<div class="profile-email">${esc(currentEmail)}</div>` : ''}
+      <p class="tt-hint" style="margin:10px 0 0;font-size:11px">${t('profile.avatarHint')}</p>
     </div>
+
     <div class="stats-row">
       <div class="stat"><div class="stat-val">${total}</div><div class="stat-lbl">${t('profile.stats.total')}</div></div>
       <div class="stat"><div class="stat-val">${today}</div><div class="stat-lbl">${t('profile.stats.today')}</div></div>
       <div class="stat"><div class="stat-val">${week}</div><div class="stat-lbl">${t('profile.stats.week')}</div></div>
       <div class="stat"><div class="stat-val">${arch}</div><div class="stat-lbl">${t('profile.stats.archived')}</div></div>
     </div>
+
     <div class="tt-card-head" style="margin:0 4px 10px">
       <span class="tt-bullet"></span>
       <h2 style="font-size:14px">${t('profile.activity')}</h2>
     </div>
+
     ${recent.length
       ? `<div class="activity-grid">${recent.map(tx=>{
           const m = MODULE_DEF[tx.module];
@@ -2378,21 +2516,264 @@ function renderProfile(){
           </div>`;
         }).join('')}</div>`
       : `<div class="tt-empty"><div class="ic">📭</div><p>${t('profile.noActivity')}</p></div>`}
+
+    ${isAdmin ? `
+      <div class="tt-banner admin" style="margin-bottom:14px">
+        <span class="b-ic">🔧</span>
+        <span>${t('dev.subtitle')}</span>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
+        <button class="tt-btn admin" id="devToggleBtn" style="flex:1">
+          ${developerMode ? '⏹ ' + t('dev.deactivate') : t('dev.activate')}
+        </button>
+      </div>
+    ` : ''}
+
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px">
       <button class="tt-btn ghost" id="profSettings" style="flex:1">${t('profile.settings')}</button>
       <button class="tt-btn danger" id="profLogout" style="flex:1">${t('profile.logout')}</button>
     </div>
   `;
+
+  // Avatar editing
+  const ring = document.getElementById('avatarRing');
+  const editBtn = document.getElementById('avatarEditBtn');
+  const triggerAvatarUpload = () => {
+    const inp = document.getElementById('avatarInput');
+    inp.value = '';
+    inp.onchange = async () => {
+      const file = inp.files[0];
+      if(!file) return;
+      try {
+        const blob = await compressImage(file, 400, 0.82);
+        const reader = new FileReader();
+        reader.onload = () => {
+          const dataUrl = reader.result;
+          setAvatar(dataUrl);
+          const disp = document.getElementById('avatarDisplay');
+          if(disp) disp.innerHTML = `<img src="${dataUrl}" alt="avatar">`;
+          toast(t('profile.avatarUpdated'));
+        };
+        reader.readAsDataURL(blob);
+      } catch (e){ console.error(e); }
+    };
+    inp.click();
+  };
+  if(ring) ring.onclick = triggerAvatarUpload;
+  if(editBtn) editBtn.onclick = (e) => { e.stopPropagation(); triggerAvatarUpload(); };
+
+  // Activity cells
   host.querySelectorAll('.activity-cell').forEach(el => {
     el.onclick = () => {
       const tx = loadAll().find(x=>x.id === el.dataset.id);
       if(tx) showCard(tx);
     };
   });
+
+  // Buttons
   const s = document.getElementById('profSettings');
   if(s) s.onclick = () => document.getElementById('btnSettings').click();
   const l = document.getElementById('profLogout');
   if(l) l.onclick = () => document.getElementById('btnLogoutBtn').click();
+  const dev = document.getElementById('devToggleBtn');
+  if(dev) dev.onclick = () => {
+    developerMode = !developerMode;
+    devViewingAgent = null;
+    if(developerMode){
+      toast('🔧 ' + t('dev.active'));
+      switchView('developer');
+    } else {
+      toast('✓');
+      switchView('profile');
+    }
+  };
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DEVELOPER MODE VIEW
+   ═══════════════════════════════════════════════════════════ */
+function renderDeveloper(){
+  const host = document.getElementById('view-developer');
+  if(!host) return;
+  if(currentUid !== ADMIN_UID){
+    host.innerHTML = `<div class="tt-empty"><div class="ic">🚫</div><p>${t('dev.accessDenied')}</p></div>`;
+    return;
+  }
+  const all = loadAll();
+
+  // Compute stats
+  const total = all.length;
+  const archived = all.filter(x=>x.archived).length;
+  const totalPhotos = all.reduce((s,x)=>s+(x.photos?.length||0),0);
+
+  // Aggregate by guard (agent)
+  const agentsMap = {};
+  all.forEach(tx => {
+    const key = tx.guardUid || tx.guard || 'unknown';
+    if(!agentsMap[key]){
+      agentsMap[key] = {
+        key,
+        name: tx.guard || '—',
+        uid: tx.guardUid || null,
+        count: 0,
+        warehouse: 0,
+        bon: 0,
+        archived: 0,
+        lastAt: tx.createdAt
+      };
+    }
+    const a = agentsMap[key];
+    a.count++;
+    if(tx.module === 'warehouse') a.warehouse++;
+    else if(tx.module === 'bon') a.bon++;
+    if(tx.archived) a.archived++;
+    if(new Date(tx.createdAt) > new Date(a.lastAt)) a.lastAt = tx.createdAt;
+  });
+  const agents = Object.values(agentsMap).sort((a,b)=>b.count - a.count);
+
+  // Filtered records for detail view
+  let viewRecords = all;
+  if(devViewingAgent){
+    viewRecords = all.filter(tx => (tx.guardUid || tx.guard) === devViewingAgent);
+  }
+
+  const filteredTx = viewRecords.slice(0, 100);   // limit display
+
+  host.innerHTML = `
+    <div class="dev-hero">
+      <div class="dev-hero-ic">🔧</div>
+      <div class="dev-hero-t">${t('dev.title')}</div>
+      <div class="dev-hero-s">${t('dev.subtitle')}</div>
+    </div>
+
+    <div class="dev-stats-grid">
+      <div class="dev-stat" style="--c:#25F4EE">
+        <span class="dev-stat-ic">📊</span>
+        <div class="dev-stat-v">${total}</div>
+        <div class="dev-stat-l">${t('dev.totalTx')}</div>
+      </div>
+      <div class="dev-stat" style="--c:#a855f7">
+        <span class="dev-stat-ic">👥</span>
+        <div class="dev-stat-v">${agents.length}</div>
+        <div class="dev-stat-l">${t('dev.totalAgents')}</div>
+      </div>
+      <div class="dev-stat" style="--c:#FE2C55">
+        <span class="dev-stat-ic">🗄️</span>
+        <div class="dev-stat-v">${archived}</div>
+        <div class="dev-stat-l">${t('dev.totalArchived')}</div>
+      </div>
+      <div class="dev-stat" style="--c:#f59e0b">
+        <span class="dev-stat-ic">📷</span>
+        <div class="dev-stat-v">${totalPhotos}</div>
+        <div class="dev-stat-l">${t('dev.totalPhotos')}</div>
+      </div>
+    </div>
+
+    <div class="tt-card-head" style="margin:14px 4px 10px">
+      <span class="tt-bullet" style="--c:#a855f7"></span>
+      <h2 style="font-size:14px">${t('dev.agentsList')}</h2>
+    </div>
+
+    ${agents.length
+      ? agents.map(a => {
+          const av = getAvatar(a.uid) || getAvatar(a.name);
+          const initial = (a.name||'?').trim().charAt(0).toUpperCase();
+          const avHtml = av ? `<img src="${av}" alt="">` : initial;
+          return `
+            <div class="agent-row" data-agent-key="${esc(a.key)}">
+              <div class="agent-avatar">${avHtml}</div>
+              <div class="agent-main">
+                <div class="agent-name">${esc(a.name)}</div>
+                <div class="agent-meta">
+                  🏭 ${a.warehouse} • 🚚 ${a.bon} • 🗄️ ${a.archived}
+                  ${a.lastAt ? ' • ' + fmtDateTime(a.lastAt) : ''}
+                </div>
+              </div>
+              <div>
+                <div class="agent-count">${a.count}</div>
+                <div class="agent-count-l">${t('picker.records')}</div>
+              </div>
+            </div>
+          `;
+        }).join('')
+      : `<div class="tt-empty"><div class="ic">📭</div><p>${t('dev.noAgents')}</p></div>`}
+
+    <div class="tt-card-head" style="margin:20px 4px 10px">
+      <span class="tt-bullet" style="--c:#a855f7"></span>
+      <h2 style="font-size:14px">
+        ${devViewingAgent
+          ? `${t('dev.viewingAgent')} ${esc((agents.find(x=>x.key===devViewingAgent)||{}).name || devViewingAgent)}`
+          : t('dev.transactions')}
+      </h2>
+    </div>
+
+    ${devViewingAgent ? `
+      <div class="dev-filter-bar">
+        <span>${t('dev.viewingAgent')} <b>${esc((agents.find(x=>x.key===devViewingAgent)||{}).name || devViewingAgent)}</b></span>
+        <button class="x" id="devClearFilter">✕</button>
+      </div>
+    ` : ''}
+
+    ${filteredTx.length
+      ? filteredTx.map(tx => {
+          const m = MODULE_DEF[tx.module];
+          return `
+            <div class="feed-card" style="--c:${m.accent}" data-id="${tx.id}">
+              <div class="feed-main">
+                <div class="feed-ref">
+                  ${esc(tx.ref)}
+                  <span class="tt-pill acc">${esc(t('mod.'+tx.module+'.tag'))}</span>
+                  ${tx.archived
+                    ? `<span class="tt-pill ok">${t('history.archived')}</span>`
+                    : `<span class="tt-pill warn">${t('history.unarchived')}</span>`}
+                </div>
+                <div class="feed-sub">${fmtDateTime(tx.createdAt)}</div>
+                <div class="feed-sub">👤 ${esc(tx.staff)} • 👮 ${esc(tx.guard)} • 📷 ${(tx.photos||[]).length} • 📦 ${tx.items.length}</div>
+              </div>
+              <div class="feed-actions">
+                <button class="tt-iconbtn" data-dev-act="view">👁</button>
+              </div>
+            </div>
+          `;
+        }).join('')
+      : `<div class="tt-empty"><div class="ic">📋</div><p>${t('history.empty')}</p></div>`}
+
+    <div style="display:flex;gap:10px;margin:20px 0">
+      <button class="tt-btn ghost" id="devBackToProfile" style="flex:1">${t('profile.title')}</button>
+      <button class="tt-btn admin" id="devExitBtn" style="flex:1">⏹ ${t('dev.deactivate')}</button>
+    </div>
+  `;
+
+  // Wire agent rows
+  host.querySelectorAll('.agent-row').forEach(el => {
+    el.onclick = () => {
+      devViewingAgent = el.dataset.agentKey;
+      renderDeveloper();
+      window.scrollTo({top:0, behavior:'smooth'});
+    };
+  });
+  const clearF = document.getElementById('devClearFilter');
+  if(clearF) clearF.onclick = () => { devViewingAgent = null; renderDeveloper(); };
+
+  // Transactions - view opens card
+  host.querySelectorAll('[data-id]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      if(e.target.closest('[data-dev-act="view"]')){
+        const tx = all.find(x=>x.id === el.dataset.id);
+        if(tx) showCard(tx);
+      }
+    });
+  });
+
+  const back = document.getElementById('devBackToProfile');
+  if(back) back.onclick = () => switchView('profile');
+  const exit = document.getElementById('devExitBtn');
+  if(exit) exit.onclick = () => {
+    developerMode = false;
+    devViewingAgent = null;
+    toast('✓');
+    switchView('profile');
+  };
 }
 
 /* ============ MODALS ============ */
@@ -2483,24 +2864,13 @@ function initModals(){
 function switchView(view){
   $$('.view').forEach(v=>v.classList.toggle('active', v.id === 'view-'+view));
   $$('.nav-btn').forEach(b=>b.classList.toggle('active', b.dataset.nav === view));
-  if(view === 'warehouse' || view === 'bon'){
-    currentModule = view;
-    $$('.tt-modtab').forEach(t=>t.classList.toggle('active', t.dataset.view === view));
-  }
+  if(view === 'warehouse' || view === 'bon') currentModule = view;
   if(view === 'history') renderHistoryBanner();
   if(view === 'profile') renderProfile();
+  if(view === 'developer') renderDeveloper();
   window.scrollTo({top:0, behavior:'smooth'});
 }
 function initNavigation(){
-  const mt = document.getElementById('moduleTabs');
-  if(mt && !mt._init){
-    mt._init = true;
-    mt.addEventListener('click', e => {
-      const tab = e.target.closest('.tt-modtab');
-      if(!tab) return;
-      switchView(tab.dataset.view);
-    });
-  }
   const bn = document.getElementById('bottomNav');
   if(bn && !bn._init){
     bn._init = true;
@@ -2510,7 +2880,6 @@ function initNavigation(){
       switchView(b.dataset.nav);
     });
   }
-  /* ═══ NEW: PLUS BUTTON → OPEN MODULE PICKER ═══ */
   const np = document.getElementById('navPlusBtn');
   if(np && !np._init){
     np._init = true;
@@ -2532,7 +2901,7 @@ function renderHistoryBanner(){
   if(!firebaseReady){
     parts.push(`<div class="tt-banner warn"><span class="b-ic">⚠</span><span>${currentLang==='ar'?'وضع محلي. البيانات محفوظة في IndexedDB، حذف تلقائي بعد 48 ساعة.':currentLang==='fr'?'Mode local. Données dans IndexedDB, purge après 48h.':'Local mode. Data in IndexedDB, purged after 48h.'}</span></div>`);
   } else {
-    parts.push(`<div class="tt-banner ok"><span class="b-ic">✓</span><span>${currentLang==='ar'?'Firebase نشط. عدّادات ذرية + أرشفة سحابية.':currentLang==='fr'?'Firebase actif. Compteurs atomiques + archive cloud.':'Firebase active. Atomic counters + cloud archive.'}</span></div>`);
+    parts.push(`<div class="tt-banner ok"><span class="b-ic">✓</span><span>${currentLang==='ar'?'Firebase نشط. عدّادات ذرية + أرشفة سحابية.':currentLang==='fr'?'Firebase actif. Compteurs atomiques + archive cloud.':'Firebase active. Atomic counters + cloud archive.'}</span></span></div>`);
   }
   if(q.length) parts.push(`<div class="tt-banner warn"><span class="b-ic">⏳</span><span><b>${q.length}</b> ${currentLang==='ar'?'في الانتظار':currentLang==='fr'?'en attente':'queued'}</span></div>`);
   host.innerHTML = parts.join('');
@@ -2549,6 +2918,7 @@ function applyLang(){
   renderHistory();
   renderProfile();
   renderHistoryBanner();
+  if(developerMode) renderDeveloper();
 }
 function initLang(){
   const sel = document.getElementById('langSelect');
@@ -2601,19 +2971,24 @@ function initAuth(){
     const appScreen = document.getElementById('app-screen');
     if(user){
       firebaseReady = true;
+      currentUid = user.uid;
       currentAgent = user.displayName || user.email.split('@')[0];
       currentEmail = user.email;
+      developerMode = false;
+      devViewingAgent = null;
       document.getElementById('currentUserDisplay').textContent = currentAgent;
       ensureUI();
       authScreen.classList.add('hidden');
       appScreen.classList.add('visible');
+      switchView(currentModule);
       renderHistory(); renderProfile(); renderHistoryBanner();
       startRetention();
       setTimeout(()=>recoverUnarchived().catch(()=>{}), 2500);
       setTimeout(flushOfflineQueue, 1500);
     } else {
       firebaseReady = false;
-      currentAgent = ''; currentEmail = '';
+      currentAgent = ''; currentEmail = ''; currentUid = '';
+      developerMode = false;
       ensureUI();
       authScreen.classList.remove('hidden');
       appScreen.classList.remove('visible');
@@ -2633,8 +3008,8 @@ function ensureUI(){
   loadSettings();
   initNavigation();
   initModals();
-  initModulePicker();     // NEW
-  initDeleteConfirm();    // NEW
+  initModulePicker();
+  initDeleteConfirm();
   initLang();
   initTheme();
   initHistory();
@@ -2657,7 +3032,7 @@ function ensureUI(){
   initAuth();
   updateNetStatus();
   setTimeout(()=>document.getElementById('loginEmail')?.focus(), 300);
-  console.log('%c Digital Stock v12 — Module picker + Delete backup ', 'background:linear-gradient(90deg,#25F4EE,#FE2C55);color:#000;padding:4px 10px;border-radius:8px;font-weight:900;');
+  console.log('%c Digital Stock v13 — Dev mode + Avatar + Simplified picker ', 'background:linear-gradient(90deg,#25F4EE,#FE2C55);color:#000;padding:4px 10px;border-radius:8px;font-weight:900;');
 })();
 </script>
 </body>
