@@ -40,7 +40,6 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   transition:opacity .4s}
 :root[data-theme="light"] body::before{opacity:.6}
 
-/* AUTH */
 #auth-screen{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;
   justify-content:center;background:var(--bg);padding:24px;transition:opacity .5s,visibility .5s}
 #auth-screen.hidden{opacity:0;visibility:hidden;pointer-events:none}
@@ -125,7 +124,6 @@ main{flex:1;width:100%;max-width:640px;margin:0 auto;padding:0 16px 24px}
 .view{display:none;animation:fadeUp .35s cubic-bezier(.2,.9,.3,1.1)}
 .view.active{display:block}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-
 .view.mode-enter{animation: modeEnter .55s cubic-bezier(.2,.9,.3,1.15)}
 @keyframes modeEnter{
   0%   { opacity:0; transform: translateY(24px) scale(.96); filter: blur(6px); }
@@ -184,19 +182,126 @@ html[dir="rtl"] .tt-label select{background-position:left 14px center}
   border-radius:50%;border:none;background:rgba(0,0,0,.7);color:#fff;
   font-size:12px;cursor:pointer;display:grid;place-items:center;padding:0;backdrop-filter:blur(8px)}
 .tt-thumb button:hover{background:var(--tt-pink)}
-.tt-sig-wrap{background:#fff;border-radius:14px;overflow:hidden;
-  border:1.5px solid var(--line-2);position:relative}
-.tt-sig-wrap canvas{display:block;width:100%;height:150px;touch-action:none;cursor:crosshair}
-.tt-sig-clear{position:absolute;top:10px;inset-inline-start:10px;
-  background:rgba(0,0,0,.75);color:#fff;border:none;padding:6px 12px;
-  border-radius:8px;font-size:12px;cursor:pointer;font-weight:700}
-.tt-sig-clear:hover{background:var(--tt-pink)}
+
+/* SIGNATURE PREVIEW CARD */
+.tt-sig-preview{
+  position:relative;background:#fff;
+  border:1.5px solid var(--line-2);border-radius:14px;
+  min-height:120px;cursor:pointer;overflow:hidden;
+  transition:.25s;display:grid;place-items:center;
+}
+.tt-sig-preview:hover{
+  border-color:var(--tt-cyan);
+  box-shadow:0 0 0 4px var(--tt-cyan-glow);
+  transform:translateY(-1px);
+}
+.tt-sig-preview:active{transform:scale(.99)}
+.tt-sig-preview canvas{
+  display:block;width:100%;height:120px;pointer-events:none;
+}
+.tt-sig-empty{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:8px;pointer-events:none;background:#fff;color:#64748b;
+}
+.tt-sig-empty .ic{font-size:32px;opacity:.85}
+.tt-sig-empty .txt{font-size:13px;font-weight:700}
+.tt-sig-empty .sub{font-size:11px;opacity:.7}
+.tt-sig-preview .badge{
+  position:absolute;top:8px;inset-inline-end:8px;
+  padding:4px 10px;border-radius:99px;
+  background:linear-gradient(135deg,var(--tt-cyan),var(--tt-pink));
+  color:#000;font-size:10px;font-weight:900;letter-spacing:.3px;
+  box-shadow:0 4px 12px var(--tt-pink-glow);
+  display:none;
+}
+.tt-sig-preview.signed .badge{display:block}
+.tt-sig-preview.signed .tt-sig-empty{display:none}
+
+/* FULLSCREEN SIGNATURE PAD */
+#signPad{
+  position:fixed;inset:0;z-index:3000;
+  background:#ffffff;
+  display:none;flex-direction:column;
+  -webkit-user-select:none;user-select:none;
+}
+#signPad.open{display:flex;animation:sigFadeIn .25s ease-out}
+@keyframes sigFadeIn{from{opacity:0;transform:scale(1.02)}to{opacity:1;transform:none}}
+
+#signPad .sp-top{
+  flex:0 0 auto;padding:14px 18px;
+  padding-top:calc(14px + env(safe-area-inset-top,0px));
+  display:flex;align-items:center;gap:12px;
+  background:#ffffff;border-bottom:1px solid #e5e7eb;
+}
+#signPad .sp-title{
+  flex:1;color:#0f172a;display:flex;flex-direction:column;gap:2px;
+}
+#signPad .sp-title .t1{font-size:16px;font-weight:900;letter-spacing:-.2px}
+#signPad .sp-title .t2{font-size:12px;color:#64748b;font-weight:600}
+#signPad .sp-close{
+  width:42px;height:42px;border-radius:12px;
+  background:#f1f5f9;color:#0f172a;border:none;
+  display:grid;place-items:center;font-size:18px;font-weight:800;
+  cursor:pointer;transition:.15s;
+}
+#signPad .sp-close:hover{background:#e2e8f0}
+
+#signPad .sp-canvas-wrap{
+  flex:1;position:relative;background:#ffffff;overflow:hidden;
+  background-image:
+    linear-gradient(#fff 31px, #f8fafc 32px);
+  background-size:100% 32px;
+  background-position:0 -8px;
+}
+#signPad .sp-canvas-wrap canvas{
+  display:block;width:100%;height:100%;
+  touch-action:none;cursor:crosshair;background:transparent;
+}
+#signPad .sp-baseline{
+  position:absolute;left:20px;right:20px;bottom:70px;
+  border-bottom:2px dashed #cbd5e1;pointer-events:none;
+}
+#signPad .sp-placeholder{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:8px;pointer-events:none;color:#94a3b8;transition:opacity .3s;
+}
+#signPad .sp-placeholder.hide{opacity:0}
+#signPad .sp-placeholder .big{font-size:64px;opacity:.55}
+#signPad .sp-placeholder .small{font-size:16px;font-weight:800;color:#475569}
+#signPad .sp-placeholder .tiny{font-size:12.5px;font-weight:600}
+
+#signPad .sp-bar{
+  flex:0 0 auto;padding:14px 18px;
+  padding-bottom:calc(14px + env(safe-area-inset-bottom,0px));
+  display:flex;gap:10px;background:#ffffff;
+  border-top:1px solid #e5e7eb;
+}
+#signPad .sp-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  height:54px;border-radius:14px;border:none;
+  font-size:15px;font-weight:900;cursor:pointer;transition:.15s;
+  font-family:inherit;letter-spacing:.2px;
+}
+#signPad .sp-btn:active{transform:scale(.97)}
+#signPad .sp-btn.clear{flex:0 0 auto;min-width:56px;padding:0 14px;background:#f1f5f9;color:#475569}
+#signPad .sp-btn.clear:hover{background:#e2e8f0}
+#signPad .sp-btn.cancel{flex:1;background:#fee2e2;color:#dc2626}
+#signPad .sp-btn.cancel:hover{background:#fecaca}
+#signPad .sp-btn.confirm{
+  flex:2;background:linear-gradient(135deg,#25F4EE,#FE2C55);
+  color:#000;box-shadow:0 8px 22px rgba(254,44,85,.35);
+}
+#signPad .sp-btn.confirm:hover:not(:disabled){filter:brightness(1.05)}
+#signPad .sp-btn.confirm:disabled{opacity:.4;cursor:not-allowed;filter:none;box-shadow:none}
+
+/* Card modal enhancements */
 .tt-submit-bar{display:flex;gap:10px;flex-wrap:wrap;padding:4px 0}
 .tt-submit-bar .tt-btn.primary{flex:1;min-width:200px;
   background:linear-gradient(135deg,var(--c,var(--tt-cyan)),var(--tt-pink));
   color:#000;font-weight:900;padding:16px 24px;border-radius:16px;
   font-size:15.5px;letter-spacing:.2px;box-shadow:0 10px 32px var(--tt-pink-glow)}
-.tt-submit-bar .tt-btn.primary:hover:not(:disabled){filter:brightness(1.1);box-shadow:0 14px 40px var(--tt-pink-glow)}
 
 .hist-tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;
   position:sticky;top:var(--top-h);z-index:30;background:var(--bg);padding:8px 0}
@@ -226,7 +331,6 @@ html[dir="rtl"] .tt-label select{background-position:left 14px center}
   box-shadow:0 0 40px var(--tt-pink-glow),0 0 60px var(--tt-cyan-glow);
   position:relative;cursor:pointer;transition:.25s}
 .avatar-ring:hover{transform:scale(1.03)}
-.avatar-ring:active{transform:scale(.98)}
 .avatar-ring::after{content:'';position:absolute;inset:-6px;border-radius:50%;
   background:linear-gradient(135deg,var(--tt-cyan),var(--tt-pink));z-index:-1;
   filter:blur(16px);opacity:.5;animation:glow 3s ease-in-out infinite}
@@ -275,7 +379,6 @@ html[dir="rtl"] .tt-label select{background-position:left 14px center}
   color:var(--muted);text-align:center;white-space:nowrap;overflow:hidden;
   text-overflow:ellipsis;max-width:100%;direction:ltr}
 
-/* BOTTOM NAV */
 .tt-bottomnav{position:fixed;bottom:0;left:0;right:0;
   height:calc(var(--nav-h) + env(safe-area-inset-bottom,0px));
   padding-bottom:env(safe-area-inset-bottom,0px);
@@ -300,184 +403,96 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 92px 1fr;direction:rtl}
   border-radius:99px;font-size:9px;font-weight:800;display:grid;place-items:center;
   line-height:1;box-shadow:0 0 8px var(--tt-pink-glow)}
 
-/* ═══════════════════════════════════════════════════════════════
-   MODE SWITCH — 3D LARGE ICONS + THEME-AWARE BACKGROUND
-   ═══════════════════════════════════════════════════════════════ */
 .nav-center{display:flex;flex-direction:column;align-items:center;justify-content:center;
   height:100%;position:relative;gap:2px}
 
 .mode-switch{
-  position:relative;
-  width:58px;height:58px;
-  border-radius:18px;
-  border:none;cursor:pointer;
-  display:grid;place-items:center;
-  padding:0;overflow:visible;
+  position:relative;width:58px;height:58px;border-radius:18px;
+  border:none;cursor:pointer;display:grid;place-items:center;padding:0;overflow:visible;
   background:linear-gradient(145deg,#2dd4f0,#0891b2);
-  box-shadow:
-    0 8px 20px rgba(37,244,238,.55),
-    0 0 40px rgba(37,244,238,.35),
-    inset 0 -4px 8px rgba(0,0,0,.25),
-    inset 0 2px 2px rgba(255,255,255,.35);
-  transition:
-    background .55s cubic-bezier(.2,.9,.3,1.1),
+  box-shadow:0 8px 20px rgba(37,244,238,.55),0 0 40px rgba(37,244,238,.35),
+    inset 0 -4px 8px rgba(0,0,0,.25),inset 0 2px 2px rgba(255,255,255,.35);
+  transition:background .55s cubic-bezier(.2,.9,.3,1.1),
     box-shadow .55s cubic-bezier(.2,.9,.3,1.1),
     transform .25s cubic-bezier(.2,.9,.3,1.3);
-  isolation:isolate;
-  perspective: 220px;
-  perspective-origin: 50% 55%;
+  isolation:isolate;perspective:220px;perspective-origin:50% 55%;
 }
 .mode-switch.bon{
   background:linear-gradient(145deg,#f43f5e,#be123c);
-  box-shadow:
-    0 8px 20px rgba(254,44,85,.55),
-    0 0 40px rgba(254,44,85,.35),
-    inset 0 -4px 8px rgba(0,0,0,.25),
-    inset 0 2px 2px rgba(255,255,255,.35);
+  box-shadow:0 8px 20px rgba(254,44,85,.55),0 0 40px rgba(254,44,85,.35),
+    inset 0 -4px 8px rgba(0,0,0,.25),inset 0 2px 2px rgba(255,255,255,.35);
 }
-.mode-switch::before{
-  content:'';position:absolute;inset:-6px;border-radius:24px;
-  background:inherit;z-index:-1;filter:blur(14px);opacity:.75;transition:.55s;
-}
-.mode-switch::after{
-  content:'';position:absolute;
-  top:4px;left:12%;right:12%;height:35%;
-  border-radius:14px;
-  background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(255,255,255,0));
-  pointer-events:none;
-  z-index:2;
-}
+.mode-switch::before{content:'';position:absolute;inset:-6px;border-radius:24px;
+  background:inherit;z-index:-1;filter:blur(14px);opacity:.75;transition:.55s}
+.mode-switch::after{content:'';position:absolute;top:4px;left:12%;right:12%;height:35%;
+  border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(255,255,255,0));
+  pointer-events:none;z-index:2}
 .mode-switch:active{transform:scale(.94)}
+:root[data-theme="light"] .mode-switch{background:linear-gradient(145deg,#67e8f9,#06b6d4)}
+:root[data-theme="light"] .mode-switch.bon{background:linear-gradient(145deg,#fb7185,#e11d48)}
 
-/* THEME-AWARE VARIATIONS */
-:root[data-theme="light"] .mode-switch{
-  background:linear-gradient(145deg,#67e8f9,#06b6d4);
-  box-shadow:
-    0 10px 24px rgba(37,244,238,.45),
-    0 0 30px rgba(37,244,238,.25),
-    inset 0 -3px 6px rgba(0,0,0,.15),
-    inset 0 2px 2px rgba(255,255,255,.6);
-}
-:root[data-theme="light"] .mode-switch.bon{
-  background:linear-gradient(145deg,#fb7185,#e11d48);
-  box-shadow:
-    0 10px 24px rgba(254,44,85,.45),
-    0 0 30px rgba(254,44,85,.25),
-    inset 0 -3px 6px rgba(0,0,0,.15),
-    inset 0 2px 2px rgba(255,255,255,.6);
-}
-
-.mode-switch-inner{
-  position:absolute;inset:0;
-  display:grid;place-items:center;
-  transform-style:preserve-3d;
-  transition:transform .6s cubic-bezier(.2,.9,.3,1.1);
-}
+.mode-switch-inner{position:absolute;inset:0;display:grid;place-items:center;
+  transform-style:preserve-3d;transition:transform .6s cubic-bezier(.2,.9,.3,1.1)}
 .mode-switch.spin .mode-switch-inner{transform:rotateY(360deg)}
 
-/* BIG 3D ICONS — FILL THE FRAME */
-.mode-icon{
-  position:absolute;
-  top:50%;left:50%;
-  width:46px;height:46px;
-  max-width:88%;max-height:88%;
-  object-fit:contain;
-  transform-origin:center center;
-  pointer-events:none;
-  user-select:none;
-  -webkit-user-drag:none;
-  backface-visibility:hidden;
+.mode-icon{position:absolute;top:50%;left:50%;width:46px;height:46px;
+  max-width:88%;max-height:88%;object-fit:contain;transform-origin:center center;
+  pointer-events:none;user-select:none;-webkit-user-drag:none;backface-visibility:hidden;
   will-change:transform,opacity,filter;
-  filter:
-    drop-shadow(0 1px 0 rgba(255,255,255,.55))
+  filter:drop-shadow(0 1px 0 rgba(255,255,255,.55))
     drop-shadow(0 2px 3px rgba(0,0,0,.55))
     drop-shadow(0 5px 8px rgba(0,0,0,.5))
     drop-shadow(0 12px 22px rgba(0,0,0,.35));
-  transition:
-    opacity .4s cubic-bezier(.2,.9,.3,1.1),
-    transform .65s cubic-bezier(.2,.9,.3,1.35),
-    filter .4s ease;
-}
+  transition:opacity .4s cubic-bezier(.2,.9,.3,1.1),
+    transform .65s cubic-bezier(.2,.9,.3,1.35),filter .4s ease}
 
-.mode-icon-wh{
-  opacity:1;
+.mode-icon-wh{opacity:1;transform:translate(-50%,-50%) perspective(200px)
+    rotateX(10deg) rotateY(-10deg) rotateZ(0deg) scale(1.15) translateZ(8px)}
+.mode-switch.bon .mode-icon-wh{opacity:0;transform:translate(-50%,-50%) perspective(200px)
+    rotateX(-95deg) rotateY(70deg) rotateZ(-180deg) scale(.3)}
+.mode-icon-bon{opacity:0;transform:translate(-50%,-50%) perspective(200px)
+    rotateX(-95deg) rotateY(-70deg) rotateZ(180deg) scale(.3)}
+.mode-switch.bon .mode-icon-bon{opacity:1;transform:translate(-50%,-50%) perspective(200px)
+    rotateX(10deg) rotateY(10deg) rotateZ(0deg) scale(1.15) translateZ(8px)}
+.mode-switch:not(.bon):hover .mode-icon-wh{transform:translate(-50%,-50%) perspective(200px)
+    rotateX(18deg) rotateY(-18deg) scale(1.28) translateZ(14px)}
+.mode-switch.bon:hover .mode-icon-bon{transform:translate(-50%,-50%) perspective(200px)
+    rotateX(18deg) rotateY(18deg) scale(1.28) translateZ(14px)}
+.mode-switch:active .mode-icon-wh,.mode-switch:active .mode-icon-bon{
   transform:translate(-50%,-50%) perspective(200px)
-    rotateX(10deg) rotateY(-10deg) rotateZ(0deg)
-    scale(1.15) translateZ(8px);
-}
-.mode-switch.bon .mode-icon-wh{
-  opacity:0;
-  transform:translate(-50%,-50%) perspective(200px)
-    rotateX(-95deg) rotateY(70deg) rotateZ(-180deg)
-    scale(.3);
-}
-
-.mode-icon-bon{
-  opacity:0;
-  transform:translate(-50%,-50%) perspective(200px)
-    rotateX(-95deg) rotateY(-70deg) rotateZ(180deg)
-    scale(.3);
-}
-.mode-switch.bon .mode-icon-bon{
-  opacity:1;
-  transform:translate(-50%,-50%) perspective(200px)
-    rotateX(10deg) rotateY(10deg) rotateZ(0deg)
-    scale(1.15) translateZ(8px);
-}
-
-.mode-switch:not(.bon):hover .mode-icon-wh{
-  transform:translate(-50%,-50%) perspective(200px)
-    rotateX(18deg) rotateY(-18deg) scale(1.28) translateZ(14px);
-}
-.mode-switch.bon:hover .mode-icon-bon{
-  transform:translate(-50%,-50%) perspective(200px)
-    rotateX(18deg) rotateY(18deg) scale(1.28) translateZ(14px);
-}
-.mode-switch:active .mode-icon-wh,
-.mode-switch:active .mode-icon-bon{
-  transform:translate(-50%,-50%) perspective(200px)
-    rotateX(2deg) rotateY(0deg) scale(.95) translateZ(4px);
-}
+    rotateX(2deg) rotateY(0deg) scale(.95) translateZ(4px)}
 
 @keyframes iconFloat3D_WH{
   0%,100%{transform:translate(-50%,-50%) perspective(200px)
-    rotateX(10deg) rotateY(-10deg) scale(1.15) translateZ(8px);}
+    rotateX(10deg) rotateY(-10deg) scale(1.15) translateZ(8px)}
   50%    {transform:translate(-50%,-50%) perspective(200px)
-    rotateX(5deg) rotateY(-5deg) scale(1.15) translateZ(16px);}
+    rotateX(5deg) rotateY(-5deg) scale(1.15) translateZ(16px)}
 }
 @keyframes iconFloat3D_BON{
   0%,100%{transform:translate(-50%,-50%) perspective(200px)
-    rotateX(10deg) rotateY(10deg) scale(1.15) translateZ(8px);}
+    rotateX(10deg) rotateY(10deg) scale(1.15) translateZ(8px)}
   50%    {transform:translate(-50%,-50%) perspective(200px)
-    rotateX(5deg) rotateY(5deg) scale(1.15) translateZ(16px);}
+    rotateX(5deg) rotateY(5deg) scale(1.15) translateZ(16px)}
 }
-.mode-switch:not(.bon):not(:hover):not(.spin) .mode-icon-wh{
-  animation: iconFloat3D_WH 3.5s ease-in-out infinite;
-}
-.mode-switch.bon:not(:hover):not(.spin) .mode-icon-bon{
-  animation: iconFloat3D_BON 3.5s ease-in-out infinite;
-}
+.mode-switch:not(.bon):not(:hover):not(.spin) .mode-icon-wh{animation:iconFloat3D_WH 3.5s ease-in-out infinite}
+.mode-switch.bon:not(:hover):not(.spin) .mode-icon-bon{animation:iconFloat3D_BON 3.5s ease-in-out infinite}
 
 .mode-ripple{position:absolute;inset:-6px;border-radius:24px;border:2px solid;opacity:0;
   pointer-events:none;z-index:-2}
-.mode-ripple.ring-a{ animation: rippleOut .8s cubic-bezier(.2,.7,.3,1) forwards; }
-.mode-ripple.ring-b{ animation: rippleOut .8s .12s cubic-bezier(.2,.7,.3,1) forwards; }
-.mode-switch.wh .mode-ripple{ border-color:rgba(37,244,238,.6); }
-.mode-switch.bon .mode-ripple{ border-color:rgba(254,44,85,.6); }
-@keyframes rippleOut{
-  0%   { opacity:1; transform:scale(1); }
-  100% { opacity:0; transform:scale(2.1); }
-}
+.mode-ripple.ring-a{animation:rippleOut .8s cubic-bezier(.2,.7,.3,1) forwards}
+.mode-ripple.ring-b{animation:rippleOut .8s .12s cubic-bezier(.2,.7,.3,1) forwards}
+.mode-switch.wh .mode-ripple{border-color:rgba(37,244,238,.6)}
+.mode-switch.bon .mode-ripple{border-color:rgba(254,44,85,.6)}
+@keyframes rippleOut{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(2.1)}}
 .mode-label{font-size:9.5px;font-weight:900;letter-spacing:.3px;white-space:nowrap;
-  transition:color .35s, opacity .35s;
+  transition:color .35s,opacity .35s;
   background:linear-gradient(90deg,#25F4EE,#22d3ee);
   -webkit-background-clip:text;background-clip:text;color:transparent;
   opacity:1;margin-top:2px;padding:2px 8px;border-radius:8px}
 .mode-label.bon{background:linear-gradient(90deg,#FE2C55,#f43f5e);
   -webkit-background-clip:text;background-clip:text;color:transparent}
 
-.mode-flash{position:fixed;inset:0;pointer-events:none;z-index:1500;
-  opacity:0;transition:opacity .35s}
+.mode-flash{position:fixed;inset:0;pointer-events:none;z-index:1500;opacity:0;transition:opacity .35s}
 .mode-flash.wh{background:radial-gradient(circle at 50% 100%,rgba(37,244,238,.22),transparent 60%)}
 .mode-flash.bon{background:radial-gradient(circle at 50% 100%,rgba(254,44,85,.22),transparent 60%)}
 .mode-flash.active{opacity:1}
@@ -526,7 +541,7 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 92px 1fr;direction:rtl}
   background:linear-gradient(135deg,var(--tt-cyan),var(--tt-pink));
   color:#000;padding:14px 24px;border-radius:99px;font-weight:800;font-size:14px;
   box-shadow:0 12px 40px var(--tt-pink-glow);opacity:0;
-  transition:.35s cubic-bezier(.2,.9,.3,1.2);z-index:3000;
+  transition:.35s cubic-bezier(.2,.9,.3,1.2);z-index:4000;
   pointer-events:none;max-width:88vw;text-align:center}
 #toast.show{transform:translate(-50%,0);opacity:1}
 .tt-banner{padding:12px 15px;border-radius:14px;margin-bottom:14px;font-size:12.5px;
@@ -715,6 +730,37 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 92px 1fr;direction:rtl}
 
 <div class="mode-flash" id="modeFlash"></div>
 
+<!-- FULLSCREEN SIGNATURE PAD -->
+<div id="signPad">
+  <div class="sp-top">
+    <div class="sp-title">
+      <span class="t1" data-i18n="sig.title">وقّع بإصبعك</span>
+      <span class="t2" data-i18n="sig.sub">ارسم توقيعك في المساحة البيضاء</span>
+    </div>
+    <button class="sp-close" id="sigClose" type="button" title="إغلاق">✕</button>
+  </div>
+
+  <div class="sp-canvas-wrap" id="sigWrap">
+    <canvas id="sigFullCanvas"></canvas>
+    <div class="sp-baseline"></div>
+    <div class="sp-placeholder" id="sigPlaceholder">
+      <div class="big">✍️</div>
+      <div class="small" data-i18n="sig.hint">ابدأ الرسم بإصبعك هنا</div>
+      <div class="tiny" data-i18n="sig.tiny">خط سميك = رسم بطيء · خط رفيع = رسم سريع</div>
+    </div>
+  </div>
+
+  <div class="sp-bar">
+    <button class="sp-btn clear" id="sigClear" type="button" title="مسح">🔄</button>
+    <button class="sp-btn cancel" id="sigCancel" type="button">
+      <span>✕</span><span data-i18n="sig.cancel">إلغاء</span>
+    </button>
+    <button class="sp-btn confirm" id="sigConfirm" type="button" disabled>
+      <span>✓</span><span data-i18n="sig.confirm">تأكيد التوقيع</span>
+    </button>
+  </div>
+</div>
+
 <!-- Delete confirm -->
 <div class="tt-modal" id="deleteConfirmModal">
   <div class="tt-modal-box" style="max-width:480px">
@@ -843,7 +889,7 @@ setPersistence(auth, browserLocalPersistence).catch(console.error);
 
 const ADMIN_UID = 'kszZYwapqMYc8XvY2yOYGmO3c6D3';
 
-/* I18N */
+/* I18N (unchanged from v17) */
 const I18N = {
   ar: {
     'app.name':'Digital Stock','app.tagline':'نظام الإدارة والأمن الذكي',
@@ -854,6 +900,11 @@ const I18N = {
     'tabs.warehouse':'خروج مخزن','tabs.bon':'إذن خروج',
     'tabs.history':'السجل','tabs.profile':'الملف',
     'picker.records':'سجل',
+    'sig.title':'وقّع بإصبعك','sig.sub':'ارسم توقيعك في المساحة البيضاء',
+    'sig.hint':'ابدأ الرسم بإصبعك هنا',
+    'sig.tiny':'خط سميك = رسم بطيء · خط رفيع = رسم سريع',
+    'sig.cancel':'إلغاء','sig.confirm':'تأكيد التوقيع',
+    'sig.empty':'لا يوجد توقيع','sig.saved':'✓ تم حفظ التوقيع',
     'del.title':'تأكيد الحذف','del.question':'هل تريد حذف هذه البطاقة نهائياً؟',
     'del.warning':'لا يمكن التراجع عن هذه العملية',
     'del.backupTitle':'📥 تحميل نسخة احتياطية قبل الحذف',
@@ -879,8 +930,8 @@ const I18N = {
     'form.items.add':'+ إضافة صنف','form.photos':'الصور التوثيقية',
     'form.photos.hint':'حتى 5 صور. watermark تلقائي.',
     'form.photos.camera':'📷 كاميرا','form.photos.gallery':'🖼 معرض',
-    'form.signature':'التوقيع','form.signature.hint':'وقّع بإصبعك.',
-    'form.signature.manual':'يدوي','form.signature.clear':'مسح',
+    'form.signature':'التوقيع','form.signature.hint':'اضغط لفتح لوحة التوقيع الكاملة',
+    'form.signature.tap':'اضغط للتوقيع','form.signature.signed':'✓ موقّع',
     'form.submit':'✓ اعتماد البطاقة','form.submit.loading':'جارٍ الحفظ…',
     'form.reset':'إعادة','form.staff.required':'اسم الموظف مطلوب',
     'form.items.required':'أضف صنفاً','form.qty.required':'الكمية ناقصة',
@@ -943,6 +994,11 @@ const I18N = {
     'tabs.warehouse':'Sortie dépôt','tabs.bon':'Bon sortie',
     'tabs.history':'Historique','tabs.profile':'Profil',
     'picker.records':'rec.',
+    'sig.title':'Signez avec votre doigt','sig.sub':'Dessinez sur la feuille blanche',
+    'sig.hint':'Commencez à signer ici',
+    'sig.tiny':'Trait épais = lent · Trait fin = rapide',
+    'sig.cancel':'Annuler','sig.confirm':'Confirmer la signature',
+    'sig.empty':'Aucune signature','sig.saved':'✓ Signature enregistrée',
     'del.title':'Confirmer la suppression','del.question':'Supprimer définitivement ?',
     'del.warning':'Action irréversible',
     'del.backupTitle':'📥 Télécharger une sauvegarde avant suppression',
@@ -966,8 +1022,8 @@ const I18N = {
     'form.items.name':'Désignation','form.items.qty':'Qté','form.items.unit':'Unité',
     'form.items.add':'+ Ajouter','form.photos':'Photos','form.photos.hint':'Jusqu\'à 5 photos.',
     'form.photos.camera':'📷 Caméra','form.photos.gallery':'🖼 Galerie',
-    'form.signature':'Signature','form.signature.hint':'Signez.',
-    'form.signature.manual':'Manuscrite','form.signature.clear':'Effacer',
+    'form.signature':'Signature','form.signature.hint':'Touchez pour ouvrir la signature',
+    'form.signature.tap':'Toucher pour signer','form.signature.signed':'✓ Signé',
     'form.submit':'✓ Valider','form.submit.loading':'Enregistrement…',
     'form.reset':'Reset','form.staff.required':'Personnel requis',
     'form.items.required':'Ajoutez un article','form.qty.required':'Qté manquante',
@@ -1030,6 +1086,11 @@ const I18N = {
     'tabs.warehouse':'Warehouse','tabs.bon':'Exit voucher',
     'tabs.history':'History','tabs.profile':'Profile',
     'picker.records':'rec.',
+    'sig.title':'Sign with your finger','sig.sub':'Draw your signature on the white sheet',
+    'sig.hint':'Start signing here',
+    'sig.tiny':'Thick = slow · Thin = fast',
+    'sig.cancel':'Cancel','sig.confirm':'Confirm signature',
+    'sig.empty':'No signature','sig.saved':'✓ Signature saved',
     'del.title':'Confirm deletion','del.question':'Delete permanently?',
     'del.warning':'Cannot be undone',
     'del.backupTitle':'📥 Download backup before deleting',
@@ -1053,8 +1114,8 @@ const I18N = {
     'form.items.name':'Name','form.items.qty':'Qty','form.items.unit':'Unit',
     'form.items.add':'+ Add item','form.photos':'Photos','form.photos.hint':'Up to 5 photos.',
     'form.photos.camera':'📷 Camera','form.photos.gallery':'🖼 Gallery',
-    'form.signature':'Signature','form.signature.hint':'Sign below.',
-    'form.signature.manual':'Handwritten','form.signature.clear':'Clear',
+    'form.signature':'Signature','form.signature.hint':'Tap to open signature pad',
+    'form.signature.tap':'Tap to sign','form.signature.signed':'✓ Signed',
     'form.submit':'✓ Validate','form.submit.loading':'Saving…',
     'form.reset':'Reset','form.staff.required':'Staff required',
     'form.items.required':'Add an item','form.qty.required':'Missing qty',
@@ -1114,12 +1175,12 @@ let currentLang = localStorage.getItem('ds.lang') || 'ar';
 const t = k => (I18N[currentLang] && I18N[currentLang][k]) || I18N.ar[k] || k;
 
 /* CONSTANTS */
-const STORE_KEY = 'ds.transactions.v16';
-const QUEUE_KEY = 'ds.queue.v16';
-const COUNTER_KEY = 'ds.counters.v16';
-const SET_KEY = 'ds.settings.v16';
-const AVATARS_KEY = 'ds.avatars.v16';
-const LAST_MODE_KEY = 'ds.lastMode.v16';
+const STORE_KEY = 'ds.transactions.v18';
+const QUEUE_KEY = 'ds.queue.v18';
+const COUNTER_KEY = 'ds.counters.v18';
+const SET_KEY = 'ds.settings.v18';
+const AVATARS_KEY = 'ds.avatars.v18';
+const LAST_MODE_KEY = 'ds.lastMode.v18';
 const MAX_PHOTOS = 5;
 const RETENTION_MS = 48 * 3600 * 1000;
 const MODULE_DEF = {
@@ -1145,6 +1206,7 @@ let currentModule = localStorage.getItem(LAST_MODE_KEY) || 'warehouse';
 let pendingDelete = null;
 let developerMode = false;
 let devViewingAgent = null;
+let activeSigKey = null;
 
 /* HELPERS */
 const $  = (s, r=document) => r.querySelector(s);
@@ -1205,7 +1267,7 @@ const setAvatar = (dataUrl, key) => {
 };
 
 /* INDEXEDDB */
-const DB_NAME='ds.archive.v16', DB_VERSION=1;
+const DB_NAME='ds.archive.v18', DB_VERSION=1;
 let _db=null;
 function openArchive(){
   if(_db) return Promise.resolve(_db);
@@ -1286,7 +1348,7 @@ const idbSizeEstimate = async () => {
   return '—';
 };
 
-/* COUNTERS */
+/* COUNTERS & COMMIT */
 const localNextSeq = (prefix, dateKey) => {
   const c = JSON.parse(localStorage.getItem(COUNTER_KEY)||'{}');
   const id = `${prefix}_${dateKey}`;
@@ -1452,6 +1514,232 @@ const reasons = () => currentLang==='ar'
   ? ['Retour fournisseur','Prêt / Réparation','Don','Vente / Rebut','Déchets','Transfert site','Autre']
   : ['Supplier return','Loan / Repair','Donation','Sale / Scrap','Waste','Site transfer','Other'];
 
+/* ═══════════════════════════════════════════════════════════════
+   FULLSCREEN SIGNATURE PAD LOGIC
+   ═══════════════════════════════════════════════════════════════ */
+const Sig = {
+  canvas: null, ctx: null, wrap: null,
+  drawing: false,
+  lastPt: null, lastTime: 0,
+  velocity: 0, hasInk: false,
+  dpr: 1,
+  MIN_W: 0.8, MAX_W: 5.5,
+  VEL_SMOOTH: 0.35,
+  initialized: false,
+  resize: null
+};
+
+function sigInit(){
+  if(Sig.initialized) return;
+  Sig.initialized = true;
+  Sig.canvas = document.getElementById('sigFullCanvas');
+  Sig.wrap = document.getElementById('sigWrap');
+  if(!Sig.canvas) return;
+  Sig.ctx = Sig.canvas.getContext('2d');
+
+  const resize = () => {
+    const rect = Sig.wrap.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    Sig.dpr = dpr;
+    Sig.canvas.width  = Math.max(1, Math.floor(rect.width * dpr));
+    Sig.canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+    Sig.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    Sig.ctx.lineCap = 'round';
+    Sig.ctx.lineJoin = 'round';
+    Sig.ctx.strokeStyle = '#0a0f18';
+    Sig.ctx.fillStyle = '#0a0f18';
+    if(activeSigKey && signatures[activeSigKey]){
+      const img = new Image();
+      img.onload = () => {
+        Sig.ctx.drawImage(img, 0, 0, rect.width, rect.height);
+      };
+      img.src = signatures[activeSigKey];
+    }
+  };
+  Sig.resize = resize;
+
+  const getPt = (e) => {
+    const rect = Sig.canvas.getBoundingClientRect();
+    const p = (e.touches && e.touches.length) ? e.touches[0] : e;
+    const pressure = (typeof p.pressure === 'number' && p.pressure > 0 && p.pressure !== 0.5)
+                     ? p.pressure : 0;
+    return {
+      x: p.clientX - rect.left,
+      y: p.clientY - rect.top,
+      t: performance.now(),
+      pressure
+    };
+  };
+
+  const down = (e) => {
+    e.preventDefault();
+    Sig.drawing = true;
+    Sig.hasInk = true;
+    const pt = getPt(e);
+    Sig.lastPt = pt;
+    Sig.lastTime = pt.t;
+    Sig.velocity = 0;
+    Sig.ctx.beginPath();
+    Sig.ctx.arc(pt.x, pt.y, Sig.MIN_W / 2, 0, Math.PI * 2);
+    Sig.ctx.fill();
+    document.getElementById('sigPlaceholder').classList.add('hide');
+    document.getElementById('sigConfirm').disabled = false;
+  };
+
+  const move = (e) => {
+    if(!Sig.drawing) return;
+    e.preventDefault();
+    let events = [e];
+    if(e.getCoalescedEvents && typeof e.getCoalescedEvents === 'function'){
+      try { events = e.getCoalescedEvents() || [e]; } catch {}
+    }
+    for(const ev of events){
+      const pt = getPt(ev);
+      drawStroke(pt);
+    }
+  };
+
+  const up = () => {
+    if(!Sig.drawing) return;
+    Sig.drawing = false;
+    Sig.lastPt = null;
+  };
+
+  Sig.canvas.addEventListener('pointerdown', down, { passive:false });
+  Sig.canvas.addEventListener('pointermove', move, { passive:false });
+  Sig.canvas.addEventListener('pointerup', up);
+  Sig.canvas.addEventListener('pointercancel', up);
+  Sig.canvas.addEventListener('pointerleave', up);
+
+  window.addEventListener('resize', () => {
+    if(document.getElementById('signPad').classList.contains('open')) resize();
+  });
+}
+
+function drawStroke(pt){
+  const ctx = Sig.ctx;
+  const prev = Sig.lastPt;
+  if(!prev){ Sig.lastPt = pt; return; }
+
+  const dx = pt.x - prev.x;
+  const dy = pt.y - prev.y;
+  const dist = Math.hypot(dx, dy);
+
+  const dt = Math.max(2, Math.min(100, pt.t - Sig.lastTime));
+  Sig.lastTime = pt.t;
+
+  const rawVel = dist / dt;
+  Sig.velocity = Sig.velocity * (1 - Sig.VEL_SMOOTH) + rawVel * Sig.VEL_SMOOTH;
+  let vNorm = Math.min(1, Sig.velocity / 1.5);
+
+  let width = Sig.MAX_W - (Sig.MAX_W - Sig.MIN_W) * vNorm;
+  if(pt.pressure > 0){
+    width *= (0.7 + pt.pressure * 0.9);
+    width = Math.max(Sig.MIN_W * 0.7, Math.min(Sig.MAX_W, width));
+  }
+  if(dist < 0.4) return;
+
+  const midX = (prev.x + pt.x) / 2;
+  const midY = (prev.y + pt.y) / 2;
+
+  ctx.beginPath();
+  ctx.lineWidth = width;
+  ctx.moveTo(prev.x, prev.y);
+  ctx.quadraticCurveTo(prev.x, prev.y, midX, midY);
+  ctx.stroke();
+
+  if(dist > 3){
+    ctx.beginPath();
+    ctx.lineWidth = width * 0.85;
+    ctx.moveTo(midX, midY);
+    ctx.lineTo(pt.x, pt.y);
+    ctx.stroke();
+  }
+
+  Sig.lastPt = pt;
+}
+
+function sigClearCanvas(){
+  if(!Sig.wrap) return;
+  const rect = Sig.wrap.getBoundingClientRect();
+  Sig.ctx.clearRect(0, 0, rect.width, rect.height);
+  Sig.hasInk = false;
+  Sig.lastPt = null;
+  Sig.velocity = 0;
+  document.getElementById('sigPlaceholder').classList.remove('hide');
+  document.getElementById('sigConfirm').disabled = true;
+}
+
+function sigOpen(key){
+  activeSigKey = key;
+  const pad = document.getElementById('signPad');
+  pad.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      if(Sig.resize) Sig.resize();
+      if(signatures[key]){
+        const rect = Sig.wrap.getBoundingClientRect();
+        const img = new Image();
+        img.onload = () => {
+          Sig.ctx.drawImage(img, 0, 0, rect.width, rect.height);
+          document.getElementById('sigPlaceholder').classList.add('hide');
+          document.getElementById('sigConfirm').disabled = false;
+          Sig.hasInk = true;
+        };
+        img.src = signatures[key];
+      } else {
+        document.getElementById('sigPlaceholder').classList.remove('hide');
+        document.getElementById('sigConfirm').disabled = true;
+        Sig.hasInk = false;
+      }
+    }, 80);
+  });
+}
+
+function sigClose(commit){
+  if(commit && activeSigKey && Sig.hasInk){
+    try { signatures[activeSigKey] = Sig.canvas.toDataURL('image/png'); } catch {}
+  }
+  document.getElementById('signPad').classList.remove('open');
+  document.body.style.overflow = '';
+  if(activeSigKey){
+    updateSigPreview(activeSigKey);
+  }
+  activeSigKey = null;
+}
+
+function updateSigPreview(key){
+  const card = document.getElementById('sigPreview-' + key);
+  const cv = document.getElementById('sigPreviewCanvas-' + key);
+  if(!card || !cv) return;
+  const rect = cv.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  cv.width  = Math.max(1, Math.floor(rect.width * dpr));
+  cv.height = Math.max(1, Math.floor(rect.height * dpr));
+  const ctx = cv.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, rect.width, rect.height);
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.strokeStyle = '#0a0f18';
+  if(signatures[key]){
+    card.classList.add('signed');
+    const img = new Image();
+    img.onload = () => {
+      const ir = img.width / img.height;
+      const br = rect.width / rect.height;
+      let dw, dh, dx, dy;
+      if(ir > br){ dw = rect.width; dh = rect.width / ir; dx = 0; dy = (rect.height - dh) / 2; }
+      else       { dh = rect.height; dw = rect.height * ir; dy = 0; dx = (rect.width - dw) / 2; }
+      ctx.drawImage(img, dx, dy, dw, dh);
+    };
+    img.src = signatures[key];
+  } else {
+    card.classList.remove('signed');
+  }
+}
+
 /* FORM BUILDERS */
 function itemRowHtml(){
   return `<div class="tt-item-row">
@@ -1489,6 +1777,7 @@ function moduleExtraHtml(key){
 }
 function formHtml(key){
   const a = MODULE_DEF[key].accent;
+  const hasSig = !!signatures[key];
   return `
   <form id="form-${key}" autocomplete="off" novalidate>
     <div class="tt-card" style="--c:${a}">
@@ -1542,9 +1831,14 @@ function formHtml(key){
         <span class="tt-pill">${t('form.signature.manual')}</span>
       </div>
       <p class="tt-hint">${t('form.signature.hint')}</p>
-      <div class="tt-sig-wrap">
-        <canvas id="sig-${key}"></canvas>
-        <button type="button" class="tt-sig-clear" data-sig-clear="${key}">${t('form.signature.clear')}</button>
+      <div class="tt-sig-preview${hasSig?' signed':''}" data-open-sig="${key}" id="sigPreview-${key}">
+        <canvas id="sigPreviewCanvas-${key}"></canvas>
+        <div class="tt-sig-empty">
+          <div class="ic">✍️</div>
+          <div class="txt">${t('form.signature.tap')}</div>
+          <div class="sub">${t('form.signature.hint')}</div>
+        </div>
+        <span class="badge">${t('form.signature.signed')}</span>
       </div>
     </div>
     <div class="tt-submit-bar" style="--c:${a}">
@@ -1562,7 +1856,6 @@ function renderForms(){
     if(!host) return;
     host.innerHTML = formHtml(key);
     addItemRow(key);
-    initSignature(key);
     if(host._delegated) return;
     host._delegated = true;
     host.addEventListener('click', e => {
@@ -1574,8 +1867,8 @@ function renderForms(){
       if(cam) return openPicker(cam.dataset.cam, true);
       const gal = e.target.closest('[data-gal]');
       if(gal) return openPicker(gal.dataset.gal, false);
-      const sc = e.target.closest('[data-sig-clear]');
-      if(sc) return clearSignature(sc.dataset.sigClear);
+      const sig = e.target.closest('[data-open-sig]');
+      if(sig) return sigOpen(sig.dataset.openSig);
     });
     host.addEventListener('submit', e => { e.preventDefault(); handleSubmit(key); });
     host.addEventListener('reset', ()=>{
@@ -1584,12 +1877,13 @@ function renderForms(){
         drafts[key] = [];
         signatures[key] = null;
         renderPhotos(key);
-        clearSignature(key);
+        updateSigPreview(key);
         const it = document.getElementById('items-'+key);
         if(it) it.innerHTML = '';
         addItemRow(key);
       },0);
     });
+    setTimeout(()=>updateSigPreview(key), 120);
   });
   refreshDatalists();
 }
@@ -1605,49 +1899,6 @@ function removeItemRow(btn){
   const wrap = row.parentElement;
   row.remove();
   if(!wrap.children.length) addItemRow(wrap.id.replace('items-',''));
-}
-function initSignature(key){
-  const cv = document.getElementById('sig-'+key);
-  if(!cv || cv._init) return;
-  cv._init = true;
-  const ctx = cv.getContext('2d');
-  let drawing = false;
-  const resize = () => {
-    const rect = cv.getBoundingClientRect();
-    const dpr = window.devicePixelRatio || 1;
-    cv.width = rect.width * dpr;
-    cv.height = rect.height * dpr;
-    ctx.setTransform(dpr,0,0,dpr,0,0);
-    ctx.lineWidth = 2.5; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-    ctx.strokeStyle = '#0f172a';
-  };
-  resize();
-  window.addEventListener('resize', ()=>{
-    const sig = signatures[key];
-    resize();
-    if(sig){ const i = new Image(); i.onload = ()=>ctx.drawImage(i,0,0,cv.width,cv.height); i.src = sig; }
-  });
-  const pos = e => {
-    const r = cv.getBoundingClientRect();
-    const p = e.touches ? e.touches[0] : e;
-    return { x: p.clientX - r.left, y: p.clientY - r.top };
-  };
-  const start = e => { e.preventDefault(); drawing = true; const {x,y} = pos(e); ctx.beginPath(); ctx.moveTo(x,y); };
-  const move = e => { if(!drawing) return; e.preventDefault(); const {x,y} = pos(e); ctx.lineTo(x,y); ctx.stroke(); };
-  const end = () => { if(!drawing) return; drawing = false; try { signatures[key] = cv.toDataURL('image/png'); } catch {} };
-  cv.addEventListener('mousedown', start);
-  cv.addEventListener('mousemove', move);
-  cv.addEventListener('mouseup', end);
-  cv.addEventListener('mouseleave', end);
-  cv.addEventListener('touchstart', start, {passive:false});
-  cv.addEventListener('touchmove', move, {passive:false});
-  cv.addEventListener('touchend', end);
-}
-function clearSignature(key){
-  const cv = document.getElementById('sig-'+key);
-  if(!cv) return;
-  cv.getContext('2d').clearRect(0,0,cv.width,cv.height);
-  signatures[key] = null;
 }
 function openPicker(key, useCamera){
   if(drafts[key].length >= MAX_PHOTOS) return toast(t('form.maxPhotos'));
@@ -1692,7 +1943,9 @@ function refreshDatalists(){
   });
 }
 
-/* CARD GENERATION */
+/* ═══════════════════════════════════════════════════════════════
+   CARD GENERATION — v18 REWRITTEN FOR SMOOTHNESS & RELIABILITY
+   ═══════════════════════════════════════════════════════════════ */
 const rr = (ctx,x,y,w,h,r) => {
   r = Math.min(r,w/2,h/2);
   ctx.beginPath();
@@ -1710,6 +1963,10 @@ const loadImg = src => new Promise((res,rej)=>{
   i.onerror = ()=>rej(new Error('img'));
   i.src = src;
 });
+/* Safe image load — returns null instead of throwing */
+const safeLoadImg = async (src) => {
+  try { return await loadImg(src); } catch { return null; }
+};
 function wrapText(ctx, text, maxW){
   const words = String(text).split(/\s+/);
   const lines=[]; let cur='';
@@ -1721,94 +1978,167 @@ function wrapText(ctx, text, maxW){
   if(cur) lines.push(cur);
   return lines.length ? lines : [''];
 }
+
 async function generateCard(tx){
-  const W = 1080, PAD = 52, CW = W - PAD*2;
+  // ---- Setup ----
+  const W = 1080, PAD = 56, CW = W - PAD * 2;
   const accent = MODULE_DEF[tx.module].accent;
+  const accentDark = shade(accent, -22);
   const rtl = currentLang === 'ar';
+  const F = (w,s)=>`${w} ${s}px "Cairo", -apple-system, Roboto, "Helvetica Neue", sans-serif`;
+  const alignText = rtl ? 'right' : 'left';
+  const alignX = rtl ? W - PAD : PAD;
+  const dirInv = rtl ? 1 : -1;
+
+  // ---- Pre-load photos in parallel (best-effort) ----
+  const photoImgs = [];
+  if(tx.photos && tx.photos.length){
+    const photoUrls = await Promise.all(
+      tx.photos.slice(0, 6).map(ref => photoRefToURL(ref))
+    );
+    const loaded = await Promise.all(
+      photoUrls.map(url => url ? safeLoadImg(url) : Promise.resolve(null))
+    );
+    loaded.forEach(img => { if(img) photoImgs.push(img); });
+  }
+
+  // ---- Pre-load signature ----
+  let sigImg = null;
+  if(tx.guardSignature){
+    sigImg = await safeLoadImg(tx.guardSignature);
+  }
+
+  // ---- Create work canvas (tall, we'll crop later) ----
   const cv = document.createElement('canvas');
-  cv.width = W; cv.height = 5400;
-  const ctx = cv.getContext('2d');
-  const F = (w,s)=>`${w} ${s}px "Cairo", -apple-system, Roboto, sans-serif`;
+  cv.width = W;
+  cv.height = 6000;
+  const ctx = cv.getContext('2d', { alpha: false });
   ctx.textBaseline = 'alphabetic';
   ctx.direction = rtl ? 'rtl' : 'ltr';
-  ctx.fillStyle = '#fff'; ctx.fillRect(0,0,W,cv.height);
+
+  // White background
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, W, cv.height);
+
   let y = 0;
-  const HEAD = 200;
-  const grad = ctx.createLinearGradient(0,0,W,HEAD);
+
+  /* ══════════ HEADER ══════════ */
+  const HEAD = 220;
+  const grad = ctx.createLinearGradient(0, 0, W, HEAD);
   grad.addColorStop(0, accent);
-  grad.addColorStop(1, shade(accent,-22));
-  ctx.fillStyle = grad; ctx.fillRect(0,0,W,HEAD);
-  const alignText = rtl ? 'right' : 'left';
-  const alignX = rtl ? W-PAD : PAD;
-  const dirInv = rtl ? 1 : -1;
+  grad.addColorStop(1, accentDark);
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, HEAD);
+
+  // Top branding
   ctx.textAlign = alignText;
-  ctx.fillStyle = 'rgba(255,255,255,.85)'; ctx.font = F(600,26);
-  ctx.fillText(settings.hotel||'', alignX, 64);
-  ctx.fillStyle = '#fff'; ctx.font = F(800,48);
-  ctx.fillText(t('mod.'+tx.module+'.title'), alignX, 126);
-  ctx.font = F(500,24); ctx.fillStyle = 'rgba(255,255,255,.86)';
-  ctx.fillText(t('mod.'+tx.module+'.subtitle'), alignX, 168);
+  ctx.fillStyle = 'rgba(255,255,255,.9)';
+  ctx.font = F(600, 26);
+  ctx.fillText(settings.hotel || '', alignX, 70);
+
+  // Main title
+  ctx.fillStyle = '#ffffff';
+  ctx.font = F(800, 52);
+  ctx.fillText(t('mod.' + tx.module + '.title'), alignX, 138);
+
+  // Subtitle
+  ctx.font = F(500, 24);
+  ctx.fillStyle = 'rgba(255,255,255,.88)';
+  ctx.fillText(t('mod.' + tx.module + '.subtitle'), alignX, 182);
+
   y = HEAD;
-  const STRIP = 92;
-  ctx.fillStyle = '#f7f9fc'; ctx.fillRect(0,y,W,STRIP);
-  ctx.strokeStyle = '#e3e8ef'; ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(0,y+STRIP+.5); ctx.lineTo(W,y+STRIP+.5); ctx.stroke();
+
+  /* ══════════ INFO STRIP (Ref / Date / Time) ══════════ */
+  const STRIP = 100;
+  ctx.fillStyle = '#f8fafc';
+  ctx.fillRect(0, y, W, STRIP);
+  ctx.strokeStyle = '#e2e8f0';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(0, y + STRIP + .5);
+  ctx.lineTo(W, y + STRIP + .5);
+  ctx.stroke();
+
   const cells = [
-    [currentLang==='ar'?'الرقم المرجعي':currentLang==='fr'?'RÉFÉRENCE':'REFERENCE', tx.ref],
-    [currentLang==='ar'?'التاريخ':currentLang==='fr'?'DATE':'DATE', fmtDate(tx.createdAt)],
-    [currentLang==='ar'?'الساعة':currentLang==='fr'?'HEURE':'TIME', fmtTime(tx.createdAt)]
+    [currentLang === 'ar' ? 'الرقم المرجعي' : currentLang === 'fr' ? 'RÉFÉRENCE' : 'REFERENCE', tx.ref],
+    [currentLang === 'ar' ? 'التاريخ' : currentLang === 'fr' ? 'DATE' : 'DATE', fmtDate(tx.createdAt)],
+    [currentLang === 'ar' ? 'الساعة' : currentLang === 'fr' ? 'HEURE' : 'TIME', fmtTime(tx.createdAt)]
   ];
-  const cellW = CW/3;
-  cells.forEach(([lab,val],i)=>{
-    const x = alignX + dirInv*(i*cellW + cellW);
+  const cellW = CW / 3;
+  cells.forEach(([lab, val], i) => {
+    const x = alignX + dirInv * (i * cellW + cellW);
     ctx.textAlign = alignText;
-    ctx.fillStyle = '#8a94a6'; ctx.font = F(700,19);
-    ctx.fillText(lab, x, y+36);
-    ctx.fillStyle = '#0f172a'; ctx.font = F(700,30);
-    ctx.fillText(val, x, y+72);
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = F(700, 19);
+    ctx.fillText(lab, x, y + 40);
+    ctx.fillStyle = '#0f172a';
+    ctx.font = F(800, 30);
+    ctx.fillText(val, x, y + 78);
   });
-  y += STRIP;
+  y += STRIP + 40;
+
+  /* ══════════ HELPERS ══════════ */
   const sectionTitle = text => {
-    y += 46;
-    const bx = rtl ? W-PAD-5 : PAD;
-    ctx.fillStyle = accent; ctx.fillRect(bx, y-22, 5, 26);
-    ctx.fillStyle = '#0f172a'; ctx.font = F(800,25);
+    y += 24;
+    ctx.fillStyle = accent;
+    const bx = rtl ? W - PAD - 6 : PAD;
+    rr(ctx, bx, y - 6, 6, 32, 3);
+    ctx.fill();
+    ctx.fillStyle = '#0f172a';
+    ctx.font = F(800, 26);
     ctx.textAlign = alignText;
-    ctx.fillText(text, rtl ? W-PAD-18 : PAD+18, y);
-    y += 22;
+    ctx.fillText(text, rtl ? W - PAD - 22 : PAD + 22, y + 22);
+    y += 56;
   };
+
   const infoBoxes = pairs => {
-    const gap = 20, bw = (CW-gap)/2, bh = 100;
-    for(let i=0;i<pairs.length;i+=2){
-      const row = pairs.slice(i,i+2);
-      row.forEach(([lab,val],j)=>{
-        const x = rtl ? W-PAD-(j+1)*bw - j*gap : PAD + j*(bw+gap);
-        ctx.fillStyle = '#f7f9fc';
-        rr(ctx, x, y, bw, bh, 14); ctx.fill();
-        const bx2 = rtl ? x+bw-6 : x;
+    const gap = 20, bw = (CW - gap) / 2, bh = 108;
+    for(let i = 0; i < pairs.length; i += 2){
+      const row = pairs.slice(i, i + 2);
+      // Compute baseline for this row
+      const yRow = y;
+      row.forEach(([lab, val], j) => {
+        const x = rtl
+          ? W - PAD - (j + 1) * bw - j * gap
+          : PAD + j * (bw + gap);
+        ctx.fillStyle = '#f8fafc';
+        rr(ctx, x, yRow, bw, bh, 14);
+        ctx.fill();
+        // Accent bar
         ctx.fillStyle = accent;
-        rr(ctx, bx2, y, 6, bh, 3); ctx.fill();
+        const barX = rtl ? x + bw - 6 : x;
+        rr(ctx, barX, yRow, 6, bh, 3);
+        ctx.fill();
+        // Label
         ctx.textAlign = alignText;
-        ctx.fillStyle = '#8a94a6'; ctx.font = F(700,19);
-        const txLab = rtl ? x+bw-24 : x+24;
-        ctx.fillText(lab, txLab, y+36);
-        ctx.fillStyle = '#0f172a'; ctx.font = F(600,29);
-        ctx.fillText(wrapText(ctx, val||'—', bw-48)[0], txLab, y+74);
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = F(700, 19);
+        const txLab = rtl ? x + bw - 26 : x + 26;
+        ctx.fillText(lab, txLab, yRow + 38);
+        // Value
+        ctx.fillStyle = '#0f172a';
+        ctx.font = F(700, 30);
+        const valLines = wrapText(ctx, val || '—', bw - 56);
+        ctx.fillText(valLines[0] || '—', txLab, yRow + 80);
       });
       y += bh + gap;
     }
     y -= gap;
   };
-  sectionTitle(currentLang==='ar'?'الأفراد':currentLang==='fr'?'PERSONNEL':'PERSONNEL');
-  y += 14;
+
+  /* ══════════ PERSONNEL ══════════ */
+  sectionTitle(currentLang === 'ar' ? 'الأفراد' : currentLang === 'fr' ? 'PERSONNEL' : 'PERSONNEL');
   infoBoxes([
-    [currentLang==='ar'?'حارس الأمن':currentLang==='fr'?'Agent sécurité':'Security guard', tx.guard],
-    [currentLang==='ar'?'الموظف':currentLang==='fr'?'Personnel':'Staff', tx.staff]
+    [currentLang === 'ar' ? 'حارس الأمن' : currentLang === 'fr' ? 'Agent de sécurité' : 'Security Guard', tx.guard],
+    [currentLang === 'ar' ? 'الموظف المستخرج' : currentLang === 'fr' ? 'Personnel prélevant' : 'Extracting Staff', tx.staff]
   ]);
-  sectionTitle(currentLang==='ar'?'تفاصيل الحركة':currentLang==='fr'?'DÉTAILS':'DETAILS');
-  y += 14;
+
+  y += 26;
+
+  /* ══════════ MOVEMENT DETAILS ══════════ */
+  sectionTitle(currentLang === 'ar' ? 'تفاصيل الحركة' : currentLang === 'fr' ? 'DÉTAILS DU MOUVEMENT' : 'MOVEMENT DETAILS');
   const details = [];
-  if(tx.module==='warehouse'){
+  if(tx.module === 'warehouse'){
     details.push([t('form.department'), tx.department]);
     if(tx.po) details.push([t('form.po'), tx.po]);
   } else {
@@ -1818,109 +2148,233 @@ async function generateCard(tx){
     if(tx.authorizedBy) details.push([t('form.authorizedBy'), tx.authorizedBy]);
   }
   infoBoxes(details);
-  sectionTitle((currentLang==='ar'?'الأصناف':currentLang==='fr'?'ARTICLES':'ITEMS')+` (${tx.items.length})`);
-  y += 14;
-  const ROW_H = 54, colQty = 150, colUnit = 150;
-  ctx.fillStyle = '#eef2f7'; rr(ctx, PAD, y, CW, 46, 10); ctx.fill();
-  ctx.fillStyle = '#475569'; ctx.font = F(700,20);
+
+  y += 26;
+
+  /* ══════════ ITEMS TABLE ══════════ */
+  sectionTitle(
+    (currentLang === 'ar' ? 'الأصناف' : currentLang === 'fr' ? 'ARTICLES' : 'ITEMS')
+    + ` (${tx.items.length})`
+  );
+
+  const ROW_H = 56;
+  const colQty = 140, colUnit = 160;
+
+  // Header row
+  ctx.fillStyle = '#eef2f7';
+  rr(ctx, PAD, y, CW, 48, 10);
+  ctx.fill();
+  ctx.fillStyle = '#475569';
+  ctx.font = F(800, 20);
+
+  const headerY = y + 32;
   ctx.textAlign = rtl ? 'right' : 'left';
-  ctx.fillText(t('form.items.name'), rtl ? W-PAD-18 : PAD+18, y+30);
+  ctx.fillText(t('form.items.name'), rtl ? W - PAD - 20 : PAD + 20, headerY);
+
   ctx.textAlign = 'center';
-  ctx.fillText(t('form.items.qty'), W/2 - colUnit/4, y+30);
-  ctx.textAlign = 'right';
-  ctx.fillText(t('form.items.unit'), rtl ? PAD+colUnit : W-PAD-18, y+30);
-  y += 46;
-  tx.items.forEach((it,i)=>{
-    if(i%2===1){ ctx.fillStyle = '#fafbfc'; ctx.fillRect(PAD, y, CW, ROW_H); }
-    ctx.strokeStyle = '#e9edf3'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(PAD, y+ROW_H+.5); ctx.lineTo(PAD+CW, y+ROW_H+.5); ctx.stroke();
-    ctx.fillStyle = '#0f172a'; ctx.font = F(600,25);
+  ctx.fillText(t('form.items.qty'), W / 2 - colUnit / 4, headerY);
+
+  ctx.textAlign = rtl ? 'left' : 'right';
+  ctx.fillText(t('form.items.unit'), rtl ? PAD + 20 : W - PAD - 20, headerY);
+
+  y += 48;
+
+  // Item rows
+  tx.items.forEach((it, i) => {
+    if(i % 2 === 1){
+      ctx.fillStyle = '#fafbfc';
+      ctx.fillRect(PAD, y, CW, ROW_H);
+    }
+    ctx.strokeStyle = '#e9edf3';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(PAD, y + ROW_H + .5);
+    ctx.lineTo(PAD + CW, y + ROW_H + .5);
+    ctx.stroke();
+
+    const midY = y + ROW_H / 2 + 9;
+
+    // Item name
+    ctx.fillStyle = '#0f172a';
+    ctx.font = F(700, 26);
     ctx.textAlign = rtl ? 'right' : 'left';
-    ctx.fillText(wrapText(ctx, it.name, CW-300-40)[0], rtl ? W-PAD-18 : PAD+18, y+35);
-    ctx.textAlign = 'center'; ctx.font = F(700,25);
-    ctx.fillText(it.qty, W/2 - colUnit/4, y+35);
-    ctx.fillStyle = '#475569'; ctx.font = F(600,23);
-    ctx.textAlign = 'right';
-    ctx.fillText(it.unit, rtl ? PAD+colUnit : W-PAD-18, y+35);
+    const nameLines = wrapText(ctx, it.name, CW - colQty - colUnit - 40);
+    ctx.fillText(nameLines[0], rtl ? W - PAD - 20 : PAD + 20, midY);
+
+    // Qty
+    ctx.textAlign = 'center';
+    ctx.font = F(800, 26);
+    ctx.fillStyle = '#0f172a';
+    ctx.fillText(it.qty, W / 2 - colUnit / 4, midY);
+
+    // Unit
+    ctx.fillStyle = '#475569';
+    ctx.font = F(700, 24);
+    ctx.textAlign = rtl ? 'left' : 'right';
+    ctx.fillText(it.unit, rtl ? PAD + 20 : W - PAD - 20, midY);
+
     y += ROW_H;
   });
+
+  y += 32;
+
+  /* ══════════ NOTES ══════════ */
   if(tx.notes){
-    sectionTitle(currentLang==='ar'?'ملاحظات':currentLang==='fr'?'NOTES':'NOTES');
-    y += 16;
-    ctx.fillStyle = '#0f172a'; ctx.font = F(500,25);
-    ctx.textAlign = rtl ? 'right' : 'left';
-    const lines = wrapText(ctx, tx.notes, CW-36);
-    lines.slice(0,5).forEach(l=>{
-      ctx.fillText(l, rtl ? W-PAD-18 : PAD+18, y+20);
-      y += 36;
+    sectionTitle(currentLang === 'ar' ? 'ملاحظات' : currentLang === 'fr' ? 'OBSERVATIONS' : 'NOTES');
+    ctx.fillStyle = '#0f172a';
+    ctx.font = F(500, 26);
+    ctx.textAlign = alignText;
+    const lines = wrapText(ctx, tx.notes, CW - 40);
+    lines.slice(0, 6).forEach(l => {
+      ctx.fillText(l, alignX, y + 32);
+      y += 40;
     });
+    y += 16;
   }
-  if(tx.photos && tx.photos.length){
-    sectionTitle((currentLang==='ar'?'الصور':currentLang==='fr'?'PHOTOS':'PHOTOS')+` (${tx.photos.length})`);
-    y += 18;
-    const GAP = 18, COLS = 3;
-    const cellW = (CW-GAP*(COLS-1))/COLS;
-    const cellH = cellW*0.75;
-    const WM_H = 30;
-    const imgs = [];
-    for(const ref of tx.photos.slice(0,6)){
-      try { const url = await photoRefToURL(ref); if(url) imgs.push(await loadImg(url)); } catch {}
-    }
-    imgs.forEach((img,i)=>{
-      const col = i%COLS, row = Math.floor(i/COLS);
-      const x = PAD + col*(cellW+GAP);
-      const yy = y + row*(cellH+GAP);
+
+  /* ══════════ PHOTOS ══════════ */
+  if(photoImgs.length){
+    sectionTitle(
+      (currentLang === 'ar' ? 'الصور التوثيقية' : currentLang === 'fr' ? 'PREUVES PHOTOGRAPHIQUES' : 'PHOTO EVIDENCE')
+      + ` (${photoImgs.length})`
+    );
+
+    const GAP = 20, COLS = 3;
+    const cellW = (CW - GAP * (COLS - 1)) / COLS;
+    const cellH = cellW * 0.75;
+    const WM_H = 34;
+
+    photoImgs.forEach((img, i) => {
+      const col = i % COLS;
+      const row = Math.floor(i / COLS);
+      const x = PAD + col * (cellW + GAP);
+      const yRow = y + row * (cellH + GAP);
+
+      // Photo
       ctx.save();
-      rr(ctx, x, yy, cellW, cellH, 12); ctx.clip();
-      const ir = img.width/img.height, br = cellW/cellH;
-      let dw,dh;
-      if(ir>br){ dh = cellH; dw = cellH*ir; } else { dw = cellW; dh = cellW/ir; }
-      ctx.drawImage(img, x+(cellW-dw)/2, yy+(cellH-dh)/2, dw, dh);
-      ctx.fillStyle = 'rgba(0,0,0,.72)';
-      ctx.fillRect(x, yy+cellH-WM_H, cellW, WM_H);
-      ctx.fillStyle = '#fff'; ctx.font = F(600,13);
-      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.fillText(`${tx.ref} • ${fmtTime(tx.createdAt)}`, x+cellW/2, yy+cellH-WM_H/2);
+      rr(ctx, x, yRow, cellW, cellH, 14);
+      ctx.clip();
+      const ir = img.width / img.height;
+      const br = cellW / cellH;
+      let dw, dh;
+      if(ir > br){ dh = cellH; dw = cellH * ir; }
+      else       { dw = cellW; dh = cellW / ir; }
+      ctx.drawImage(img, x + (cellW - dw) / 2, yRow + (cellH - dh) / 2, dw, dh);
+
+      // Watermark strip
+      const wmGrad = ctx.createLinearGradient(0, yRow + cellH - WM_H, 0, yRow + cellH);
+      wmGrad.addColorStop(0, 'rgba(0,0,0,.35)');
+      wmGrad.addColorStop(1, 'rgba(0,0,0,.78)');
+      ctx.fillStyle = wmGrad;
+      ctx.fillRect(x, yRow + cellH - WM_H, cellW, WM_H);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = F(700, 14);
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(
+        `${tx.ref} • ${fmtTime(tx.createdAt)}`,
+        x + cellW / 2,
+        yRow + cellH - WM_H / 2
+      );
       ctx.textBaseline = 'alphabetic';
       ctx.restore();
+
+      // Border
       ctx.save();
-      rr(ctx, x, yy, cellW, cellH, 12);
-      ctx.strokeStyle = '#dfe5ec'; ctx.lineWidth = 2; ctx.stroke();
+      rr(ctx, x, yRow, cellW, cellH, 14);
+      ctx.strokeStyle = '#dfe5ec';
+      ctx.lineWidth = 2;
+      ctx.stroke();
       ctx.restore();
     });
-    const rows = Math.ceil(imgs.length/COLS);
-    y += rows*cellH + Math.max(0, rows-1)*GAP;
+
+    const rows = Math.ceil(photoImgs.length / COLS);
+    y += rows * cellH + Math.max(0, rows - 1) * GAP;
+    y += 32;
   }
-  y += 64;
-  const sigW = (CW-60)/2;
-  const sigH = 100;
-  const sigKeys = ['guardSignature','staffSignature'];
-  const sigLabels = currentLang==='ar' ? ['توقيع الحارس','توقيع الموظف']
-    : currentLang==='fr' ? ['Signature — Agent','Signature — Personnel']
-    : ['Signature — Guard','Signature — Staff'];
-  for(let i=0;i<2;i++){
-    const x = rtl ? W-PAD-(i+1)*sigW - i*60 : PAD + i*(sigW+60);
-    const sd = tx[sigKeys[i]];
-    if(sd){ try { const im = await loadImg(sd); ctx.drawImage(im, x, y-sigH+20, sigW, sigH-20); } catch {} }
-    ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+sigW,y); ctx.stroke();
-    ctx.fillStyle = '#8a94a6'; ctx.font = F(600,20);
+
+  /* ══════════ SIGNATURES ══════════ */
+  y += 24;
+  const sigW = (CW - 60) / 2;
+  const sigH = 130;
+
+  const sigLabels = currentLang === 'ar'
+    ? ['توقيع حارس الأمن', 'توقيع الموظف']
+    : currentLang === 'fr'
+    ? ['Signature — Agent', 'Signature — Personnel']
+    : ['Signature — Security Guard', 'Signature — Staff'];
+
+  const sigValues = [sigImg, null];
+
+  for(let i = 0; i < 2; i++){
+    const x = rtl
+      ? W - PAD - (i + 1) * sigW - i * 60
+      : PAD + i * (sigW + 60);
+
+    // Draw signature image above the line
+    const sigImage = sigValues[i];
+    if(sigImage){
+      try {
+        // Fit image inside the signature area
+        const boxW = sigW - 20;
+        const boxH = sigH - 45;
+        const ir = sigImage.width / sigImage.height;
+        const br = boxW / boxH;
+        let dw, dh;
+        if(ir > br){ dw = boxW; dh = boxW / ir; }
+        else       { dh = boxH; dw = boxH * ir; }
+        const dx = x + (sigW - dw) / 2;
+        const dy = y - sigH + 20 + (boxH - dh) / 2;
+        ctx.drawImage(sigImage, dx, dy, dw, dh);
+      } catch {}
+    }
+
+    // Signature line
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + sigW, y);
+    ctx.stroke();
+
+    // Label
+    ctx.fillStyle = '#8a94a6';
+    ctx.font = F(600, 20);
     ctx.textAlign = 'center';
-    ctx.fillText(sigLabels[i], x+sigW/2, y+30);
+    ctx.fillText(sigLabels[i], x + sigW / 2, y + 34);
   }
-  y += 78;
-  ctx.strokeStyle = '#e3e8ef'; ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(PAD, y+.5); ctx.lineTo(PAD+CW, y+.5); ctx.stroke();
-  y += 34;
-  ctx.fillStyle = '#94a3b8'; ctx.font = F(500,18);
+  y += 70;
+
+  /* ══════════ FOOTER ══════════ */
+  ctx.strokeStyle = '#e3e8ef';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(PAD, y + .5);
+  ctx.lineTo(PAD + CW, y + .5);
+  ctx.stroke();
+  y += 40;
+  ctx.fillStyle = '#94a3b8';
+  ctx.font = F(500, 19);
   ctx.textAlign = 'center';
-  ctx.fillText(`• ${settings.hotel} • ${fmtDateTime(new Date())} •`, W/2, y);
+  ctx.fillText(
+    `• ${settings.hotel} • ${fmtDateTime(new Date())} •`,
+    W / 2,
+    y
+  );
+  y += 30;
+
+  /* ══════════ CROP TO ACTUAL CONTENT ══════════ */
   const finalH = y + PAD;
+
   const out = document.createElement('canvas');
-  out.width = W; out.height = finalH;
-  const octx = out.getContext('2d');
-  octx.fillStyle = '#fff'; octx.fillRect(0,0,W,finalH);
-  octx.drawImage(cv,0,0,W,finalH,0,0,W,finalH);
+  out.width = W;
+  out.height = finalH;
+  const octx = out.getContext('2d', { alpha: false });
+  octx.fillStyle = '#ffffff';
+  octx.fillRect(0, 0, W, finalH);
+  octx.drawImage(cv, 0, 0, W, finalH, 0, 0, W, finalH);
+
   return out.toDataURL('image/jpeg', 0.92);
 }
 
@@ -1943,7 +2397,7 @@ async function buildPdfBlob(tx, cardDataUrl){
 }
 function buildJsonBlob(tx){
   return new Blob([JSON.stringify({
-    schema:'digitalstock.exit.v9',
+    schema:'digitalstock.exit.v11',
     exportedAt:new Date().toISOString(),
     reference:tx.ref, module:tx.module,
     hotel:tx.hotel||settings.hotel,
@@ -2082,7 +2536,6 @@ async function handleSubmit(key){
   const fd = new FormData(form);
   const staff = (fd.get('staff')||'').trim();
   if(!staff){ toast(t('form.staff.required')); form.staff?.focus(); return; }
-  // Each guard is responsible for their own actions — no override
   const effectiveGuard = currentAgent;
   const items = $$('.tt-item-row', form).map(r=>({
     name: r.querySelector('.i-name').value.trim(),
@@ -2139,7 +2592,7 @@ async function handleSubmit(key){
     drafts[key] = [];
     signatures[key] = null;
     renderPhotos(key);
-    clearSignature(key);
+    updateSigPreview(key);
     const it = document.getElementById('items-'+key);
     if(it) it.innerHTML = '';
     addItemRow(key);
@@ -2175,6 +2628,7 @@ async function showCard(tx){
     document.getElementById('cardModalBody').innerHTML =
       `<img id="cardPreview" src="${url}" alt="${esc(tx.ref)}">`;
   } catch (e){
+    console.error('Card generation error:', e);
     document.getElementById('cardModalBody').innerHTML =
       `<div class="tt-banner warn" style="margin:0"><span class="b-ic">⚠</span><span>${t('card.genError')}<br><small>${esc(e.message||e)}</small></span></div>`;
     return;
@@ -2803,6 +3257,15 @@ function initModals(){
       toast(t('card.json'));
     } catch {}
   };
+
+  document.getElementById('sigClose').onclick = () => sigClose(false);
+  document.getElementById('sigCancel').onclick = () => sigClose(false);
+  document.getElementById('sigClear').onclick = () => sigClearCanvas();
+  document.getElementById('sigConfirm').onclick = () => {
+    if(!Sig.hasInk) return toast(t('sig.empty'));
+    sigClose(true);
+    toast(t('sig.saved'));
+  };
 }
 
 /* NAVIGATION + MODE SWITCH */
@@ -2816,7 +3279,6 @@ function switchView(view){
   updateModeSwitchUI();
   window.scrollTo({top:0, behavior:'smooth'});
 }
-
 function updateModeSwitchUI(){
   const btn = document.getElementById('modeSwitchBtn');
   const lbl = document.getElementById('modeLabel');
@@ -2828,16 +3290,12 @@ function updateModeSwitchUI(){
   lbl.classList.toggle('bon', isBon);
   lbl.textContent = isBon ? t('mode.bon') : t('mode.warehouse');
 }
-
 function performModeSwitch(){
   const btn = document.getElementById('modeSwitchBtn');
   const flash = document.getElementById('modeFlash');
   if(!btn) return;
-
   const nextMode = currentModule === 'warehouse' ? 'bon' : 'warehouse';
   const goingToBon = nextMode === 'bon';
-
-  // Spin animation
   btn.classList.add('spin');
   const ripples = btn.querySelectorAll('.mode-ripple');
   ripples.forEach(r => {
@@ -2845,23 +3303,15 @@ function performModeSwitch(){
     void r.offsetHeight;
     r.style.animation = '';
   });
-
-  // Flash
   if(flash){
     flash.className = 'mode-flash ' + (goingToBon ? 'bon' : 'wh') + ' active';
     setTimeout(() => { flash.classList.remove('active'); }, 350);
   }
-
-  // Haptics
   if(navigator.vibrate) {
     try { navigator.vibrate(goingToBon ? [40,30,40] : 40); } catch {}
   }
-
-  // Update state
   currentModule = nextMode;
   try { localStorage.setItem(LAST_MODE_KEY, currentModule); } catch {}
-
-  // Swap views — NO FOCUS, NO KEYBOARD
   setTimeout(() => {
     $$('.view').forEach(v => {
       v.classList.remove('active', 'mode-enter');
@@ -2877,10 +3327,8 @@ function performModeSwitch(){
     window.scrollTo({top:0, behavior:'smooth'});
     toast((goingToBon ? '🚚 ' : '🏭 ') + t('mode.switched') + ' ' + (goingToBon ? t('mode.bon') : t('mode.warehouse')), 1600);
   }, 300);
-
   setTimeout(() => { btn.classList.remove('spin'); }, 700);
 }
-
 function initNavigation(){
   const bn = document.getElementById('bottomNav');
   if(bn && !bn._init){
@@ -3018,6 +3466,7 @@ function ensureUI(){
   if(uiReady) return;
   uiReady = true;
   loadSettings();
+  sigInit();
   initNavigation();
   initModals();
   initDeleteConfirm();
@@ -3044,7 +3493,7 @@ function ensureUI(){
   initAuth();
   updateNetStatus();
   setTimeout(()=>document.getElementById('loginEmail')?.focus(), 300);
-  console.log('%c Digital Stock v16 — Final ', 'background:linear-gradient(90deg,#25F4EE,#FE2C55);color:#000;padding:4px 10px;border-radius:8px;font-weight:900;');
+  console.log('%c Digital Stock v18 — Card generation rewritten ', 'background:linear-gradient(90deg,#25F4EE,#FE2C55);color:#000;padding:4px 10px;border-radius:8px;font-weight:900;');
 })();
 </script>
 </body>
