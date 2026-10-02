@@ -9,362 +9,763 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
 
 <style>
+/* =============================================================
+   TIKTOK DESIGN SYSTEM
+   ============================================================= */
 *,*::before,*::after{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
 :root{
-  --tt-cyan:#25F4EE;--tt-pink:#FE2C55;
-  --tt-cyan-glow:rgba(37,244,238,.35);--tt-pink-glow:rgba(254,44,85,.35);
-  --bg:#000;--surface:#121212;--surface-2:#1C1C1E;--surface-3:#2C2C2E;
-  --line:rgba(255,255,255,.08);--line-2:rgba(255,255,255,.14);
-  --txt:#fff;--muted:rgba(255,255,255,.6);--muted-2:rgba(255,255,255,.4);
-  --ok:#25F4EE;--warn:#FE2C55;--danger:#FE2C55;
-  --radius:20px;--radius-sm:14px;--radius-lg:28px;
-  --nav-h:64px;--top-h:56px;
-  --font-ar:'Cairo',sans-serif;--font-en:'Inter',sans-serif;
+  --tt-cyan:#25F4EE;
+  --tt-pink:#FE2C55;
+  --tt-cyan-glow:rgba(37,244,238,.35);
+  --tt-pink-glow:rgba(254,44,85,.35);
+  --bg:#000;
+  --surface:#121212;
+  --surface-2:#1C1C1E;
+  --surface-3:#2C2C2E;
+  --line:rgba(255,255,255,.08);
+  --line-2:rgba(255,255,255,.14);
+  --txt:#fff;
+  --muted:rgba(255,255,255,.6);
+  --muted-2:rgba(255,255,255,.4);
+  --ok:#25F4EE;
+  --warn:#FE2C55;
+  --danger:#FE2C55;
+  --radius:20px;
+  --radius-sm:14px;
+  --radius-lg:28px;
+  --nav-h:64px;
+  --top-h:56px;
+  --font-ar:'Cairo',sans-serif;
+  --font-en:'Inter',sans-serif;
 }
+
 :root[data-theme="light"]{
-  --bg:#fafafa;--surface:#fff;--surface-2:#f5f5f7;--surface-3:#ebebed;
-  --line:rgba(0,0,0,.06);--line-2:rgba(0,0,0,.12);
-  --txt:#000;--muted:rgba(0,0,0,.6);--muted-2:rgba(0,0,0,.4);
+  --bg:#fafafa;
+  --surface:#fff;
+  --surface-2:#f5f5f7;
+  --surface-3:#ebebed;
+  --line:rgba(0,0,0,.06);
+  --line-2:rgba(0,0,0,.12);
+  --txt:#000;
+  --muted:rgba(0,0,0,.6);
+  --muted-2:rgba(0,0,0,.4);
 }
+
 html,body{margin:0;padding:0;width:100%;min-height:100vh;overflow-x:hidden}
-body{font-family:var(--font-ar);background:var(--bg);color:var(--txt);
-  -webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background .3s,color .3s}
+body{
+  font-family:var(--font-ar);
+  background:var(--bg);
+  color:var(--txt);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+  transition:background .3s,color .3s;
+}
 html[dir="ltr"] body{font-family:var(--font-en)}
+
 button,input,select,textarea{font-family:inherit;font-size:15px;color:inherit}
 input:focus,select:focus,textarea:focus{outline:none}
 ::-webkit-scrollbar{width:0;height:0}
-body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:radial-gradient(circle at 20% 10%,rgba(37,244,238,.08) 0%,transparent 40%),
-             radial-gradient(circle at 80% 90%,rgba(254,44,85,.08) 0%,transparent 40%);
-  transition:opacity .4s}
+
+/* Animated background mesh */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(circle at 20% 10%,rgba(37,244,238,.08) 0%,transparent 40%),
+    radial-gradient(circle at 80% 90%,rgba(254,44,85,.08) 0%,transparent 40%);
+  transition:opacity .4s;
+}
 :root[data-theme="light"] body::before{opacity:.6}
 
-/* AUTH */
-#auth-screen{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;
-  justify-content:center;background:var(--bg);padding:24px;transition:opacity .5s,visibility .5s}
+/* =============================================================
+   AUTH SCREEN — TikTok landing
+   ============================================================= */
+#auth-screen{
+  position:fixed;inset:0;z-index:1000;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--bg);padding:24px;
+  transition:opacity .5s,visibility .5s;
+}
 #auth-screen.hidden{opacity:0;visibility:hidden;pointer-events:none}
-.auth-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
-.auth-bg::before,.auth-bg::after{content:'';position:absolute;width:400px;height:400px;
-  border-radius:50%;filter:blur(100px);opacity:.4}
+
+.auth-bg{
+  position:absolute;inset:0;overflow:hidden;pointer-events:none;
+}
+.auth-bg::before,.auth-bg::after{
+  content:'';position:absolute;width:400px;height:400px;border-radius:50%;
+  filter:blur(100px);opacity:.4;
+}
 .auth-bg::before{background:var(--tt-cyan);top:-150px;left:-150px}
 .auth-bg::after{background:var(--tt-pink);bottom:-150px;right:-150px}
-.auth-card{position:relative;z-index:1;width:100%;max-width:400px;
-  background:rgba(18,18,18,.72);backdrop-filter:blur(24px) saturate(180%);
+
+.auth-card{
+  position:relative;z-index:1;
+  width:100%;max-width:400px;
+  background:rgba(18,18,18,.72);
+  backdrop-filter:blur(24px) saturate(180%);
   -webkit-backdrop-filter:blur(24px) saturate(180%);
-  border:1px solid var(--line-2);border-radius:32px;padding:40px 32px;
-  box-shadow:0 24px 60px rgba(0,0,0,.6);animation:pop .7s cubic-bezier(.2,.9,.3,1.3) forwards}
-@keyframes pop{0%{opacity:0;transform:translateY(24px) scale(.96)}100%{opacity:1;transform:none}}
-.auth-logo{width:88px;height:88px;margin:0 auto 24px;border-radius:26px;
+  border:1px solid var(--line-2);
+  border-radius:32px;
+  padding:40px 32px;
+  box-shadow:0 24px 60px rgba(0,0,0,.6);
+  animation:pop .7s cubic-bezier(.2,.9,.3,1.3) forwards;
+}
+@keyframes pop{
+  0%{opacity:0;transform:translateY(24px) scale(.96)}
+  100%{opacity:1;transform:none}
+}
+
+.auth-logo{
+  width:88px;height:88px;margin:0 auto 24px;
+  border-radius:26px;
   background:linear-gradient(135deg,var(--tt-cyan),var(--tt-pink));
-  display:grid;place-items:center;font-family:var(--font-en);font-weight:900;
-  font-size:34px;color:#000;box-shadow:0 12px 40px var(--tt-pink-glow),0 0 60px var(--tt-cyan-glow);
-  position:relative}
-.auth-logo::after{content:'';position:absolute;inset:-3px;border-radius:29px;
-  background:linear-gradient(135deg,var(--tt-cyan),var(--tt-pink));z-index:-1;
-  filter:blur(12px);opacity:.7}
-.auth-title{font-size:28px;font-weight:900;text-align:center;margin:0 0 6px;
+  display:grid;place-items:center;
+  font-family:var(--font-en);font-weight:900;font-size:34px;color:#000;
+  box-shadow:0 12px 40px var(--tt-pink-glow),0 0 60px var(--tt-cyan-glow);
+  position:relative;
+}
+.auth-logo::after{
+  content:'';position:absolute;inset:-3px;border-radius:29px;
+  background:linear-gradient(135deg,var(--tt-cyan),var(--tt-pink));
+  z-index:-1;filter:blur(12px);opacity:.7;
+}
+
+.auth-title{
+  font-size:28px;font-weight:900;text-align:center;margin:0 0 6px;
   background:linear-gradient(90deg,var(--tt-cyan),var(--tt-pink));
-  -webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-.5px}
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  letter-spacing:-.5px;
+}
 .auth-subtitle{text-align:center;color:var(--muted);font-size:13.5px;margin:0 0 32px}
+
 .tt-field{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
 .tt-field>span{font-size:12.5px;font-weight:700;color:var(--muted);letter-spacing:.3px}
-.tt-input{width:100%;background:var(--surface-2);border:1.5px solid var(--line-2);
-  border-radius:14px;padding:14px 16px;font-size:15px;color:var(--txt);transition:.2s}
+.tt-input{
+  width:100%;background:var(--surface-2);
+  border:1.5px solid var(--line-2);border-radius:14px;
+  padding:14px 16px;font-size:15px;color:var(--txt);
+  transition:.2s;
+}
 .tt-input::placeholder{color:var(--muted-2)}
-.tt-input:focus{border-color:var(--tt-cyan);background:var(--surface-3);
-  box-shadow:0 0 0 4px var(--tt-cyan-glow)}
-.tt-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+.tt-input:focus{
+  border-color:var(--tt-cyan);
+  background:var(--surface-3);
+  box-shadow:0 0 0 4px var(--tt-cyan-glow);
+}
+
+.tt-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
   padding:14px 22px;border-radius:14px;font-size:15px;font-weight:800;
-  cursor:pointer;transition:.2s;border:none;background:var(--surface-2);
-  color:var(--txt);position:relative;overflow:hidden}
+  cursor:pointer;transition:.2s;border:none;
+  background:var(--surface-2);color:var(--txt);
+  position:relative;overflow:hidden;
+}
 .tt-btn:active{transform:scale(.97)}
 .tt-btn:disabled{opacity:.5;cursor:not-allowed}
 .tt-btn.block{width:100%}
-.tt-btn.primary{background:linear-gradient(135deg,var(--tt-cyan),var(--tt-pink));color:#000;
-  box-shadow:0 8px 24px var(--tt-pink-glow)}
+.tt-btn.primary{
+  background:linear-gradient(135deg,var(--tt-cyan),var(--tt-pink));
+  color:#000;
+  box-shadow:0 8px 24px var(--tt-pink-glow);
+}
 .tt-btn.primary:hover:not(:disabled){filter:brightness(1.1);box-shadow:0 12px 32px var(--tt-pink-glow)}
 .tt-btn.ghost{background:transparent;border:1.5px solid var(--line-2)}
 .tt-btn.ghost:hover{background:var(--surface-2);border-color:var(--tt-cyan)}
 .tt-btn.wa{background:#25D366;color:#fff;box-shadow:0 6px 20px rgba(37,211,102,.35)}
 .tt-btn.danger{background:rgba(254,44,85,.15);color:var(--tt-pink);border:1.5px solid rgba(254,44,85,.3)}
 .tt-btn.sm{padding:9px 15px;font-size:13px;border-radius:11px}
-.spinner-inline{display:inline-block;width:18px;height:18px;
-  border:2px solid rgba(0,0,0,.2);border-top-color:#000;border-radius:50%;
-  animation:spin .7s linear infinite}
+
+.spinner-inline{
+  display:inline-block;width:18px;height:18px;
+  border:2px solid rgba(0,0,0,.2);
+  border-top-color:#000;border-radius:50%;
+  animation:spin .7s linear infinite;
+}
 .tt-btn.ghost .spinner-inline{border-color:rgba(255,255,255,.2);border-top-color:#fff}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* MAIN */
-#app-screen{position:relative;z-index:1;display:flex;flex-direction:column;
-  min-height:100vh;opacity:0;visibility:hidden;pointer-events:none;
+/* =============================================================
+   MAIN APP SHELL
+   ============================================================= */
+#app-screen{
+  position:relative;z-index:1;
+  display:flex;flex-direction:column;
+  min-height:100vh;
+  opacity:0;visibility:hidden;pointer-events:none;
   transition:opacity .5s,visibility .5s;
-  padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px))}
+  padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px));
+}
 #app-screen.visible{opacity:1;visibility:visible;pointer-events:auto}
 
-.tt-topbar{position:sticky;top:0;z-index:40;height:var(--top-h);
-  display:flex;align-items:center;gap:12px;padding:0 16px;
+/* ---------- Top bar ---------- */
+.tt-topbar{
+  position:sticky;top:0;z-index:40;
+  height:var(--top-h);
+  display:flex;align-items:center;
+  gap:12px;padding:0 16px;
   background:linear-gradient(to bottom,var(--bg) 60%,transparent);
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-.tt-brand{font-family:var(--font-en);font-weight:900;font-size:18px;
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+}
+.tt-brand{
+  font-family:var(--font-en);
+  font-weight:900;font-size:18px;
   background:linear-gradient(90deg,var(--tt-cyan),var(--tt-pink));
-  -webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-.5px}
-.tt-user{flex:1;font-size:12px;color:var(--muted);display:flex;align-items:center;
-  gap:6px;overflow:hidden;min-width:0}
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  letter-spacing:-.5px;
+}
+.tt-user{
+  flex:1;font-size:12px;color:var(--muted);
+  display:flex;align-items:center;gap:6px;
+  overflow:hidden;min-width:0;
+}
 .tt-user b{color:var(--tt-cyan);font-weight:700}
-.tt-dot{width:7px;height:7px;border-radius:50%;background:var(--warn);flex:0 0 7px;
-  box-shadow:0 0 0 3px rgba(254,44,85,.2);transition:.3s}
-.tt-dot.online{background:var(--ok);
-  box-shadow:0 0 0 3px rgba(37,244,238,.25),0 0 12px var(--tt-cyan-glow)}
-.tt-iconbtn{width:38px;height:38px;flex:0 0 38px;border-radius:12px;
-  background:var(--surface-2);border:1.5px solid var(--line-2);
-  color:var(--txt);font-size:15px;display:grid;place-items:center;
-  cursor:pointer;transition:.2s;padding:0}
+.tt-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--warn);flex:0 0 7px;
+  box-shadow:0 0 0 3px rgba(254,44,85,.2);
+  transition:.3s;
+}
+.tt-dot.online{background:var(--ok);box-shadow:0 0 0 3px rgba(37,244,238,.25),0 0 12px var(--tt-cyan-glow)}
+
+.tt-iconbtn{
+  width:38px;height:38px;flex:0 0 38px;
+  border-radius:12px;background:var(--surface-2);
+  border:1.5px solid var(--line-2);
+  color:var(--txt);font-size:15px;
+  display:grid;place-items:center;
+  cursor:pointer;transition:.2s;padding:0;
+}
 .tt-iconbtn:hover{background:var(--surface-3);border-color:var(--tt-cyan)}
-.tt-lang{padding:8px 10px;border-radius:11px;background:var(--surface-2);
-  border:1.5px solid var(--line-2);color:var(--txt);font-size:12.5px;
-  font-weight:700;cursor:pointer;transition:.2s}
+
+.tt-lang{
+  padding:8px 10px;border-radius:11px;
+  background:var(--surface-2);border:1.5px solid var(--line-2);
+  color:var(--txt);font-size:12.5px;font-weight:700;
+  cursor:pointer;transition:.2s;
+}
 .tt-lang:hover{border-color:var(--tt-cyan)}
 
-.tt-modtabs{display:flex;justify-content:center;align-items:center;
-  gap:32px;padding:6px 20px 14px;position:relative}
-.tt-modtab{background:none;border:none;padding:8px 0;font-size:15px;font-weight:700;
-  color:var(--muted-2);cursor:pointer;transition:.2s;position:relative;font-family:inherit}
+/* ---------- Module tabs (TikTok "For You / Following") ---------- */
+.tt-modtabs{
+  display:flex;justify-content:center;align-items:center;
+  gap:32px;padding:6px 20px 14px;
+  position:relative;
+}
+.tt-modtab{
+  background:none;border:none;padding:8px 0;
+  font-size:15px;font-weight:700;color:var(--muted-2);
+  cursor:pointer;transition:.2s;position:relative;
+  font-family:inherit;
+}
 .tt-modtab.active{color:var(--txt);font-weight:800}
-.tt-modtab.active::after{content:'';position:absolute;bottom:-4px;left:50%;
-  transform:translateX(-50%);width:32px;height:3px;border-radius:3px;
+.tt-modtab.active::after{
+  content:'';position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);
+  width:32px;height:3px;border-radius:3px;
   background:linear-gradient(90deg,var(--tt-cyan),var(--tt-pink));
-  box-shadow:0 0 12px var(--tt-pink-glow)}
+  box-shadow:0 0 12px var(--tt-pink-glow);
+}
 .tt-modtab:hover{color:var(--txt)}
 
-main{flex:1;width:100%;max-width:640px;margin:0 auto;padding:0 16px 24px}
+/* ---------- Main content ---------- */
+main{
+  flex:1;width:100%;
+  max-width:640px;margin:0 auto;
+  padding:0 16px 24px;
+}
 .view{display:none;animation:fadeUp .35s cubic-bezier(.2,.9,.3,1.1)}
 .view.active{display:block}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 
-.tt-card{background:var(--surface);border:1px solid var(--line);
-  border-radius:var(--radius);padding:18px;margin-bottom:14px;
-  position:relative;overflow:hidden;transition:.2s}
-.tt-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,var(--c,var(--tt-cyan)),transparent);opacity:.7}
-.tt-card-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-.tt-card-head h2{font-size:16px;font-weight:800;margin:0;flex:1;letter-spacing:-.2px}
-.tt-bullet{width:10px;height:10px;border-radius:50%;background:var(--c,var(--tt-cyan));
-  box-shadow:0 0 12px var(--c,var(--tt-cyan));flex:0 0 10px}
-.tt-pill{font-size:10.5px;font-weight:800;padding:4px 10px;border-radius:99px;
-  background:var(--surface-3);color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
-.tt-pill.acc{background:color-mix(in srgb,var(--c,var(--tt-cyan)) 18%,transparent);
-  color:var(--c,var(--tt-cyan))}
+/* ---------- Cards ---------- */
+.tt-card{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:18px;
+  margin-bottom:14px;
+  position:relative;
+  overflow:hidden;
+  transition:.2s;
+}
+.tt-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--c,var(--tt-cyan)),transparent);
+  opacity:.7;
+}
+.tt-card-head{
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:14px;
+}
+.tt-card-head h2{
+  font-size:16px;font-weight:800;margin:0;flex:1;
+  letter-spacing:-.2px;
+}
+.tt-bullet{
+  width:10px;height:10px;border-radius:50%;
+  background:var(--c,var(--tt-cyan));
+  box-shadow:0 0 12px var(--c,var(--tt-cyan));
+  flex:0 0 10px;
+}
+.tt-pill{
+  font-size:10.5px;font-weight:800;
+  padding:4px 10px;border-radius:99px;
+  background:var(--surface-3);color:var(--muted);
+  text-transform:uppercase;letter-spacing:.5px;
+}
+.tt-pill.acc{
+  background:color-mix(in srgb,var(--c,var(--tt-cyan)) 18%,transparent);
+  color:var(--c,var(--tt-cyan));
+}
 .tt-pill.ok{background:rgba(37,244,238,.15);color:var(--tt-cyan)}
 .tt-pill.warn{background:rgba(254,44,85,.15);color:var(--tt-pink)}
+
 .tt-hint{font-size:12.5px;color:var(--muted);line-height:1.5;margin:0 0 14px}
+
+/* ---------- Fields ---------- */
 .tt-grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media(max-width:560px){.tt-grid2{grid-template-columns:1fr;gap:0}}
+
 .tt-label{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
 .tt-label>span{font-size:12.5px;font-weight:700;color:var(--muted);letter-spacing:.2px}
-.tt-label .tt-input,.tt-label textarea,.tt-label select{width:100%;
-  background:var(--surface-2);border:1.5px solid var(--line-2);
-  border-radius:14px;padding:13px 15px;font-size:14.5px;color:var(--txt);transition:.2s}
+.tt-label .tt-input,.tt-label textarea,.tt-label select{
+  width:100%;background:var(--surface-2);
+  border:1.5px solid var(--line-2);border-radius:14px;
+  padding:13px 15px;font-size:14.5px;color:var(--txt);
+  transition:.2s;
+}
 .tt-label textarea{resize:vertical;min-height:60px;line-height:1.5}
 .tt-label select{cursor:pointer;appearance:none;padding-inline-end:38px;
   background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path d='M2 4l4 4 4-4' fill='none' stroke='%2394a3b8' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>");
-  background-repeat:no-repeat;background-position:right 14px center}
+  background-repeat:no-repeat;
+  background-position:right 14px center;
+}
 html[dir="rtl"] .tt-label select{background-position:left 14px center}
 .tt-label textarea:focus,.tt-label select:focus,.tt-label .tt-input:focus{
-  border-color:var(--tt-cyan);background:var(--surface-3);box-shadow:0 0 0 4px var(--tt-cyan-glow)}
-.tt-check{display:flex;align-items:center;gap:12px;padding:12px 14px;
-  margin-bottom:12px;background:var(--surface-2);border:1.5px solid var(--line-2);
-  border-radius:14px;cursor:pointer;transition:.2s}
+  border-color:var(--tt-cyan);
+  background:var(--surface-3);
+  box-shadow:0 0 0 4px var(--tt-cyan-glow);
+}
+
+/* Checkbox row (TikTok toggle style) */
+.tt-check{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 14px;margin-bottom:12px;
+  background:var(--surface-2);
+  border:1.5px solid var(--line-2);
+  border-radius:14px;cursor:pointer;
+  transition:.2s;
+}
 .tt-check:hover{border-color:var(--tt-cyan)}
-.tt-check input{appearance:none;width:44px;height:26px;flex:0 0 44px;
-  background:var(--surface-3);border-radius:99px;position:relative;
-  cursor:pointer;transition:.25s;border:none}
-.tt-check input::after{content:'';position:absolute;top:3px;left:3px;
-  width:20px;height:20px;border-radius:50%;background:#fff;
-  transition:.25s;box-shadow:0 2px 6px rgba(0,0,0,.4)}
+.tt-check input{
+  appearance:none;width:44px;height:26px;flex:0 0 44px;
+  background:var(--surface-3);border-radius:99px;
+  position:relative;cursor:pointer;transition:.25s;
+  border:none;
+}
+.tt-check input::after{
+  content:'';position:absolute;top:3px;left:3px;
+  width:20px;height:20px;border-radius:50%;
+  background:#fff;transition:.25s;
+  box-shadow:0 2px 6px rgba(0,0,0,.4);
+}
 .tt-check input:checked{background:linear-gradient(135deg,var(--tt-cyan),var(--tt-pink))}
 .tt-check input:checked::after{left:21px}
+
 .tt-check span{font-size:13.5px;font-weight:600;user-select:none;flex:1}
-.tt-items-head,.tt-item-row{display:grid;grid-template-columns:1fr 70px 82px 36px;
-  gap:6px;align-items:center}
-.tt-items-head{font-size:11px;font-weight:800;color:var(--muted-2);
-  padding:0 4px 8px;text-transform:uppercase;letter-spacing:.5px}
+
+/* ---------- Items grid ---------- */
+.tt-items-head,.tt-item-row{
+  display:grid;grid-template-columns:1fr 70px 82px 36px;
+  gap:6px;align-items:center;
+}
+.tt-items-head{
+  font-size:11px;font-weight:800;color:var(--muted-2);
+  padding:0 4px 8px;text-transform:uppercase;letter-spacing:.5px;
+}
 .tt-item-row{margin-bottom:8px}
 .tt-item-row .tt-input{padding:11px 10px;font-size:13.5px;border-radius:11px}
 .tt-item-row .i-qty{text-align:center}
 .tt-item-row .i-unit{padding-inline-end:28px;background-position:right 8px center;font-size:13px}
-@media(max-width:520px){.tt-items-head,.tt-item-row{grid-template-columns:1fr 58px 72px 32px;gap:5px}
-  .tt-item-row .tt-input{padding:9px 8px;font-size:12.5px}}
-.tt-photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px}
+
+@media(max-width:520px){
+  .tt-items-head,.tt-item-row{grid-template-columns:1fr 58px 72px 32px;gap:5px}
+  .tt-item-row .tt-input{padding:9px 8px;font-size:12.5px}
+}
+
+/* ---------- Photos grid ---------- */
+.tt-photo-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));
+  gap:8px;
+}
 .tt-photo-grid:empty{display:none}
 .tt-photo-grid:not(:empty){margin-bottom:12px}
-.tt-thumb{position:relative;aspect-ratio:1;border-radius:14px;overflow:hidden;
-  border:1.5px solid var(--line-2);background:var(--surface-2);transition:.2s}
+.tt-thumb{
+  position:relative;aspect-ratio:1;
+  border-radius:14px;overflow:hidden;
+  border:1.5px solid var(--line-2);
+  background:var(--surface-2);
+  transition:.2s;
+}
 .tt-thumb:hover{border-color:var(--tt-cyan)}
 .tt-thumb img{width:100%;height:100%;object-fit:cover;display:block}
-.tt-thumb button{position:absolute;top:6px;inset-inline-end:6px;width:24px;height:24px;
-  border-radius:50%;border:none;background:rgba(0,0,0,.7);color:#fff;
-  font-size:12px;cursor:pointer;display:grid;place-items:center;padding:0;
-  backdrop-filter:blur(8px)}
+.tt-thumb button{
+  position:absolute;top:6px;inset-inline-end:6px;
+  width:24px;height:24px;border-radius:50%;border:none;
+  background:rgba(0,0,0,.7);color:#fff;font-size:12px;
+  cursor:pointer;display:grid;place-items:center;padding:0;
+  backdrop-filter:blur(8px);
+}
 .tt-thumb button:hover{background:var(--tt-pink)}
-.tt-sig-wrap{background:#fff;border-radius:14px;overflow:hidden;
-  border:1.5px solid var(--line-2);position:relative}
-.tt-sig-wrap canvas{display:block;width:100%;height:150px;touch-action:none;cursor:crosshair}
-.tt-sig-clear{position:absolute;top:10px;inset-inline-start:10px;
-  background:rgba(0,0,0,.75);color:#fff;border:none;padding:6px 12px;
-  border-radius:8px;font-size:12px;cursor:pointer;font-weight:700}
+
+/* ---------- Signature ---------- */
+.tt-sig-wrap{
+  background:#fff;border-radius:14px;
+  overflow:hidden;border:1.5px solid var(--line-2);
+  position:relative;
+}
+.tt-sig-wrap canvas{
+  display:block;width:100%;height:150px;
+  touch-action:none;cursor:crosshair;
+}
+.tt-sig-clear{
+  position:absolute;top:10px;inset-inline-start:10px;
+  background:rgba(0,0,0,.75);color:#fff;
+  border:none;padding:6px 12px;border-radius:8px;
+  font-size:12px;cursor:pointer;font-weight:700;
+}
 .tt-sig-clear:hover{background:var(--tt-pink)}
-.tt-submit-bar{display:flex;gap:10px;flex-wrap:wrap;padding:4px 0}
-.tt-submit-bar .tt-btn.primary{flex:1;min-width:200px;
+
+/* ---------- Submit CTA ---------- */
+.tt-submit-bar{
+  display:flex;gap:10px;flex-wrap:wrap;
+  padding:4px 0;
+}
+.tt-submit-bar .tt-btn.primary{flex:1;min-width:200px}
+.tt-submit-bar .tt-btn.primary{
   background:linear-gradient(135deg,var(--c,var(--tt-cyan)),var(--tt-pink));
   color:#000;font-weight:900;padding:16px 24px;border-radius:16px;
-  font-size:15.5px;letter-spacing:.2px;box-shadow:0 10px 32px var(--tt-pink-glow)}
-.tt-submit-bar .tt-btn.primary:hover:not(:disabled){filter:brightness(1.1);
-  box-shadow:0 14px 40px var(--tt-pink-glow)}
+  font-size:15.5px;letter-spacing:.2px;
+  box-shadow:0 10px 32px var(--tt-pink-glow);
+}
+.tt-submit-bar .tt-btn.primary:hover:not(:disabled){
+  filter:brightness(1.1);box-shadow:0 14px 40px var(--tt-pink-glow);
+}
 
-/* HISTORY */
-.hist-tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;
-  position:sticky;top:var(--top-h);z-index:30;background:var(--bg);padding:8px 0}
+/* =============================================================
+   HISTORY — TikTok feed style
+   ============================================================= */
+.hist-tools{
+  display:flex;gap:8px;flex-wrap:wrap;
+  margin-bottom:14px;position:sticky;top:var(--top-h);z-index:30;
+  background:var(--bg);padding:8px 0;
+}
 .hist-search{flex:1;min-width:180px}
-.hist-filter{padding:9px 14px;border-radius:12px;background:var(--surface-2);
-  border:1.5px solid var(--line-2);color:var(--txt);font-size:13px;
-  font-weight:700;cursor:pointer;transition:.15s;white-space:nowrap}
+.hist-filter{
+  padding:9px 14px;border-radius:12px;
+  background:var(--surface-2);border:1.5px solid var(--line-2);
+  color:var(--txt);font-size:13px;font-weight:700;
+  cursor:pointer;transition:.15s;white-space:nowrap;
+}
 .hist-filter:hover{border-color:var(--tt-cyan)}
-.hist-filter.active{background:linear-gradient(135deg,var(--tt-cyan),var(--tt-pink));
-  color:#000;border-color:transparent;box-shadow:0 6px 16px var(--tt-pink-glow)}
-.feed-card{display:flex;gap:12px;align-items:flex-start;background:var(--surface);
-  border:1.5px solid var(--line);border-radius:20px;padding:14px;
-  margin-bottom:12px;position:relative;overflow:hidden;transition:.2s;cursor:pointer}
-.feed-card::before{content:'';position:absolute;top:0;bottom:0;inset-inline-start:0;
-  width:4px;background:var(--c,var(--tt-cyan));
-  box-shadow:0 0 16px var(--c,var(--tt-cyan))}
+.hist-filter.active{
+  background:linear-gradient(135deg,var(--tt-cyan),var(--tt-pink));
+  color:#000;border-color:transparent;
+  box-shadow:0 6px 16px var(--tt-pink-glow);
+}
+
+/* Feed card */
+.feed-card{
+  display:flex;gap:12px;align-items:flex-start;
+  background:var(--surface);
+  border:1.5px solid var(--line);
+  border-radius:20px;
+  padding:14px;
+  margin-bottom:12px;
+  position:relative;overflow:hidden;
+  transition:.2s;
+  cursor:pointer;
+}
+.feed-card::before{
+  content:'';position:absolute;top:0;bottom:0;
+  inset-inline-start:0;width:4px;
+  background:linear-gradient(to bottom,var(--c,var(--tt-cyan)),var(--c,var(--tt-cyan)));
+  box-shadow:0 0 16px var(--c,var(--tt-cyan));
+}
 .feed-card:hover{transform:translateY(-2px);border-color:var(--line-2)}
+
 .feed-main{flex:1;min-width:0;padding-inline-start:6px}
-.feed-ref{font-size:14.5px;font-weight:800;display:flex;gap:7px;
-  align-items:center;flex-wrap:wrap;margin-bottom:4px}
+.feed-ref{
+  font-size:14.5px;font-weight:800;
+  display:flex;gap:7px;align-items:center;flex-wrap:wrap;
+  margin-bottom:4px;
+}
 .feed-sub{font-size:11.5px;color:var(--muted);margin-top:3px;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .feed-actions{display:flex;gap:6px;flex-wrap:wrap;flex:0 0 auto}
-@media(max-width:520px){.feed-actions{gap:4px}
-  .feed-actions .tt-iconbtn{width:32px;height:32px;font-size:13px}}
 
-/* PROFILE */
-.profile-hero{text-align:center;padding:24px 0 20px;position:relative}
-.avatar-ring{width:108px;height:108px;margin:0 auto 16px;padding:4px;
-  border-radius:50%;background:linear-gradient(135deg,var(--tt-cyan),var(--tt-pink));
-  box-shadow:0 0 40px var(--tt-pink-glow),0 0 60px var(--tt-cyan-glow);position:relative}
-.avatar-ring::after{content:'';position:absolute;inset:-6px;border-radius:50%;
-  background:linear-gradient(135deg,var(--tt-cyan),var(--tt-pink));z-index:-1;
-  filter:blur(16px);opacity:.5;animation:glow 3s ease-in-out infinite}
-@keyframes glow{0%,100%{opacity:.4}50%{opacity:.8}}
-.avatar{width:100%;height:100%;border-radius:50%;
-  background:linear-gradient(135deg,#1a1a1a,#0a0a0a);display:grid;place-items:center;
-  font-family:var(--font-en);font-size:42px;font-weight:900;color:#fff;
-  border:3px solid var(--bg)}
+/* =============================================================
+   PROFILE — TikTok profile page
+   ============================================================= */
+.profile-hero{
+  text-align:center;padding:24px 0 20px;position:relative;
+}
+.avatar-ring{
+  width:108px;height:108px;margin:0 auto 16px;
+  padding:4px;border-radius:50%;
+  background:linear-gradient(135deg,var(--tt-cyan),var(--tt-pink));
+  box-shadow:0 0 40px var(--tt-pink-glow),0 0 60px var(--tt-cyan-glow);
+  position:relative;
+}
+.avatar-ring::after{
+  content:'';position:absolute;inset:-6px;border-radius:50%;
+  background:linear-gradient(135deg,var(--tt-cyan),var(--tt-pink));
+  z-index:-1;filter:blur(16px);opacity:.5;
+  animation:glow 3s ease-in-out infinite;
+}
+@keyframes glow{
+  0%,100%{opacity:.4}
+  50%{opacity:.8}
+}
+.avatar{
+  width:100%;height:100%;border-radius:50%;
+  background:linear-gradient(135deg,#1a1a1a,#0a0a0a);
+  display:grid;place-items:center;
+  font-family:var(--font-en);font-size:42px;font-weight:900;
+  color:#fff;
+  border:3px solid var(--bg);
+}
 .profile-name{font-size:22px;font-weight:900;margin:0 0 4px;letter-spacing:-.3px}
 .profile-handle{font-size:13px;color:var(--muted);margin-bottom:4px}
-.profile-role{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;
-  border-radius:99px;background:rgba(37,244,238,.12);color:var(--tt-cyan);
+.profile-role{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 14px;border-radius:99px;
+  background:rgba(37,244,238,.12);color:var(--tt-cyan);
   font-size:11.5px;font-weight:800;letter-spacing:.5px;
-  border:1px solid rgba(37,244,238,.25)}
-.profile-email{font-size:11.5px;color:var(--muted);margin-top:10px;
-  direction:ltr;word-break:break-all;opacity:.7}
-.stats-row{display:flex;justify-content:center;gap:0;padding:16px 0;
-  margin-bottom:20px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.stat{flex:1;text-align:center;padding:0 4px;position:relative}
-.stat+.stat::before{content:'';position:absolute;top:20%;bottom:20%;
-  inset-inline-start:0;width:1px;background:var(--line-2)}
-.stat-val{font-family:var(--font-en);font-size:22px;font-weight:900;
+  border:1px solid rgba(37,244,238,.25);
+}
+.profile-email{
+  font-size:11.5px;color:var(--muted);
+  margin-top:10px;direction:ltr;
+  word-break:break-all;opacity:.7;
+}
+
+.stats-row{
+  display:flex;justify-content:center;gap:0;
+  padding:16px 0;margin-bottom:20px;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+}
+.stat{
+  flex:1;text-align:center;
+  padding:0 4px;
+  position:relative;
+}
+.stat+.stat::before{
+  content:'';position:absolute;top:20%;bottom:20%;
+  inset-inline-start:0;width:1px;
+  background:var(--line-2);
+}
+.stat-val{
+  font-family:var(--font-en);
+  font-size:22px;font-weight:900;
   background:linear-gradient(135deg,var(--tt-cyan),var(--tt-pink));
   -webkit-background-clip:text;background-clip:text;color:transparent;
-  line-height:1;margin-bottom:4px}
+  line-height:1;margin-bottom:4px;
+}
 .stat-lbl{font-size:10.5px;color:var(--muted);font-weight:700;
   text-transform:uppercase;letter-spacing:.3px}
-.activity-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:20px}
-.activity-cell{aspect-ratio:1;border-radius:14px;background:var(--surface);
-  border:1.5px solid var(--line);display:flex;flex-direction:column;
-  align-items:center;justify-content:center;padding:6px;cursor:pointer;
-  transition:.2s;position:relative;overflow:hidden}
-.activity-cell::before{content:'';position:absolute;top:0;inset-inline-start:0;
-  width:100%;height:3px;background:var(--c,var(--tt-cyan));opacity:.8}
+
+.activity-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:4px;
+  margin-bottom:20px;
+}
+.activity-cell{
+  aspect-ratio:1;border-radius:14px;
+  background:var(--surface);
+  border:1.5px solid var(--line);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:6px;
+  cursor:pointer;transition:.2s;
+  position:relative;overflow:hidden;
+}
+.activity-cell::before{
+  content:'';position:absolute;top:0;inset-inline-start:0;
+  width:100%;height:3px;
+  background:var(--c,var(--tt-cyan));
+  opacity:.8;
+}
 .activity-cell:hover{border-color:var(--c,var(--tt-cyan));transform:scale(1.03)}
 .activity-cell .ic{font-size:22px;margin-bottom:4px}
-.activity-cell .ref{font-family:var(--font-en);font-size:9px;font-weight:800;
-  color:var(--muted);text-align:center;white-space:nowrap;overflow:hidden;
-  text-overflow:ellipsis;max-width:100%;direction:ltr}
+.activity-cell .ref{
+  font-family:var(--font-en);font-size:9px;font-weight:800;
+  color:var(--muted);text-align:center;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  max-width:100%;
+  direction:ltr;
+}
 
-/* BOTTOM NAV */
-.tt-bottomnav{position:fixed;bottom:0;left:0;right:0;
+/* =============================================================
+   BOTTOM NAVIGATION — TikTok 5-item
+   ============================================================= */
+.tt-bottomnav{
+  position:fixed;bottom:0;left:0;right:0;
   height:calc(var(--nav-h) + env(safe-area-inset-bottom,0px));
   padding-bottom:env(safe-area-inset-bottom,0px);
-  background:rgba(0,0,0,.92);backdrop-filter:blur(24px) saturate(180%);
+  background:rgba(0,0,0,.92);
+  backdrop-filter:blur(24px) saturate(180%);
   -webkit-backdrop-filter:blur(24px) saturate(180%);
-  border-top:1px solid var(--line-2);display:grid;
-  grid-template-columns:1fr 1fr 72px 1fr 1fr;align-items:center;z-index:100}
-:root[data-theme="light"] .tt-bottomnav{background:rgba(255,255,255,.92)}
-html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 1fr 72px 1fr 1fr;direction:rtl}
-.nav-btn{display:flex;flex-direction:column;align-items:center;
-  justify-content:center;gap:2px;background:none;border:none;color:var(--muted);
-  cursor:pointer;padding:8px 4px;transition:.2s;font-family:inherit;height:100%;
-  position:relative}
+  border-top:1px solid var(--line-2);
+  display:grid;
+  grid-template-columns:1fr 1fr 72px 1fr 1fr;
+  align-items:center;
+  z-index:100;
+}
+:root[data-theme="light"] .tt-bottomnav{
+  background:rgba(255,255,255,.92);
+}
+html[dir="rtl"] .tt-bottomnav{
+  grid-template-columns:1fr 1fr 72px 1fr 1fr;
+  direction:rtl;
+}
+
+.nav-btn{
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:2px;
+  background:none;border:none;color:var(--muted);
+  cursor:pointer;padding:8px 4px;
+  transition:.2s;
+  font-family:inherit;
+  height:100%;
+  position:relative;
+}
 .nav-btn .ic{font-size:22px;line-height:1;transition:.2s}
-.nav-btn .lbl{font-size:9.5px;font-weight:700;letter-spacing:.2px;white-space:nowrap;opacity:.9}
+.nav-btn .lbl{font-size:9.5px;font-weight:700;letter-spacing:.2px;
+  white-space:nowrap;opacity:.9}
 .nav-btn:hover{color:var(--txt)}
 .nav-btn.active{color:var(--txt)}
-.nav-btn.active .ic{filter:drop-shadow(0 0 8px var(--tt-cyan-glow));transform:scale(1.08)}
-.nav-btn.active .lbl{background:linear-gradient(90deg,var(--tt-cyan),var(--tt-pink));
-  -webkit-background-clip:text;background-clip:text;color:transparent;font-weight:900}
-.nav-btn .nav-badge{position:absolute;top:6px;inset-inline-end:calc(50% - 22px);
-  min-width:16px;height:16px;padding:0 4px;background:var(--tt-pink);color:#fff;
-  border-radius:99px;font-size:9px;font-weight:800;display:grid;place-items:center;
-  line-height:1;box-shadow:0 0 8px var(--tt-pink-glow)}
-.nav-center{display:flex;align-items:center;justify-content:center;height:100%;position:relative}
-.nav-plus{width:52px;height:52px;border-radius:16px;
+.nav-btn.active .ic{
+  filter:drop-shadow(0 0 8px var(--tt-cyan-glow));
+  transform:scale(1.08);
+}
+.nav-btn.active .lbl{
+  background:linear-gradient(90deg,var(--tt-cyan),var(--tt-pink));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  font-weight:900;
+}
+.nav-btn .nav-badge{
+  position:absolute;top:6px;
+  inset-inline-end:calc(50% - 22px);
+  min-width:16px;height:16px;padding:0 4px;
+  background:var(--tt-pink);color:#fff;
+  border-radius:99px;font-size:9px;font-weight:800;
+  display:grid;place-items:center;line-height:1;
+  box-shadow:0 0 8px var(--tt-pink-glow);
+}
+
+/* Center "create" button */
+.nav-center{
+  display:flex;align-items:center;justify-content:center;
+  height:100%;
+  position:relative;
+}
+.nav-plus{
+  width:52px;height:52px;
+  border-radius:16px;
   background:linear-gradient(135deg,var(--tt-cyan),var(--tt-pink));
-  border:none;cursor:pointer;display:grid;place-items:center;color:#000;
-  font-size:26px;font-weight:900;
+  border:none;cursor:pointer;
+  display:grid;place-items:center;
+  color:#000;font-size:26px;font-weight:900;
   box-shadow:0 8px 24px var(--tt-pink-glow),0 0 30px var(--tt-cyan-glow);
-  transition:.25s;position:relative}
-.nav-plus::before{content:'';position:absolute;inset:-4px;
+  transition:.25s;
+  position:relative;
+}
+.nav-plus::before{
+  content:'';position:absolute;inset:-4px;
   background:linear-gradient(135deg,var(--tt-cyan),var(--tt-pink));
-  border-radius:20px;z-index:-1;filter:blur(12px);opacity:.6}
+  border-radius:20px;z-index:-1;
+  filter:blur(12px);opacity:.6;
+}
 .nav-plus:hover{transform:scale(1.08) rotate(90deg)}
 .nav-plus:active{transform:scale(.95) rotate(90deg)}
 
-/* MODALS */
-.tt-modal{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.6);
-  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+/* =============================================================
+   MODALS — Bottom sheet style
+   ============================================================= */
+.tt-modal{
+  position:fixed;inset:0;z-index:2000;
+  background:rgba(0,0,0,.6);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
   display:flex;align-items:flex-end;justify-content:center;
-  opacity:0;visibility:hidden;transition:.3s;padding:0}
+  opacity:0;visibility:hidden;transition:.3s;
+  padding:0;
+}
 .tt-modal.open{opacity:1;visibility:visible}
-.tt-modal-box{background:var(--surface);width:100%;max-width:640px;max-height:92vh;
-  border-top-left-radius:28px;border-top-right-radius:28px;
-  border:1px solid var(--line-2);border-bottom:none;display:flex;flex-direction:column;
-  transform:translateY(100%);transition:transform .38s cubic-bezier(.2,.9,.3,1.05);
-  position:relative;overflow:hidden}
+.tt-modal-box{
+  background:var(--surface);
+  width:100%;max-width:640px;
+  max-height:92vh;
+  border-top-left-radius:28px;
+  border-top-right-radius:28px;
+  border:1px solid var(--line-2);
+  border-bottom:none;
+  display:flex;flex-direction:column;
+  transform:translateY(100%);
+  transition:transform .38s cubic-bezier(.2,.9,.3,1.05);
+  position:relative;
+  overflow:hidden;
+}
 .tt-modal.open .tt-modal-box{transform:none}
-.tt-modal-box::before{content:'';position:absolute;top:8px;left:50%;
-  transform:translateX(-50%);width:42px;height:4px;border-radius:4px;
-  background:var(--line-2);z-index:5}
-.tt-modal-head{padding:26px 20px 14px;border-bottom:1px solid var(--line);
-  display:flex;align-items:center;justify-content:space-between;gap:12px}
+.tt-modal-box::before{
+  content:'';position:absolute;top:8px;left:50%;transform:translateX(-50%);
+  width:42px;height:4px;border-radius:4px;
+  background:var(--line-2);z-index:5;
+}
+.tt-modal-head{
+  padding:26px 20px 14px;
+  border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;
+}
 .tt-modal-head h3{margin:0;font-size:17px;font-weight:800;flex:1}
 .tt-modal-body{padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.tt-modal-foot{padding:14px 20px calc(14px + env(safe-area-inset-bottom,0px));
-  border-top:1px solid var(--line);display:flex;gap:9px;flex-wrap:wrap}
-.tt-modal-foot .tt-btn{flex:1;min-width:90px;font-size:13.5px;padding:12px 14px}
+.tt-modal-foot{
+  padding:14px 20px calc(14px + env(safe-area-inset-bottom,0px));
+  border-top:1px solid var(--line);
+  display:flex;gap:9px;flex-wrap:wrap;
+}
+.tt-modal-foot .tt-btn{flex:1;min-width:100px}
+
 #cardPreview{width:100%;border-radius:16px;display:block}
-.tt-spinner{width:36px;height:36px;margin:44px auto;border-radius:50%;
+.tt-spinner{
+  width:36px;height:36px;margin:44px auto;border-radius:50%;
   border:3px solid var(--line-2);border-top-color:var(--tt-cyan);
-  animation:spin .8s linear infinite;box-shadow:0 0 20px var(--tt-cyan-glow)}
-.archive-status{margin-top:12px;padding:12px 14px;border-radius:14px;
-  background:var(--surface-2);border:1.5px solid var(--line-2);
-  display:flex;gap:12px;align-items:center;font-size:13px}
-.archive-status .as-ic{width:32px;height:32px;border-radius:50%;
-  display:grid;place-items:center;background:var(--surface-3);
-  font-size:14px;flex:0 0 32px}
+  animation:spin .8s linear infinite;
+  box-shadow:0 0 20px var(--tt-cyan-glow);
+}
+
+/* Archive status */
+.archive-status{
+  margin-top:12px;padding:12px 14px;
+  border-radius:14px;
+  background:var(--surface-2);
+  border:1.5px solid var(--line-2);
+  display:flex;gap:12px;align-items:center;
+  font-size:13px;
+}
+.archive-status .as-ic{
+  width:32px;height:32px;border-radius:50%;
+  display:grid;place-items:center;
+  background:var(--surface-3);font-size:14px;
+  flex:0 0 32px;
+}
 .archive-status.running{border-color:var(--tt-cyan);background:rgba(37,244,238,.06)}
-.archive-status.running .as-ic{background:rgba(37,244,238,.18);color:var(--tt-cyan);
-  animation:spin 1.4s linear infinite}
+.archive-status.running .as-ic{
+  background:rgba(37,244,238,.18);color:var(--tt-cyan);
+  animation:spin 1.4s linear infinite;
+}
 .archive-status.done{border-color:var(--tt-cyan);background:rgba(37,244,238,.08)}
 .archive-status.done .as-ic{background:rgba(37,244,238,.22);color:var(--tt-cyan)}
 .archive-status.err{border-color:var(--tt-pink);background:rgba(254,44,85,.08)}
@@ -372,49 +773,84 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 1fr 72px 1fr 1fr;directi
 .archive-status .as-main{flex:1;min-width:0}
 .archive-status .as-t{font-weight:800}
 .archive-status .as-s{font-size:11.5px;color:var(--muted);margin-top:2px}
-#toast{position:fixed;bottom:calc(var(--nav-h) + 20px);left:50%;
-  transform:translate(-50%,120px);
+
+/* Toast */
+#toast{
+  position:fixed;bottom:calc(var(--nav-h) + 20px);
+  left:50%;transform:translate(-50%,120px);
   background:linear-gradient(135deg,var(--tt-cyan),var(--tt-pink));
-  color:#000;padding:14px 24px;border-radius:99px;font-weight:800;
-  font-size:14px;box-shadow:0 12px 40px var(--tt-pink-glow);
-  opacity:0;transition:.35s cubic-bezier(.2,.9,.3,1.2);z-index:3000;
-  pointer-events:none;max-width:88vw;text-align:center}
+  color:#000;padding:14px 24px;border-radius:99px;
+  font-weight:800;font-size:14px;
+  box-shadow:0 12px 40px var(--tt-pink-glow);
+  opacity:0;transition:.35s cubic-bezier(.2,.9,.3,1.2);
+  z-index:3000;pointer-events:none;
+  max-width:88vw;text-align:center;
+}
 #toast.show{transform:translate(-50%,0);opacity:1}
-.tt-banner{padding:12px 15px;border-radius:14px;margin-bottom:14px;
-  font-size:12.5px;display:flex;gap:10px;align-items:flex-start;line-height:1.5}
-.tt-banner.warn{background:rgba(254,44,85,.1);border:1.5px solid rgba(254,44,85,.28);color:#fca5a5}
-.tt-banner.ok{background:rgba(37,244,238,.1);border:1.5px solid rgba(37,244,238,.28);color:#67e8f9}
+
+/* Banner */
+.tt-banner{
+  padding:12px 15px;border-radius:14px;
+  margin-bottom:14px;font-size:12.5px;
+  display:flex;gap:10px;align-items:flex-start;
+  line-height:1.5;
+}
+.tt-banner.warn{
+  background:rgba(254,44,85,.1);
+  border:1.5px solid rgba(254,44,85,.28);
+  color:#fca5a5;
+}
+.tt-banner.ok{
+  background:rgba(37,244,238,.1);
+  border:1.5px solid rgba(37,244,238,.28);
+  color:#67e8f9;
+}
 .tt-banner .b-ic{flex:0 0 20px;text-align:center;font-size:15px}
-.tt-empty{text-align:center;padding:60px 20px;color:var(--muted)}
+
+.tt-empty{
+  text-align:center;padding:60px 20px;
+  color:var(--muted);
+}
 .tt-empty .ic{font-size:48px;opacity:.3;margin-bottom:14px}
 .tt-empty p{margin:0;font-size:14px;line-height:1.6}
+
 .tt-hr{height:1px;background:var(--line);margin:18px 0;border:0}
+
+/* =============================================================
+   RESPONSIVE — Desktop adjustments
+   ============================================================= */
 @media(min-width:768px){
-  .tt-bottomnav{max-width:640px;left:50%;transform:translateX(-50%);
-    border-radius:24px 24px 0 0;border-left:1px solid var(--line-2);
-    border-right:1px solid var(--line-2)}
+  .tt-bottomnav{
+    max-width:640px;left:50%;transform:translateX(-50%);
+    border-radius:24px 24px 0 0;
+    border-left:1px solid var(--line-2);
+    border-right:1px solid var(--line-2);
+  }
   main{max-width:640px;padding-bottom:40px}
 }
 </style>
 </head>
 <body>
 
-<!-- AUTH -->
+<!-- =============================================================
+     AUTH SCREEN
+     ============================================================= -->
 <div id="auth-screen">
   <div class="auth-bg"></div>
   <div class="auth-card">
     <div class="auth-logo">DS</div>
     <h1 class="auth-title" data-i18n="app.name">Digital Stock</h1>
     <p class="auth-subtitle" data-i18n="app.tagline">نظام الإدارة والأمن الذكي</p>
+
     <label class="tt-field">
       <span data-i18n="login.email">البريد الإلكتروني</span>
-      <input type="email" class="tt-input" id="loginEmail" placeholder="admin@hotel.com"
-             autocomplete="email" dir="ltr">
+      <input type="email" class="tt-input" id="loginEmail"
+             placeholder="admin@hotel.com" autocomplete="email" dir="ltr">
     </label>
     <label class="tt-field" style="margin-bottom:26px">
       <span data-i18n="login.password">كلمة المرور</span>
-      <input type="password" class="tt-input" id="loginPass" placeholder="••••••••"
-             autocomplete="current-password" dir="ltr">
+      <input type="password" class="tt-input" id="loginPass"
+             placeholder="••••••••" autocomplete="current-password" dir="ltr">
     </label>
     <button type="button" class="tt-btn primary block" id="btnLoginBtn"
             style="height:52px;font-size:16px">
@@ -423,8 +859,12 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 1fr 72px 1fr 1fr;directi
   </div>
 </div>
 
-<!-- APP -->
+<!-- =============================================================
+     MAIN APP
+     ============================================================= -->
 <div id="app-screen">
+
+  <!-- Top bar -->
   <header class="tt-topbar">
     <div class="tt-brand">Digital Stock</div>
     <div class="tt-user">
@@ -434,53 +874,76 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 1fr 72px 1fr 1fr;directi
       <b id="currentUserDisplay">—</b>
     </div>
     <select class="tt-lang" id="langSelect">
-      <option value="ar">ع</option><option value="fr">FR</option><option value="en">EN</option>
+      <option value="ar">ع</option>
+      <option value="fr">FR</option>
+      <option value="en">EN</option>
     </select>
     <button class="tt-iconbtn" id="btnThemeToggle" title="Theme">🌓</button>
   </header>
 
+  <!-- Module tabs -->
   <nav class="tt-modtabs" id="moduleTabs">
-    <button class="tt-modtab active" data-view="warehouse" data-i18n="tabs.warehouse">خروج مخزن</button>
-    <button class="tt-modtab" data-view="bon" data-i18n="tabs.bon">إذن خروج</button>
+    <button class="tt-modtab active" data-view="warehouse"
+            data-i18n="tabs.warehouse">خروج مخزن</button>
+    <button class="tt-modtab" data-view="bon"
+            data-i18n="tabs.bon">إذن خروج</button>
   </nav>
 
+  <!-- Content -->
   <main>
     <section class="view active" id="view-warehouse"></section>
     <section class="view" id="view-bon"></section>
+
     <section class="view" id="view-history">
       <div id="histBanner"></div>
       <div class="hist-tools">
-        <input class="tt-input hist-search" id="histSearch" data-i18n-placeholder="history.search">
-        <button class="hist-filter active" data-filter="all" data-i18n="history.filter.all">الكل</button>
-        <button class="hist-filter" data-filter="warehouse" data-i18n="history.filter.internal">داخلي</button>
-        <button class="hist-filter" data-filter="bon" data-i18n="history.filter.external">خارجي</button>
-        <button class="tt-iconbtn" id="btnExportAll" data-i18n-title="history.export">⬇</button>
-        <button class="tt-iconbtn" id="btnImportAll" data-i18n-title="history.import">⬆</button>
+        <input class="tt-input hist-search" id="histSearch"
+               data-i18n-placeholder="history.search">
+        <button class="hist-filter active" data-filter="all"
+                data-i18n="history.filter.all">الكل</button>
+        <button class="hist-filter" data-filter="warehouse"
+                data-i18n="history.filter.internal">داخلي</button>
+        <button class="hist-filter" data-filter="bon"
+                data-i18n="history.filter.external">خارجي</button>
+        <button class="tt-iconbtn" id="btnExportAll"
+                data-i18n-title="history.export">⬇</button>
+        <button class="tt-iconbtn" id="btnImportAll"
+                data-i18n-title="history.import">⬆</button>
       </div>
       <div id="histList"></div>
     </section>
+
     <section class="view" id="view-profile"></section>
   </main>
 
+  <!-- Bottom nav -->
   <nav class="tt-bottomnav" id="bottomNav">
-    <button class="nav-btn active" data-nav="warehouse">
-      <span class="ic">🏭</span><span class="lbl" data-i18n="tabs.warehouse">خروج مخزن</span>
+    <button class="nav-btn active" data-nav="form">
+      <span class="ic">🏭</span>
+      <span class="lbl" data-i18n="tabs.warehouse">خروج مخزن</span>
     </button>
     <button class="nav-btn" data-nav="bon">
-      <span class="ic">🚚</span><span class="lbl" data-i18n="tabs.bon">إذن خروج</span>
+      <span class="ic">🚚</span>
+      <span class="lbl" data-i18n="tabs.bon">إذن خروج</span>
     </button>
-    <div class="nav-center"><button class="nav-plus" id="navPlusBtn" title="New">＋</button></div>
+    <div class="nav-center">
+      <button class="nav-plus" id="navPlusBtn" title="New">＋</button>
+    </div>
     <button class="nav-btn" data-nav="history">
-      <span class="ic">📋</span><span class="lbl" data-i18n="tabs.history">السجل</span>
+      <span class="ic">📋</span>
+      <span class="lbl" data-i18n="tabs.history">السجل</span>
       <span class="nav-badge" id="histCount">0</span>
     </button>
     <button class="nav-btn" data-nav="profile">
-      <span class="ic">👤</span><span class="lbl" data-i18n="tabs.profile">الملف</span>
+      <span class="ic">👤</span>
+      <span class="lbl" data-i18n="tabs.profile">الملف</span>
     </button>
   </nav>
 </div>
 
-<!-- MODALS -->
+<!-- =============================================================
+     MODALS
+     ============================================================= -->
 <div class="tt-modal" id="setModal">
   <div class="tt-modal-box">
     <div class="tt-modal-head">
@@ -488,15 +951,21 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 1fr 72px 1fr 1fr;directi
       <button class="tt-iconbtn close-modal" type="button">✕</button>
     </div>
     <div class="tt-modal-body">
-      <label class="tt-label"><span data-i18n="settings.hotel">اسم المنشأة</span>
-        <input class="tt-input" id="setHotel" value="Les Oliviers Palace"></label>
-      <label class="tt-label"><span data-i18n="settings.phone">هاتف المشرف (واتساب)</span>
-        <input class="tt-input" id="setPhone" dir="ltr" placeholder="+216..."></label>
+      <label class="tt-label">
+        <span data-i18n="settings.hotel">اسم المنشأة</span>
+        <input class="tt-input" id="setHotel" value="Les Oliviers Palace">
+      </label>
+      <label class="tt-label">
+        <span data-i18n="settings.phone">هاتف المشرف (واتساب)</span>
+        <input class="tt-input" id="setPhone" dir="ltr" placeholder="+216...">
+      </label>
       <div class="tt-hr"></div>
       <p class="tt-hint" data-i18n="settings.firebase.hint"></p>
-      <label class="tt-label"><span data-i18n="settings.firebase">إعدادات Firebase (JSON)</span>
+      <label class="tt-label">
+        <span data-i18n="settings.firebase">إعدادات Firebase (JSON)</span>
         <textarea class="tt-input" id="setFbConfig" rows="5" dir="ltr"
-          placeholder='{ "apiKey": "…", "projectId": "…", "storageBucket": "…" }'></textarea></label>
+          placeholder='{ "apiKey": "…", "projectId": "…", "storageBucket": "…" }'></textarea>
+      </label>
       <div class="tt-hr"></div>
       <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
         <div style="min-width:0;flex:1">
@@ -513,8 +982,10 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 1fr 72px 1fr 1fr;directi
       </div>
     </div>
     <div class="tt-modal-foot">
-      <button class="tt-btn ghost close-modal" type="button" data-i18n="common.cancel">إلغاء</button>
-      <button class="tt-btn primary" id="btnSaveSettings" type="button" data-i18n="common.save">حفظ</button>
+      <button class="tt-btn ghost close-modal" type="button"
+              data-i18n="common.cancel">إلغاء</button>
+      <button class="tt-btn primary" id="btnSaveSettings" type="button"
+              data-i18n="common.save">حفظ</button>
     </div>
   </div>
 </div>
@@ -537,9 +1008,9 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 1fr 72px 1fr 1fr;directi
     </div>
     <div class="tt-modal-foot">
       <button class="tt-btn wa" id="btnShareWA" type="button">📲 <span data-i18n="card.whatsapp">واتساب</span></button>
-      <button class="tt-btn ghost" id="btnDownloadPdf" type="button">📄 PDF</button>
-      <button class="tt-btn ghost" id="btnDuplicate" type="button">📋 <span data-i18n="card.duplicate">نسخ</span></button>
-      <button class="tt-btn ghost" id="btnSyncCard" type="button">🔄 <span data-i18n="card.sync">مزامنة</span></button>
+      <button class="tt-btn ghost" id="btnDownloadJpg" type="button">JPG</button>
+      <button class="tt-btn ghost" id="btnDownloadPdf" type="button">PDF</button>
+      <button class="tt-btn ghost" id="btnDownloadJson" type="button">JSON</button>
     </div>
   </div>
 </div>
@@ -548,17 +1019,22 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 1fr 72px 1fr 1fr;directi
 <input type="file" id="importInput" accept="application/json" hidden>
 <div id="toast"></div>
 
+<!-- =============================================================
+     APP LOGIC
+     ============================================================= -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut,
          setPersistence, browserLocalPersistence }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, collection, doc, runTransaction, serverTimestamp,
-         Timestamp, enableIndexedDbPersistence, updateDoc, getDoc }
+         Timestamp, enableIndexedDbPersistence, updateDoc }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { getStorage, ref as storageRef, uploadBytes, getDownloadURL }
-  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+// حذفنا Firebase Storage من هنا لأننا سنستخدم Cloudinary
 
+/* ================================================================
+   FIREBASE
+   ================================================================ */
 const DEFAULT_CONFIG = {
   apiKey: "AIzaSyDHoeuyuIBt00rSWCyU9Vl_xGnWe2hLA7U",
   authDomain: "digital-stock-8bdff.firebaseapp.com",
@@ -567,29 +1043,33 @@ const DEFAULT_CONFIG = {
   messagingSenderId: "514830429461",
   appId: "1:514830429461:web:51bb22607b2a9782890d1c"
 };
-const fbConfig = JSON.parse(localStorage.getItem('ds.fbConfig')||'null') || DEFAULT_CONFIG;
+const fbConfig = JSON.parse(localStorage.getItem('ds.fbConfig') || 'null') || DEFAULT_CONFIG;
+
 const fbApp = initializeApp(fbConfig);
 const auth = getAuth(fbApp);
 const db = getFirestore(fbApp);
-const storage = getStorage(fbApp);
-enableIndexedDbPersistence(db).catch(()=>{});
+
+enableIndexedDbPersistence(db).catch(() => {});
 setPersistence(auth, browserLocalPersistence).catch(console.error);
 
-/* ==================== I18N ==================== */
+/* ================================================================
+   I18N
+   ================================================================ */
 const I18N = {
   ar: {
     'app.name':'Digital Stock','app.tagline':'نظام الإدارة والأمن الذكي',
     'login.email':'البريد الإلكتروني','login.password':'كلمة المرور',
     'login.submit':'تسجيل الدخول','login.loading':'جارٍ الدخول…',
-    'login.error':'بيانات خاطئة','login.required':'أدخل البريد وكلمة المرور',
+    'login.error':'بيانات خاطئة أو لا يوجد اتصال','login.required':'أدخل البريد وكلمة المرور',
     'status.online':'متصل','status.offline':'مفصول',
-    'tabs.warehouse':'خروج مخزن','tabs.bon':'إذن خروج','tabs.history':'السجل','tabs.profile':'الملف',
+    'tabs.warehouse':'خروج مخزن','tabs.bon':'إذن خروج',
+    'tabs.history':'السجل','tabs.profile':'الملف',
     'mod.warehouse.label':'خروج مخزن (WER)','mod.warehouse.title':'تقرير خروج المخزن',
-    'mod.warehouse.subtitle':'حركة داخلية','mod.warehouse.tag':'داخلي',
+    'mod.warehouse.subtitle':'حركة داخلية — بضاعة باقية في المنشأة','mod.warehouse.tag':'داخلي',
     'mod.warehouse.hint':'صرف بضاعة من الاقتصاد إلى قسم داخلي.',
     'mod.bon.label':'إذن خروج (BDS)','mod.bon.title':'إذن خروج نهائي',
-    'mod.bon.subtitle':'خروج نهائي','mod.bon.tag':'خارجي',
-    'mod.bon.hint':'الترخيص وتتبع البضاعة المغادرة.',
+    'mod.bon.subtitle':'خروج نهائي — بضاعة تغادر المنشأة','mod.bon.tag':'خارجي',
+    'mod.bon.hint':'الترخيص وتتبع البضاعة التي تغادر نهائياً.',
     'form.staff':'الموظف المستخرج *','form.staff.placeholder':'الاسم واللقب',
     'form.guardOverride':'تسجيل باسم حارس آخر','form.guardOverrideName':'اسم الحارس البديل *',
     'form.guardOverrideName.placeholder':'الاسم الكامل',
@@ -605,10 +1085,10 @@ const I18N = {
     'form.items.add':'+ إضافة صنف','form.photos':'الصور التوثيقية',
     'form.photos.hint':'حتى 5 صور. watermark تلقائي.',
     'form.photos.camera':'📷 كاميرا','form.photos.gallery':'🖼 معرض',
-    'form.signature':'التوقيع','form.signature.hint':'وقّع بإصبعك.',
+    'form.signature':'التوقيع (اختياري)','form.signature.hint':'وقّع بإصبعك أو بالفأرة.',
     'form.signature.manual':'يدوي','form.signature.clear':'مسح',
     'form.submit':'✓ اعتماد البطاقة','form.submit.loading':'جارٍ الحفظ…',
-    'form.reset':'إعادة','form.staff.required':'اسم الموظف مطلوب',
+    'form.reset':'إعادة تعيين','form.staff.required':'اسم الموظف مطلوب',
     'form.guard.required':'اسم الحارس مطلوب','form.items.required':'أضف صنفاً',
     'form.qty.required':'الكمية ناقصة','form.department.required':'القسم مطلوب',
     'form.destination.required':'جهة الوصول مطلوبة','form.reason.required':'السبب مطلوب',
@@ -617,21 +1097,17 @@ const I18N = {
     'history.title':'السجل','history.search':'🔍 بحث…',
     'history.filter.all':'الكل','history.filter.internal':'داخلي','history.filter.external':'خارجي',
     'history.export':'تصدير','history.import':'استيراد',
-    'history.empty':'لا توجد حركات.','history.empty.hint':'اعتمد معاملة.',
+    'history.empty':'لا توجد حركات.','history.empty.hint':'اعتمد معاملة لتظهر.',
     'history.noResults':'لا نتائج.','history.archived':'مؤرشف','history.unarchived':'غير مؤرشف',
     'history.purgeIn':'حذف في','history.hours':'س',
     'history.view':'عرض','history.share':'واتساب','history.pdf':'PDF','history.delete':'حذف',
-    'history.pdfGenerating':'جاري التوليد…','history.pdfReady':'تم','history.pdfError':'خطأ:',
+    'history.deleteConfirm':'حذف نهائي؟','history.deleted':'تم الحذف',
     'history.exported':'تم التصدير','history.imported':'تم الاستيراد',
     'history.noExport':'لا سجلات','history.importConfirm':'استيراد؟',
-    'history.importInvalid':'ملف غير صالح',
-    'history.sync':'مزامنة','history.syncing':'جارٍ المزامنة…',
-    'history.synced':'تمت المزامنة','history.syncError':'فشلت المزامنة',
-    'history.syncOffline':'غير متصل — سيتم لاحقاً',
-    'history.duplicate':'نسخ','history.duplicated':'تم النسخ للنموذج',
-    'card.title':'البطاقة','card.whatsapp':'واتساب','card.json':'تم',
-    'card.noActive':'لا بطاقة','card.genError':'تعذّر.',
-    'card.duplicate':'نسخ','card.sync':'مزامنة',
+    'history.importInvalid':'ملف غير صالح','history.pdfGenerating':'جاري التوليد…',
+    'history.pdfReady':'تم','history.pdfError':'خطأ:',
+    'card.title':'البطاقة','card.whatsapp':'واتساب','card.jpg':'تم','card.json':'تم',
+    'card.noActive':'لا بطاقة','card.generating':'جاري التوليد…','card.genError':'تعذّر.',
     'archive.running':'أرشفة…','archive.compiling':'PDF+JSON',
     'archive.cloud':'مؤرشف سحابياً','archive.local':'مؤرشف محلياً',
     'archive.autoPurge':'حذف','archive.hours':'س',
@@ -658,7 +1134,8 @@ const I18N = {
     'login.submit':'Se connecter','login.loading':'Connexion…',
     'login.error':'Identifiants invalides','login.required':'Entrez email et mot de passe',
     'status.online':'En ligne','status.offline':'Hors ligne',
-    'tabs.warehouse':'Sortie dépôt','tabs.bon':'Bon sortie','tabs.history':'Historique','tabs.profile':'Profil',
+    'tabs.warehouse':'Sortie dépôt','tabs.bon':'Bon sortie',
+    'tabs.history':'Historique','tabs.profile':'Profil',
     'mod.warehouse.label':'Sortie Économat','mod.warehouse.title':'RAPPORT SORTIE',
     'mod.warehouse.subtitle':'Mouvement interne','mod.warehouse.tag':'Interne',
     'mod.warehouse.hint':'Transférer des marchandises.',
@@ -671,12 +1148,14 @@ const I18N = {
     'form.department':'Département *','form.choose':'— Choisir —',
     'form.po':'Réf. BC','form.po.optional':'Optionnel',
     'form.destination':'Destination *','form.destination.placeholder':'Fournisseur…',
-    'form.reason':'Motif *','form.vehicle':'Véhicule','form.vehicle.placeholder':'Ex: Camion AB-123',
+    'form.reason':'Motif *','form.vehicle':'Véhicule',
+    'form.vehicle.placeholder':'Ex: Camion AB-123',
     'form.authorizedBy':'Autorisé par','form.authorizedBy.placeholder':'Responsable',
     'form.notes':'Observations','form.notes.placeholder':'Remarques…',
     'form.items':'Articles','form.items.detail':'Détail',
     'form.items.name':'Désignation','form.items.qty':'Qté','form.items.unit':'Unité',
-    'form.items.add':'+ Ajouter','form.photos':'Photos','form.photos.hint':'Jusqu\'à 5 photos.',
+    'form.items.add':'+ Ajouter','form.photos':'Photos',
+    'form.photos.hint':'Jusqu\'à 5 photos.',
     'form.photos.camera':'📷 Caméra','form.photos.gallery':'🖼 Galerie',
     'form.signature':'Signature','form.signature.hint':'Signez ci-dessous.',
     'form.signature.manual':'Manuscrite','form.signature.clear':'Effacer',
@@ -694,17 +1173,13 @@ const I18N = {
     'history.noResults':'Aucun résultat.','history.archived':'Archivé','history.unarchived':'Non archivé',
     'history.purgeIn':'Purge','history.hours':'h',
     'history.view':'Voir','history.share':'WhatsApp','history.pdf':'PDF','history.delete':'Suppr',
-    'history.pdfGenerating':'Génération…','history.pdfReady':'Prêt','history.pdfError':'Erreur:',
-    'history.exported':'Exporté','history.imported':'Importé',
+    'history.deleteConfirm':'Supprimer ?','history.deleted':'Supprimé',
+    'history.exported':'Exporté','history.imported':'Imported',
     'history.noExport':'Aucun','history.importConfirm':'Importer ?',
-    'history.importInvalid':'Fichier invalide',
-    'history.sync':'Synchroniser','history.syncing':'Synchronisation…',
-    'history.synced':'Synchronisé','history.syncError':'Échec sync',
-    'history.syncOffline':'Hors ligne — réessai',
-    'history.duplicate':'Dupliquer','history.duplicated':'Copié au formulaire',
-    'card.title':'Fiche','card.whatsapp':'WhatsApp','card.json':'OK',
-    'card.noActive':'Aucune','card.genError':'Erreur.',
-    'card.duplicate':'Dupliquer','card.sync':'Sync',
+    'history.importInvalid':'Fichier invalide','history.pdfGenerating':'Génération…',
+    'history.pdfReady':'Prêt','history.pdfError':'Erreur:',
+    'card.title':'Fiche','card.whatsapp':'WhatsApp','card.jpg':'OK','card.json':'OK',
+    'card.noActive':'Aucune','card.generating':'Génération…','card.genError':'Erreur.',
     'archive.running':'Archivage…','archive.compiling':'PDF+JSON',
     'archive.cloud':'Archivé cloud','archive.local':'Archivé local',
     'archive.autoPurge':'Purge','archive.hours':'h',
@@ -731,7 +1206,8 @@ const I18N = {
     'login.submit':'Sign in','login.loading':'Signing in…',
     'login.error':'Invalid credentials','login.required':'Enter email and password',
     'status.online':'Online','status.offline':'Offline',
-    'tabs.warehouse':'Warehouse','tabs.bon':'Exit voucher','tabs.history':'History','tabs.profile':'Profile',
+    'tabs.warehouse':'Warehouse','tabs.bon':'Exit voucher',
+    'tabs.history':'History','tabs.profile':'Profile',
     'mod.warehouse.label':'Warehouse Exit','mod.warehouse.title':'WAREHOUSE EXIT',
     'mod.warehouse.subtitle':'Internal movement','mod.warehouse.tag':'Internal',
     'mod.warehouse.hint':'Transfer goods from economat.',
@@ -744,12 +1220,14 @@ const I18N = {
     'form.department':'Department *','form.choose':'— Choose —',
     'form.po':'PO ref.','form.po.optional':'Optional',
     'form.destination':'Destination *','form.destination.placeholder':'Supplier…',
-    'form.reason':'Reason *','form.vehicle':'Vehicle','form.vehicle.placeholder':'Ex: Truck AB-123',
+    'form.reason':'Reason *','form.vehicle':'Vehicle',
+    'form.vehicle.placeholder':'Ex: Truck AB-123',
     'form.authorizedBy':'Authorized by','form.authorizedBy.placeholder':'Name',
     'form.notes':'Notes','form.notes.placeholder':'Remarks…',
     'form.items':'Items','form.items.detail':'Details',
     'form.items.name':'Name','form.items.qty':'Qty','form.items.unit':'Unit',
-    'form.items.add':'+ Add item','form.photos':'Photos','form.photos.hint':'Up to 5 photos.',
+    'form.items.add':'+ Add item','form.photos':'Photos',
+    'form.photos.hint':'Up to 5 photos.',
     'form.photos.camera':'📷 Camera','form.photos.gallery':'🖼 Gallery',
     'form.signature':'Signature','form.signature.hint':'Sign below.',
     'form.signature.manual':'Handwritten','form.signature.clear':'Clear',
@@ -767,17 +1245,13 @@ const I18N = {
     'history.noResults':'No results.','history.archived':'Archived','history.unarchived':'Not archived',
     'history.purgeIn':'Purge','history.hours':'h',
     'history.view':'View','history.share':'WhatsApp','history.pdf':'PDF','history.delete':'Delete',
-    'history.pdfGenerating':'Generating…','history.pdfReady':'Ready','history.pdfError':'Error:',
+    'history.deleteConfirm':'Delete?','history.deleted':'Deleted',
     'history.exported':'Exported','history.imported':'Imported',
     'history.noExport':'None','history.importConfirm':'Import?',
-    'history.importInvalid':'Invalid file',
-    'history.sync':'Sync','history.syncing':'Syncing…',
-    'history.synced':'Synced','history.syncError':'Sync failed',
-    'history.syncOffline':'Offline — will retry',
-    'history.duplicate':'Duplicate','history.duplicated':'Copied to form',
-    'card.title':'Card','card.whatsapp':'WhatsApp','card.json':'OK',
-    'card.noActive':'None','card.genError':'Error.',
-    'card.duplicate':'Duplicate','card.sync':'Sync',
+    'history.importInvalid':'Invalid file','history.pdfGenerating':'Generating…',
+    'history.pdfReady':'Ready','history.pdfError':'Error:',
+    'card.title':'Card','card.whatsapp':'WhatsApp','card.jpg':'OK','card.json':'OK',
+    'card.noActive':'None','card.generating':'Generating…','card.genError':'Error.',
     'archive.running':'Archiving…','archive.compiling':'PDF+JSON',
     'archive.cloud':'Archived cloud','archive.local':'Archived local',
     'archive.autoPurge':'Purge','archive.hours':'h',
@@ -799,22 +1273,28 @@ const I18N = {
     'units.carton':'Carton','units.box':'Box','units.bag':'Bag','units.palette':'Pallet'
   }
 };
-let currentLang = localStorage.getItem('ds.lang')||'ar';
+
+let currentLang = localStorage.getItem('ds.lang') || 'ar';
 const t = k => (I18N[currentLang] && I18N[currentLang][k]) || I18N.ar[k] || k;
 
-/* ==================== CONSTANTS ==================== */
-const STORE_KEY = 'ds.transactions.v6';
-const QUEUE_KEY = 'ds.queue.v6';
-const COUNTER_KEY = 'ds.counters.v6';
-const SET_KEY = 'ds.settings.v6';
+/* ================================================================
+   CONSTANTS & STATE
+   ================================================================ */
+const STORE_KEY = 'ds.transactions.v5';
+const QUEUE_KEY = 'ds.queue.v5';
+const COUNTER_KEY = 'ds.counters.v5';
+const SET_KEY = 'ds.settings.v5';
 const MAX_PHOTOS = 5;
-const RETENTION_MS = 48*3600*1000;
+const RETENTION_MS = 48 * 3600 * 1000;
+
 const MODULE_DEF = {
   warehouse: { key:'warehouse', accent:'#25F4EE', prefix:'WER' },
   bon:       { key:'bon',       accent:'#FE2C55', prefix:'BDS' }
 };
+
 const UNITS_KEYS = ['units.u','units.kg','units.g','units.l','units.cl',
                     'units.carton','units.box','units.bag','units.palette'];
+
 const drafts = { warehouse: [], bon: [] };
 const signatures = { warehouse: null, bon: null };
 let settings = { hotel: 'Les Oliviers Palace', phone: '' };
@@ -827,15 +1307,19 @@ let historyQuery = '';
 let firebaseReady = false;
 let uiReady = false;
 
-/* ==================== HELPERS ==================== */
-const $ = (s,r=document)=>r.querySelector(s);
-const $$ = (s,r=document)=>[...r.querySelectorAll(s)];
-const esc = s => String(s??'').replace(/[&<>"']/g,
-  c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const locale = () => currentLang==='ar'?'ar-EG':currentLang==='fr'?'fr-FR':'en-US';
+/* ================================================================
+   HELPERS
+   ================================================================ */
+const $  = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g,
+  c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+const locale = () => currentLang === 'ar' ? 'ar-EG' : currentLang === 'fr' ? 'fr-FR' : 'en-US';
 const fmtDate = d => new Date(d).toLocaleDateString(locale());
 const fmtTime = d => new Date(d).toLocaleTimeString(locale(),{hour:'2-digit',minute:'2-digit'});
 const fmtDateTime = d => `${fmtDate(d)} • ${fmtTime(d)}`;
+
 function toast(msg, ms=2800){
   const el = document.getElementById('toast');
   el.textContent = msg;
@@ -843,30 +1327,39 @@ function toast(msg, ms=2800){
   clearTimeout(toast._t);
   toast._t = setTimeout(()=>el.classList.remove('show'), ms);
 }
+
 const shade = (hex,pct) => {
   const n = parseInt(hex.slice(1),16);
   const cl = v => Math.max(0,Math.min(255,Math.round(v)));
   return `rgb(${cl(((n>>16)&255)*(1+pct/100))},${cl(((n>>8)&255)*(1+pct/100))},${cl((n&255)*(1+pct/100))})`;
 };
+
 const dataURLtoBlob = dataURL => {
   const [h,b] = dataURL.split(',');
   const mime = h.match(/:(.*?);/)[1];
   const bin = atob(b);
   const arr = new Uint8Array(bin.length);
-  for(let i=0;i<bin.length;i++) arr[i] = bin.charCodeAt(i);
+  for (let i=0;i<bin.length;i++) arr[i] = bin.charCodeAt(i);
   return new Blob([arr],{type:mime});
 };
 
-/* ==================== STORAGE ==================== */
+/* ================================================================
+   STORAGE
+   ================================================================ */
 const loadAll = () => { try { return JSON.parse(localStorage.getItem(STORE_KEY))||[]; } catch { return []; } };
-const saveAll = l => { try { localStorage.setItem(STORE_KEY, JSON.stringify(l)); } catch { alert('Storage full'); } };
+const saveAll = list => {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(list)); }
+  catch { alert('Storage full'); }
+};
 const loadSettings = () => {
-  try { const s = JSON.parse(localStorage.getItem(SET_KEY)); if(s) settings = {...settings,...s}; } catch {}
+  try { const s = JSON.parse(localStorage.getItem(SET_KEY)); if (s) settings = {...settings,...s}; } catch {}
 };
 const saveSettings = () => localStorage.setItem(SET_KEY, JSON.stringify(settings));
 
-/* ==================== INDEXEDDB ==================== */
-const DB_NAME='ds.archive.v6', DB_VERSION=1;
+/* ================================================================
+   INDEXEDDB
+   ================================================================ */
+const DB_NAME='ds.archive.v5', DB_VERSION=1;
 let _db=null;
 function openArchive(){
   if(_db) return Promise.resolve(_db);
@@ -890,8 +1383,8 @@ const idbPut = async rec => {
   return new Promise((res,rej)=>{
     const tx = db.transaction('files','readwrite');
     tx.objectStore('files').put(rec);
-    tx.oncomplete = ()=>res();
-    tx.onerror = ()=>rej(tx.error);
+    tx.oncomplete = () => res();
+    tx.onerror = () => rej(tx.error);
   });
 };
 const idbGet = async key => {
@@ -899,8 +1392,8 @@ const idbGet = async key => {
   return new Promise((res,rej)=>{
     const tx = db.transaction('files','readonly');
     const r = tx.objectStore('files').get(key);
-    r.onsuccess = ()=>res(r.result||null);
-    r.onerror = ()=>rej(r.error);
+    r.onsuccess = () => res(r.result||null);
+    r.onerror = () => rej(r.error);
   });
 };
 const idbDeleteByRef = async ref => {
@@ -910,8 +1403,8 @@ const idbDeleteByRef = async ref => {
     const idx = tx.objectStore('files').index('ref');
     const r = idx.openCursor(IDBKeyRange.only(ref));
     r.onsuccess = e => { const c=e.target.result; if(!c) return; c.delete(); c.continue(); };
-    tx.oncomplete = ()=>res();
-    tx.onerror = ()=>rej(tx.error);
+    tx.oncomplete = () => res();
+    tx.onerror = () => rej(tx.error);
   });
 };
 const idbDeleteByTxId = async txId => {
@@ -921,8 +1414,8 @@ const idbDeleteByTxId = async txId => {
     const idx = tx.objectStore('files').index('txId');
     const r = idx.openCursor(IDBKeyRange.only(txId));
     r.onsuccess = e => { const c=e.target.result; if(!c) return; c.delete(); c.continue(); };
-    tx.oncomplete = ()=>res();
-    tx.onerror = ()=>rej(tx.error);
+    tx.oncomplete = () => res();
+    tx.onerror = () => rej(tx.error);
   });
 };
 const idbPurgeExpired = async () => {
@@ -933,13 +1426,13 @@ const idbPurgeExpired = async () => {
     const r = idx.openCursor(IDBKeyRange.upperBound(new Date().toISOString()));
     let n=0;
     r.onsuccess = e => { const c=e.target.result; if(!c) return; c.delete(); n++; c.continue(); };
-    tx.oncomplete = ()=>res(n);
-    tx.onerror = ()=>rej(tx.error);
+    tx.oncomplete = () => res(n);
+    tx.onerror = () => rej(tx.error);
   });
 };
 const idbSizeEstimate = async () => {
   try {
-    if(navigator.storage && navigator.storage.estimate){
+    if (navigator.storage && navigator.storage.estimate){
       const {usage,quota} = await navigator.storage.estimate();
       return `${(usage/1024/1024).toFixed(1)} MB / ${(quota/1024/1024).toFixed(0)} MB`;
     }
@@ -947,7 +1440,9 @@ const idbSizeEstimate = async () => {
   return '—';
 };
 
-/* ==================== COUNTERS & COMMIT ==================== */
+/* ================================================================
+   COUNTERS & COMMIT
+   ================================================================ */
 const localNextSeq = (prefix, dateKey) => {
   const c = JSON.parse(localStorage.getItem(COUNTER_KEY)||'{}');
   const id = `${prefix}_${dateKey}`;
@@ -956,27 +1451,35 @@ const localNextSeq = (prefix, dateKey) => {
   localStorage.setItem(COUNTER_KEY, JSON.stringify(c));
   return next;
 };
-const formatRef = (p,d,s) => `${p}-${d}-${String(s).padStart(4,'0')}`;
+const formatRef = (prefix,dateKey,seq) => `${prefix}-${dateKey}-${String(seq).padStart(4,'0')}`;
+
 async function commitTransaction(payload){
   const prefix = MODULE_DEF[payload.module].prefix;
   const dateKey = new Date().toISOString().slice(0,10).replace(/-/g,'');
-  if(firebaseReady){
-    const cRef = doc(db,'counters',`${prefix}_${dateKey}`);
-    const tRef = doc(collection(db,'transactions'));
+  if (firebaseReady){
+    const counterRef = doc(db,'counters',`${prefix}_${dateKey}`);
+    const txRef = doc(collection(db,'transactions'));
     let assignedRef=null;
     await runTransaction(db, async trx => {
-      const snap = await trx.get(cRef);
+      const snap = await trx.get(counterRef);
       let nextSeq;
-      if(!snap.exists()){ nextSeq=1; trx.set(cRef,{prefix,dateKey,seq:1,updatedAt:serverTimestamp()}); }
-      else { nextSeq = (snap.data().seq||0)+1; trx.update(cRef,{seq:nextSeq,updatedAt:serverTimestamp()}); }
+      if(!snap.exists()){
+        nextSeq = 1;
+        trx.set(counterRef,{prefix,dateKey,seq:1,updatedAt:serverTimestamp()});
+      } else {
+        nextSeq = (snap.data().seq||0)+1;
+        trx.update(counterRef,{seq:nextSeq,updatedAt:serverTimestamp()});
+      }
       assignedRef = formatRef(prefix,dateKey,nextSeq);
-      trx.set(tRef,{...payload, ref:assignedRef,
+      trx.set(txRef,{
+        ...payload, ref:assignedRef,
         createdAt:serverTimestamp(),
         expireAt:Timestamp.fromMillis(Date.now()+RETENTION_MS),
         archived:false, archiveUrls:null, archivedAt:null,
-        createdBy:auth.currentUser?.uid||null});
+        createdBy: auth.currentUser?.uid||null
+      });
     });
-    return { id:tRef.id, ref:assignedRef };
+    return { id: txRef.id, ref: assignedRef };
   }
   const seq = localNextSeq(prefix,dateKey);
   const ref = formatRef(prefix,dateKey,seq);
@@ -984,7 +1487,13 @@ async function commitTransaction(payload){
   return { id, ref };
 }
 
-/* ==================== PHOTOS ==================== */
+/* ================================================================
+   PHOTOS ( CLOUDINARY UPLOAD LOGIC )
+   ================================================================ */
+const CLOUDINARY_UPLOAD_PRESET = "digital_stock";
+const CLOUDINARY_CLOUD_NAME = "w1gyqrdx";
+const CLOUDINARY_API_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
+
 function compressImage(file, maxDim=1100, quality=0.78){
   return new Promise((res,rej)=>{
     const img = new Image();
@@ -1014,21 +1523,35 @@ async function savePhotosLocal(txId, items){
   }
   return refs;
 }
-async function savePhotosFirebase(txId, items){
+async function savePhotosCloudinary(txId, items){
+  if (!items.length) return [];
+  const urls = [];
   const dateKey = new Date().toISOString().slice(0,10);
-  const urls=[];
-  for(let i=0;i<items.length;i++){
-    const path = `exits/${dateKey}/${txId}/${String(i+1).padStart(2,'0')}.jpg`;
-    const r = storageRef(storage, path);
-    await uploadBytes(r, items[i].blob, {contentType:'image/jpeg',cacheControl:'public,max-age=31536000'});
-    urls.push(await getDownloadURL(r));
+
+  for (let i = 0; i < items.length; i++) {
+    try {
+      const formData = new FormData();
+      formData.append("file", items[i].blob);
+      formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+      formData.append("folder", `digital_stock/${dateKey}/${txId}`);
+
+      const response = await fetch(CLOUDINARY_API_URL, {
+        method: "POST",
+        body: formData
+      });
+      const data = await response.json();
+      if (data.secure_url) urls.push(data.secure_url);
+      else throw new Error("Cloudinary error");
+    } catch (err) {
+      console.error(err);
+    }
   }
   return urls;
 }
 const _urlCache = new Map();
 async function photoRefToURL(ref){
   if(!ref) return null;
-  if(ref.startsWith('http')) return ref;
+  if(ref.startsWith('http')) return ref; // Already a Cloudinary URL
   if(_urlCache.has(ref)) return _urlCache.get(ref);
   const rec = await idbGet(ref);
   if(!rec || !rec.blob) return null;
@@ -1037,7 +1560,9 @@ async function photoRefToURL(ref){
   return url;
 }
 
-/* ==================== OFFLINE QUEUE ==================== */
+/* ================================================================
+   OFFLINE QUEUE
+   ================================================================ */
 function queueOffline(payload, moduleKey, items){
   const q = JSON.parse(localStorage.getItem(QUEUE_KEY)||'[]');
   const jobId = (crypto.randomUUID && crypto.randomUUID()) || String(Date.now());
@@ -1069,7 +1594,7 @@ async function flushOfflineQueue(){
         if(rec && rec.blob) items.push({blob:rec.blob});
       }
       const tempId = (crypto.randomUUID && crypto.randomUUID()) || String(Date.now());
-      const refs = await savePhotosFirebase(tempId, items);
+      const refs = await savePhotosCloudinary(tempId, items);
       const {id, ref} = await commitTransaction({...job.payload, photos:refs});
       const all = loadAll();
       all.unshift({id, ref, ...job.payload, photos:refs,
@@ -1083,7 +1608,9 @@ async function flushOfflineQueue(){
   if(synced){ renderHistory(); renderProfile(); renderHistoryBanner(); }
 }
 
-/* ==================== DROPDOWNS ==================== */
+/* ================================================================
+   DROPDOWN DATA
+   ================================================================ */
 const departments = () => currentLang==='ar'
   ? ['المطبخ','المطعم / F&B','التدبير الفندقي','الصيانة','الاستقبال','Spa','الإدارة','أخرى']
   : currentLang==='fr'
@@ -1095,7 +1622,9 @@ const reasons = () => currentLang==='ar'
   ? ['Retour fournisseur','Prêt / Réparation','Don','Vente / Rebut','Déchets','Transfert site','Autre']
   : ['Supplier return','Loan / Repair','Donation','Sale / Scrap','Waste','Site transfer','Other'];
 
-/* ==================== FORM BUILDERS ==================== */
+/* ================================================================
+   FORM BUILDERS
+   ================================================================ */
 function itemRowHtml(){
   return `<div class="tt-item-row">
     <input class="tt-input i-name" placeholder="${t('form.items.name')}">
@@ -1104,32 +1633,46 @@ function itemRowHtml(){
     <button type="button" class="tt-iconbtn del" style="width:36px;height:36px;font-size:14px">✕</button>
   </div>`;
 }
+
 function moduleExtraHtml(key){
   if(key==='warehouse'){
     return `<div class="tt-grid2">
-      <label class="tt-label"><span>${t('form.department')}</span>
+      <label class="tt-label">
+        <span>${t('form.department')}</span>
         <select name="department" required>
           <option value="">${t('common.choose')}</option>
           ${departments().map(d=>`<option>${esc(d)}</option>`).join('')}
-        </select></label>
-      <label class="tt-label"><span>${t('form.po')}</span>
-        <input name="po" placeholder="${t('form.po.optional')}"></label>
+        </select>
+      </label>
+      <label class="tt-label">
+        <span>${t('form.po')}</span>
+        <input name="po" placeholder="${t('form.po.optional')}">
+      </label>
     </div>`;
   }
   return `<div class="tt-grid2">
-    <label class="tt-label"><span>${t('form.destination')}</span>
-      <input name="destination" required placeholder="${t('form.destination.placeholder')}"></label>
-    <label class="tt-label"><span>${t('form.reason')}</span>
+    <label class="tt-label">
+      <span>${t('form.destination')}</span>
+      <input name="destination" required placeholder="${t('form.destination.placeholder')}">
+    </label>
+    <label class="tt-label">
+      <span>${t('form.reason')}</span>
       <select name="reason" required>
         <option value="">${t('common.choose')}</option>
         ${reasons().map(r=>`<option>${esc(r)}</option>`).join('')}
-      </select></label>
-    <label class="tt-label"><span>${t('form.vehicle')}</span>
-      <input name="vehicle" placeholder="${t('form.vehicle.placeholder')}"></label>
-    <label class="tt-label"><span>${t('form.authorizedBy')}</span>
-      <input name="authorizedBy" placeholder="${t('form.authorizedBy.placeholder')}"></label>
+      </select>
+    </label>
+    <label class="tt-label">
+      <span>${t('form.vehicle')}</span>
+      <input name="vehicle" placeholder="${t('form.vehicle.placeholder')}">
+    </label>
+    <label class="tt-label">
+      <span>${t('form.authorizedBy')}</span>
+      <input name="authorizedBy" placeholder="${t('form.authorizedBy.placeholder')}">
+    </label>
   </div>`;
 }
+
 function formHtml(key){
   const a = MODULE_DEF[key].accent;
   return `
@@ -1141,8 +1684,10 @@ function formHtml(key){
         <span class="tt-pill acc">${t('mod.'+key+'.tag')}</span>
       </div>
       <p class="tt-hint">${t('mod.'+key+'.hint')}</p>
-      <label class="tt-label"><span>${t('form.staff')}</span>
-        <input name="staff" required placeholder="${t('form.staff.placeholder')}" list="dl-staff"></label>
+      <label class="tt-label">
+        <span>${t('form.staff')}</span>
+        <input name="staff" required placeholder="${t('form.staff.placeholder')}" list="dl-staff">
+      </label>
       <label class="tt-check">
         <input type="checkbox" data-guard-override>
         <span>${t('form.guardOverride')}</span>
@@ -1157,6 +1702,7 @@ function formHtml(key){
         <textarea name="notes" rows="2" placeholder="${t('form.notes.placeholder')}"></textarea>
       </label>
     </div>
+
     <div class="tt-card" style="--c:${a}">
       <div class="tt-card-head">
         <span class="tt-bullet"></span>
@@ -1166,13 +1712,15 @@ function formHtml(key){
       <div class="tt-items-head">
         <span>${t('form.items.name')}</span>
         <span style="text-align:center">${t('form.items.qty')}</span>
-        <span>${t('form.items.unit')}</span><span></span>
+        <span>${t('form.items.unit')}</span>
+        <span></span>
       </div>
       <div id="items-${key}"></div>
       <button type="button" class="tt-btn ghost sm" data-add-item="${key}" style="width:100%;margin-top:10px">
         ${t('form.items.add')}
       </button>
     </div>
+
     <div class="tt-card" style="--c:${a}">
       <div class="tt-card-head">
         <span class="tt-bullet"></span>
@@ -1186,6 +1734,7 @@ function formHtml(key){
         <button type="button" class="tt-btn ghost sm" data-gal="${key}">${t('form.photos.gallery')}</button>
       </div>
     </div>
+
     <div class="tt-card" style="--c:${a}">
       <div class="tt-card-head">
         <span class="tt-bullet"></span>
@@ -1198,15 +1747,19 @@ function formHtml(key){
         <button type="button" class="tt-sig-clear" data-sig-clear="${key}">${t('form.signature.clear')}</button>
       </div>
     </div>
+
     <div class="tt-submit-bar" style="--c:${a}">
       <button type="submit" class="tt-btn primary">${t('form.submit')}</button>
       <button type="reset" class="tt-btn ghost">${t('form.reset')}</button>
     </div>
+
     <datalist id="dl-staff"></datalist>
   </form>`;
 }
 
-/* ==================== RENDER FORMS ==================== */
+/* ================================================================
+   RENDER FORMS
+   ================================================================ */
 function renderForms(){
   ['warehouse','bon'].forEach(key=>{
     const host = document.getElementById('view-'+key);
@@ -1236,7 +1789,10 @@ function renderForms(){
         if(f) f.style.display = e.target.checked ? 'flex' : 'none';
       }
     });
-    host.addEventListener('submit', e => { e.preventDefault(); handleSubmit(key); });
+    host.addEventListener('submit', e => {
+      e.preventDefault();
+      handleSubmit(key);
+    });
     host.addEventListener('reset', ()=>{
       setTimeout(()=>{
         drafts[key].forEach(p=>{try{URL.revokeObjectURL(p.url);}catch{}});
@@ -1256,6 +1812,7 @@ function renderForms(){
   });
   refreshDatalists();
 }
+
 function addItemRow(key){
   const wrap = document.getElementById('items-'+key);
   if(!wrap) return;
@@ -1270,36 +1827,43 @@ function removeItemRow(btn){
   if(!wrap.children.length) addItemRow(wrap.id.replace('items-',''));
 }
 
-/* ==================== SIGNATURE ==================== */
+/* ================================================================
+   SIGNATURE
+   ================================================================ */
 function initSignature(key){
   const cv = document.getElementById('sig-'+key);
   if(!cv || cv._init) return;
   cv._init = true;
   const ctx = cv.getContext('2d');
   let drawing = false;
+
   const resize = () => {
     const rect = cv.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
     cv.width = rect.width * dpr;
     cv.height = rect.height * dpr;
     ctx.setTransform(dpr,0,0,dpr,0,0);
-    ctx.lineWidth = 2.5; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
     ctx.strokeStyle = '#0f172a';
   };
   resize();
   window.addEventListener('resize', ()=>{
     const sig = signatures[key];
     resize();
-    if(sig){ const i = new Image(); i.onload=()=>ctx.drawImage(i,0,0,cv.width,cv.height); i.src = sig; }
+    if(sig){ const i = new Image(); i.onload = ()=>ctx.drawImage(i,0,0,cv.width,cv.height); i.src = sig; }
   });
+
   const pos = e => {
     const r = cv.getBoundingClientRect();
     const p = e.touches ? e.touches[0] : e;
     return { x: p.clientX - r.left, y: p.clientY - r.top };
   };
-  const start = e => { e.preventDefault(); drawing=true; const {x,y}=pos(e); ctx.beginPath(); ctx.moveTo(x,y); };
-  const move = e => { if(!drawing) return; e.preventDefault(); const {x,y}=pos(e); ctx.lineTo(x,y); ctx.stroke(); };
-  const end = () => { if(!drawing) return; drawing=false; try { signatures[key] = cv.toDataURL('image/png'); } catch {} };
+  const start = e => { e.preventDefault(); drawing = true; const {x,y} = pos(e); ctx.beginPath(); ctx.moveTo(x,y); };
+  const move = e => { if(!drawing) return; e.preventDefault(); const {x,y} = pos(e); ctx.lineTo(x,y); ctx.stroke(); };
+  const end = () => { if(!drawing) return; drawing = false; try { signatures[key] = cv.toDataURL('image/png'); } catch {} };
+
   cv.addEventListener('mousedown', start);
   cv.addEventListener('mousemove', move);
   cv.addEventListener('mouseup', end);
@@ -1308,6 +1872,7 @@ function initSignature(key){
   cv.addEventListener('touchmove', move, {passive:false});
   cv.addEventListener('touchend', end);
 }
+
 function clearSignature(key){
   const cv = document.getElementById('sig-'+key);
   if(!cv) return;
@@ -1315,7 +1880,9 @@ function clearSignature(key){
   signatures[key] = null;
 }
 
-/* ==================== PHOTOS ==================== */
+/* ================================================================
+   PHOTOS
+   ================================================================ */
 function openPicker(key, useCamera){
   if(drafts[key].length >= MAX_PHOTOS) return toast(t('form.maxPhotos'));
   const input = document.getElementById('fileInput');
@@ -1332,6 +1899,7 @@ function openPicker(key, useCamera){
   };
   input.click();
 }
+
 function renderPhotos(key){
   const grid = document.getElementById('pg-'+key);
   if(!grid) return;
@@ -1351,6 +1919,7 @@ function renderPhotos(key){
     renderPhotos(key);
   };
 }
+
 function refreshDatalists(){
   const all = loadAll();
   const staff = [...new Set(all.map(x=>x.staff).filter(Boolean))];
@@ -1359,7 +1928,9 @@ function refreshDatalists(){
   });
 }
 
-/* ==================== CARD GENERATION ==================== */
+/* ================================================================
+   CARD GENERATION
+   ================================================================ */
 const rr = (ctx,x,y,w,h,r) => {
   r = Math.min(r,w/2,h/2);
   ctx.beginPath();
@@ -1371,8 +1942,11 @@ const rr = (ctx,x,y,w,h,r) => {
   ctx.closePath();
 };
 const loadImg = src => new Promise((res,rej)=>{
-  const i = new Image(); i.crossOrigin='anonymous';
-  i.onload = ()=>res(i); i.onerror = ()=>rej(new Error('img')); i.src = src;
+  const i = new Image();
+  i.crossOrigin = 'anonymous';
+  i.onload = ()=>res(i);
+  i.onerror = ()=>rej(new Error('img'));
+  i.src = src;
 });
 function wrapText(ctx, text, maxW){
   const words = String(text).split(/\s+/);
@@ -1385,26 +1959,32 @@ function wrapText(ctx, text, maxW){
   if(cur) lines.push(cur);
   return lines.length ? lines : [''];
 }
+
 async function generateCard(tx){
   const W = 1080, PAD = 52, CW = W - PAD*2;
   const accent = MODULE_DEF[tx.module].accent;
   const rtl = currentLang === 'ar';
+
   const cv = document.createElement('canvas');
   cv.width = W; cv.height = 5400;
   const ctx = cv.getContext('2d');
   const F = (w,s)=>`${w} ${s}px "Cairo", -apple-system, Roboto, sans-serif`;
   ctx.textBaseline = 'alphabetic';
   ctx.direction = rtl ? 'rtl' : 'ltr';
+
   ctx.fillStyle = '#fff'; ctx.fillRect(0,0,W,cv.height);
+
   let y = 0;
   const HEAD = 200;
   const grad = ctx.createLinearGradient(0,0,W,HEAD);
   grad.addColorStop(0, accent);
   grad.addColorStop(1, shade(accent,-22));
   ctx.fillStyle = grad; ctx.fillRect(0,0,W,HEAD);
+
   const alignText = rtl ? 'right' : 'left';
   const alignX = rtl ? W-PAD : PAD;
   const dirInv = rtl ? 1 : -1;
+
   ctx.textAlign = alignText;
   ctx.fillStyle = 'rgba(255,255,255,.85)'; ctx.font = F(600,26);
   ctx.fillText(settings.hotel||'', alignX, 64);
@@ -1412,11 +1992,13 @@ async function generateCard(tx){
   ctx.fillText(t('mod.'+tx.module+'.title'), alignX, 126);
   ctx.font = F(500,24); ctx.fillStyle = 'rgba(255,255,255,.86)';
   ctx.fillText(t('mod.'+tx.module+'.subtitle'), alignX, 168);
+
   y = HEAD;
   const STRIP = 92;
   ctx.fillStyle = '#f7f9fc'; ctx.fillRect(0,y,W,STRIP);
   ctx.strokeStyle = '#e3e8ef'; ctx.lineWidth = 1;
   ctx.beginPath(); ctx.moveTo(0,y+STRIP+.5); ctx.lineTo(W,y+STRIP+.5); ctx.stroke();
+
   const cells = [
     [currentLang==='ar'?'الرقم المرجعي':currentLang==='fr'?'RÉFÉRENCE':'REFERENCE', tx.ref],
     [currentLang==='ar'?'التاريخ':currentLang==='fr'?'DATE':'DATE', fmtDate(tx.createdAt)],
@@ -1432,13 +2014,15 @@ async function generateCard(tx){
     ctx.fillText(val, x, y+72);
   });
   y += STRIP;
+
   const sectionTitle = text => {
     y += 46;
     const bx = rtl ? W-PAD-5 : PAD;
     ctx.fillStyle = accent; ctx.fillRect(bx, y-22, 5, 26);
     ctx.fillStyle = '#0f172a'; ctx.font = F(800,25);
     ctx.textAlign = alignText;
-    ctx.fillText(text, rtl ? W-PAD-18 : PAD+18, y);
+    const tx2 = rtl ? W-PAD-18 : PAD+18;
+    ctx.fillText(text, tx2, y);
     y += 22;
   };
   const infoBoxes = pairs => {
@@ -1463,12 +2047,14 @@ async function generateCard(tx){
     }
     y -= gap;
   };
+
   sectionTitle(currentLang==='ar'?'الأفراد':currentLang==='fr'?'PERSONNEL':'PERSONNEL');
   y += 14;
   infoBoxes([
     [currentLang==='ar'?'حارس الأمن':currentLang==='fr'?'Agent sécurité':'Security guard', tx.guard],
     [currentLang==='ar'?'الموظف':currentLang==='fr'?'Personnel':'Staff', tx.staff]
   ]);
+
   sectionTitle(currentLang==='ar'?'تفاصيل الحركة':currentLang==='fr'?'DÉTAILS':'DETAILS');
   y += 14;
   const details = [];
@@ -1482,6 +2068,7 @@ async function generateCard(tx){
     if(tx.authorizedBy) details.push([t('form.authorizedBy'), tx.authorizedBy]);
   }
   infoBoxes(details);
+
   sectionTitle((currentLang==='ar'?'الأصناف':currentLang==='fr'?'ARTICLES':'ITEMS')+` (${tx.items.length})`);
   y += 14;
   const ROW_H = 54, colQty = 150, colUnit = 150;
@@ -1508,6 +2095,7 @@ async function generateCard(tx){
     ctx.fillText(it.unit, rtl ? PAD+colUnit : W-PAD-18, y+35);
     y += ROW_H;
   });
+
   if(tx.notes){
     sectionTitle(currentLang==='ar'?'ملاحظات':currentLang==='fr'?'NOTES':'NOTES');
     y += 16;
@@ -1519,6 +2107,7 @@ async function generateCard(tx){
       y += 36;
     });
   }
+
   if(tx.photos && tx.photos.length){
     sectionTitle((currentLang==='ar'?'الصور':currentLang==='fr'?'PHOTOS':'PHOTOS')+` (${tx.photos.length})`);
     y += 18;
@@ -1555,13 +2144,15 @@ async function generateCard(tx){
     const rows = Math.ceil(imgs.length/COLS);
     y += rows*cellH + Math.max(0, rows-1)*GAP;
   }
+
   y += 64;
   const sigW = (CW-60)/2;
   const sigH = 100;
   const sigKeys = ['guardSignature','staffSignature'];
   const sigLabels = currentLang==='ar'
     ? ['توقيع الحارس','توقيع الموظف']
-    : currentLang==='fr' ? ['Signature — Agent','Signature — Personnel']
+    : currentLang==='fr'
+    ? ['Signature — Agent','Signature — Personnel']
     : ['Signature — Guard','Signature — Staff'];
   for(let i=0;i<2;i++){
     const x = rtl ? W-PAD-(i+1)*sigW - i*60 : PAD + i*(sigW+60);
@@ -1573,6 +2164,7 @@ async function generateCard(tx){
     ctx.textAlign = 'center';
     ctx.fillText(sigLabels[i], x+sigW/2, y+30);
   }
+
   y += 78;
   ctx.strokeStyle = '#e3e8ef'; ctx.lineWidth = 1;
   ctx.beginPath(); ctx.moveTo(PAD, y+.5); ctx.lineTo(PAD+CW, y+.5); ctx.stroke();
@@ -1580,6 +2172,7 @@ async function generateCard(tx){
   ctx.fillStyle = '#94a3b8'; ctx.font = F(500,18);
   ctx.textAlign = 'center';
   ctx.fillText(`• ${settings.hotel} • ${fmtDateTime(new Date())} •`, W/2, y);
+
   const finalH = y + PAD;
   const out = document.createElement('canvas');
   out.width = W; out.height = finalH;
@@ -1589,7 +2182,9 @@ async function generateCard(tx){
   return out.toDataURL('image/jpeg', 0.92);
 }
 
-/* ==================== PDF / JSON ==================== */
+/* ================================================================
+   PDF / JSON
+   ================================================================ */
 async function buildPdfBlob(tx, cardDataUrl){
   if(!window.jspdf || !window.jspdf.jsPDF) throw new Error('jsPDF not loaded');
   const dataUrl = cardDataUrl || await generateCard(tx);
@@ -1603,12 +2198,14 @@ async function buildPdfBlob(tx, cardDataUrl){
   const ratio = img.width/img.height;
   let w = aw, h = w/ratio;
   if(h>ah){ h = ah; w = h*ratio; }
-  pdf.addImage(dataUrl,'JPEG',(pw-w)/2, m+(ah-h)/2, w, h);
+  const x = (pw-w)/2, y = m + (ah-h)/2;
+  pdf.addImage(dataUrl,'JPEG',x,y,w,h);
   return pdf.output('blob');
 }
+
 function buildJsonBlob(tx){
   return new Blob([JSON.stringify({
-    schema:'digitalstock.exit.v6',
+    schema:'digitalstock.exit.v3',
     exportedAt:new Date().toISOString(),
     reference:tx.ref, module:tx.module,
     hotel:tx.hotel||settings.hotel,
@@ -1622,27 +2219,34 @@ function buildJsonBlob(tx){
   },null,2)],{type:'application/json'});
 }
 
-/* ==================== ARCHIVE ==================== */
+/* ================================================================
+   ARCHIVE
+   ================================================================ */
 async function archiveTransaction(tx, pdfBlob, jsonBlob, cardUrl){
   const expires = new Date(Date.now()+RETENTION_MS).toISOString();
   if(firebaseReady){
+    // Firebase Cloud Storage disabled for photos; using it only for PDF/JSON (or you can disable entirely)
+    // We'll keep PDF/JSON in Firebase if Firebase is connected.
     const dateKey = new Date().toISOString().slice(0,10);
     const base = `archive/${dateKey}/${tx.ref}`;
-    const pr = storageRef(storage, `${base}/${tx.ref}.pdf`);
-    const jr = storageRef(storage, `${base}/${tx.ref}.json`);
-    await uploadBytes(pr, pdfBlob, {contentType:'application/pdf'});
-    await uploadBytes(jr, jsonBlob, {contentType:'application/json'});
-    const pu = await getDownloadURL(pr);
-    const ju = await getDownloadURL(jr);
-    if(tx.id){
-      try {
+    // Fallback if storage not defined (though it is in this snippet)
+    try {
+      const pr = storageRef(storage, `${base}/${tx.ref}.pdf`);
+      const jr = storageRef(storage, `${base}/${tx.ref}.json`);
+      await uploadBytes(pr, pdfBlob, {contentType:'application/pdf'});
+      await uploadBytes(jr, jsonBlob, {contentType:'application/json'});
+      const pu = await getDownloadURL(pr);
+      const ju = await getDownloadURL(jr);
+      if(tx.id){
         await updateDoc(doc(db,'transactions',tx.id),{
           archived:true, archivedAt:serverTimestamp(),
           archiveUrls:{pdf:pu, json:ju}
         });
-      } catch {}
+      }
+      return {pdf:pu, json:ju};
+    } catch(err) {
+      console.warn('Failed Firebase archive, falling back to local', err);
     }
-    return {pdf:pu, json:ju};
   }
   await idbPut({key:`archive::${tx.ref}::pdf`, blob:pdfBlob, ref:tx.ref, kind:'pdf', expireAt:expires, createdAt:new Date().toISOString()});
   await idbPut({key:`archive::${tx.ref}::json`, blob:jsonBlob, ref:tx.ref, kind:'json', expireAt:expires, createdAt:new Date().toISOString()});
@@ -1651,6 +2255,7 @@ async function archiveTransaction(tx, pdfBlob, jsonBlob, cardUrl){
   }
   return {pdf:`idb://${tx.ref}::pdf`, json:`idb://${tx.ref}::json`};
 }
+
 async function recoverUnarchived(){
   const all = loadAll();
   const un = all.filter(x=>!x.archived && x.id && x.ref);
@@ -1671,6 +2276,7 @@ async function recoverUnarchived(){
   saveAll(all);
   renderHistory(); renderProfile();
 }
+
 async function purgeExpired(){
   const cutoff = Date.now() - RETENTION_MS;
   const all = loadAll();
@@ -1686,91 +2292,9 @@ function startRetention(){
   setInterval(()=>purgeExpired().catch(()=>{}), 10*60*1000);
 }
 
-/* ==================== SYNC (NEW) ==================== */
-async function syncRecord(tx){
-  if(!firebaseReady || !navigator.onLine){
-    toast(t('history.syncOffline'));
-    return;
-  }
-  toast(t('history.syncing'));
-
-  try {
-    // 1) If Firebase, re-fetch the latest version of this doc
-    if(tx.id){
-      try {
-        const snap = await getDoc(doc(db,'transactions',tx.id));
-        if(snap.exists()){
-          const fresh = { ...snap.data(), id: snap.id };
-          if(fresh.createdAt?.toDate) fresh.createdAt = fresh.createdAt.toDate().toISOString();
-          if(fresh.expireAt?.toDate)  fresh.expireAt  = fresh.expireAt.toDate().toISOString();
-          const all = loadAll();
-          const idx = all.findIndex(x=>x.id===tx.id);
-          if(idx >= 0){ all[idx] = { ...all[idx], ...fresh }; saveAll(all); }
-        }
-      } catch (e){ console.warn('Firestore fetch failed', e); }
-    }
-
-    // 2) Re-attempt archive if not archived
-    if(!tx.archived){
-      const card = await generateCard(tx);
-      const pdf = await buildPdfBlob(tx, card);
-      const json = buildJsonBlob(tx);
-      await archiveTransaction(tx, pdf, json, card);
-      const all = loadAll();
-      const idx = all.findIndex(x=>x.id===tx.id);
-      if(idx >= 0){ all[idx].archived = true; saveAll(all); }
-    }
-
-    renderHistory(); renderProfile();
-    toast(t('history.synced'));
-  } catch (e){
-    console.error(e);
-    toast(t('history.syncError'));
-  }
-}
-
-/* ==================== DUPLICATE (NEW) ==================== */
-function duplicateRecord(tx){
-  // Switch to the target module form
-  switchView(tx.module);
-
-  const form = document.getElementById('form-' + tx.module);
-  if(!form) return;
-
-  // Fill scalar fields
-  const setVal = (name, val) => {
-    const el = form.querySelector(`[name="${name}"]`);
-    if(el) el.value = val || '';
-  };
-  setVal('staff', tx.staff);
-  setVal('department', tx.department);
-  setVal('po', tx.po);
-  setVal('destination', tx.destination);
-  setVal('reason', tx.reason);
-  setVal('vehicle', tx.vehicle);
-  setVal('authorizedBy', tx.authorizedBy);
-  setVal('notes', tx.notes);
-
-  // Fill items
-  const wrap = document.getElementById('items-' + tx.module);
-  if(wrap){
-    wrap.innerHTML = '';
-    const items = tx.items || [];
-    if(!items.length) addItemRow(tx.module);
-    else items.forEach(it => {
-      addItemRow(tx.module);
-      const rows = wrap.querySelectorAll('.tt-item-row');
-      const row = rows[rows.length - 1];
-      row.querySelector('.i-name').value = it.name || '';
-      row.querySelector('.i-qty').value  = it.qty  || '';
-      row.querySelector('.i-unit').value = it.unit || '';
-    });
-  }
-
-  toast(t('history.duplicated'));
-}
-
-/* ==================== WHATSAPP ==================== */
+/* ================================================================
+   WHATSAPP
+   ================================================================ */
 function buildMessage(tx){
   const L=[];
   L.push(`*${t('mod.'+tx.module+'.title')}*`);
@@ -1813,6 +2337,7 @@ async function shareWhatsApp(){
   window.open(`${base}?text=${encodeURIComponent(text)}`, '_blank');
   if(activeCardUrl) downloadDataUrl(activeCardUrl, `${activeTx.ref}.jpg`);
 }
+
 function downloadDataUrl(url, fn){
   if(!url) return;
   const a = document.createElement('a');
@@ -1825,7 +2350,9 @@ function downloadBlob(blob, fn){
   setTimeout(()=>URL.revokeObjectURL(url), 4000);
 }
 
-/* ==================== SUBMIT ==================== */
+/* ================================================================
+   SUBMIT
+   ================================================================ */
 async function handleSubmit(key){
   const form = document.getElementById('form-'+key);
   const fd = new FormData(form);
@@ -1878,8 +2405,10 @@ async function handleSubmit(key){
   try {
     const tempId = (crypto.randomUUID && crypto.randomUUID()) || String(Date.now());
     let refs;
-    if(firebaseReady && navigator.onLine) refs = await savePhotosFirebase(tempId, drafts[key]);
+    // ALWAYS USE CLOUDINARY IF ONLINE AND FIREBASE IS READY
+    if(firebaseReady && navigator.onLine) refs = await savePhotosCloudinary(tempId, drafts[key]);
     else refs = await savePhotosLocal(tempId, drafts[key]);
+    
     const { id, ref } = await commitTransaction({...payload, photos: refs});
     const createdAt = new Date().toISOString();
     const expireAt = new Date(Date.now()+RETENTION_MS).toISOString();
@@ -1915,7 +2444,9 @@ async function handleSubmit(key){
   await showCard(record);
 }
 
-/* ==================== CARD MODAL ==================== */
+/* ================================================================
+   CARD MODAL
+   ================================================================ */
 async function showCard(tx){
   activeTx = tx;
   activeCardUrl = null;
@@ -1942,6 +2473,7 @@ async function runBackgroundArchive(tx, cardUrl){
   const icon = document.getElementById('archiveIcon');
   const text = document.getElementById('archiveText');
   const sub = document.getElementById('archiveSub');
+
   status.style.display = 'flex';
   status.className = 'archive-status running';
   icon.textContent = '⟳';
@@ -1977,7 +2509,9 @@ async function runBackgroundArchive(tx, cardUrl){
   }
 }
 
-/* ==================== HISTORY ==================== */
+/* ================================================================
+   HISTORY — feed style
+   ================================================================ */
 function filterRecords(all){
   let f = all;
   if(historyFilter !== 'all') f = f.filter(x=>x.module === historyFilter);
@@ -1994,12 +2528,14 @@ function filterRecords(all){
   }
   return f;
 }
+
 function renderHistory(){
   const all = loadAll();
   const cnt = document.getElementById('histCount');
   if(cnt) cnt.textContent = all.length;
   const list = document.getElementById('histList');
   if(!list) return;
+
   const filtered = filterRecords(all);
   if(!filtered.length){
     list.innerHTML = all.length
@@ -2007,6 +2543,7 @@ function renderHistory(){
       : `<div class="tt-empty"><div class="ic">📋</div><p>${t('history.empty')}<br>${t('history.empty.hint')}</p></div>`;
     return;
   }
+
   list.innerHTML = filtered.map(tx => {
     const m = MODULE_DEF[tx.module];
     const ttlH = tx.expireAt ? Math.max(0, Math.round((new Date(tx.expireAt)-Date.now())/3600000)) : null;
@@ -2029,16 +2566,17 @@ function renderHistory(){
           <button class="tt-iconbtn" data-act="view" title="${t('history.view')}">👁</button>
           <button class="tt-iconbtn" data-act="share" title="${t('history.share')}">📲</button>
           <button class="tt-iconbtn" data-act="pdf" title="${t('history.pdf')}">📄</button>
-          <button class="tt-iconbtn" data-act="sync" title="${t('history.sync')}">🔄</button>
-          <button class="tt-iconbtn" data-act="duplicate" title="${t('history.duplicate')}">📋</button>
+          <button class="tt-iconbtn" data-act="del" title="${t('history.delete')}">🗑</button>
         </div>
       </div>`;
   }).join('');
 }
+
 function initHistory(){
   const list = document.getElementById('histList');
   if(!list || list._init) return;
   list._init = true;
+
   list.addEventListener('click', async e => {
     const item = e.target.closest('.feed-card');
     if(!item) return;
@@ -2049,6 +2587,14 @@ function initHistory(){
     const btn = e.target.closest('[data-act]');
     const act = btn ? btn.dataset.act : 'view';
 
+    if(act === 'del'){
+      if(!confirm(t('history.deleteConfirm'))) return;
+      saveAll(all.filter(x=>x.id!==id));
+      try { await idbDeleteByRef(tx.ref); } catch {}
+      try { if(tx.id) await idbDeleteByTxId(tx.id); } catch {}
+      renderHistory(); renderProfile(); refreshDatalists();
+      return toast(t('history.deleted'));
+    }
     if(act === 'pdf'){
       toast(t('history.pdfGenerating'));
       try {
@@ -2068,30 +2614,22 @@ function initHistory(){
       await shareWhatsApp();
       return;
     }
-    if(act === 'sync'){
-      await syncRecord(tx);
-      return;
-    }
-    if(act === 'duplicate'){
-      duplicateRecord(tx);
-      return;
-    }
     showCard(tx);
   });
+
   const si = document.getElementById('histSearch');
   if(si) si.addEventListener('input', e => {
     historyQuery = e.target.value.trim();
     renderHistory();
   });
-  $$('.hist-filter').forEach(btn => {
-    if(btn._init) return;
-    btn._init = true;
-    btn.addEventListener('click', ()=>{
-      $$('.hist-filter').forEach(b=>b.classList.toggle('active', b===btn));
+
+  $$('.hist-filter').forEach(btn => {     if(btn._init) return;     btn._init = true;     btn.addEventListener('click', ()=>{       $$
+('.hist-filter').forEach(b=>b.classList.toggle('active', b===btn));
       historyFilter = btn.dataset.filter;
       renderHistory();
     });
   });
+
   const exp = document.getElementById('btnExportAll');
   if(exp && !exp._init){
     exp._init = true;
@@ -2138,7 +2676,9 @@ function initHistory(){
   }
 }
 
-/* ==================== PROFILE ==================== */
+/* ================================================================
+   PROFILE
+   ================================================================ */
 function renderProfile(){
   const host = document.getElementById('view-profile');
   if(!host) return;
@@ -2146,6 +2686,7 @@ function renderProfile(){
   const now = new Date();
   const todayStart = new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime();
   const weekStart = todayStart - 6*24*3600*1000;
+
   const my = all.filter(x=>x.guard === currentAgent);
   const total = my.length;
   const today = my.filter(x=>new Date(x.createdAt).getTime()>=todayStart).length;
@@ -2153,6 +2694,7 @@ function renderProfile(){
   const arch = my.filter(x=>x.archived).length;
   const initial = (currentAgent||'?').trim().charAt(0).toUpperCase();
   const recent = my.slice(0,9);
+
   host.innerHTML = `
     <div class="profile-hero">
       <div class="avatar-ring">
@@ -2163,16 +2705,19 @@ function renderProfile(){
       <div class="profile-role">${t('profile.role')}</div>
       ${currentEmail ? `<div class="profile-email">${esc(currentEmail)}</div>` : ''}
     </div>
+
     <div class="stats-row">
       <div class="stat"><div class="stat-val">${total}</div><div class="stat-lbl">${t('profile.stats.total')}</div></div>
       <div class="stat"><div class="stat-val">${today}</div><div class="stat-lbl">${t('profile.stats.today')}</div></div>
       <div class="stat"><div class="stat-val">${week}</div><div class="stat-lbl">${t('profile.stats.week')}</div></div>
       <div class="stat"><div class="stat-val">${arch}</div><div class="stat-lbl">${t('profile.stats.archived')}</div></div>
     </div>
+
     <div class="tt-card-head" style="margin:0 4px 10px">
       <span class="tt-bullet"></span>
       <h2 style="font-size:14px">${t('profile.activity')}</h2>
     </div>
+
     ${recent.length
       ? `<div class="activity-grid">${recent.map(tx=>{
           const m = MODULE_DEF[tx.module];
@@ -2182,11 +2727,13 @@ function renderProfile(){
           </div>`;
         }).join('')}</div>`
       : `<div class="tt-empty"><div class="ic">📭</div><p>${t('profile.noActivity')}</p></div>`}
+
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px">
       <button class="tt-btn ghost" id="profSettings" style="flex:1">${t('profile.settings')}</button>
       <button class="tt-btn danger" id="profLogout" style="flex:1">${t('profile.logout')}</button>
     </div>
   `;
+
   host.querySelectorAll('.activity-cell').forEach(el => {
     el.onclick = () => {
       const tx = loadAll().find(x=>x.id === el.dataset.id);
@@ -2199,15 +2746,12 @@ function renderProfile(){
   if(l) l.onclick = () => document.getElementById('btnLogoutBtn').click();
 }
 
-/* ==================== MODALS ==================== */
+/* ================================================================
+   MODALS
+   ================================================================ */
 function closeModals(){
-  $$('.tt-modal').forEach(m=>m.classList.remove('open'));
-  activeTx = null; activeCardUrl = null;
-}
-function initModals(){
-  if(initModals._done) return;
-  initModals._done = true;
-  $$('.close-modal').forEach(btn => {
+  $$('.tt-modal').forEach(m=>m.classList.remove('open'));   activeTx = null; activeCardUrl = null; }  function initModals(){   if(initModals._done) return;   initModals._done = true;    $$
+('.close-modal').forEach(btn => {
     btn.addEventListener('click', e => {
       e.target.closest('.tt-modal')?.classList.remove('open');
     });
@@ -2227,6 +2771,7 @@ function initModals(){
     document.getElementById('storageInfo').textContent = sz;
     document.getElementById('setModal').classList.add('open');
   };
+
   const bsave = document.getElementById('btnSaveSettings');
   if(bsave) bsave.onclick = () => {
     settings.hotel = (document.getElementById('setHotel').value || 'Les Oliviers Palace').trim();
@@ -2245,13 +2790,22 @@ function initModals(){
     closeModals();
     toast(t('settings.saved'));
   };
+
   const blo = document.getElementById('btnLogoutBtn');
   if(blo) blo.onclick = async () => {
     if(!confirm(t('settings.logoutConfirm'))) return;
     try { await signOut(auth); } catch {}
     closeModals();
   };
+
   document.getElementById('btnShareWA').onclick = shareWhatsApp;
+
+  document.getElementById('btnDownloadJpg').onclick = () => {
+    if(!activeCardUrl) return;
+    downloadDataUrl(activeCardUrl, `${activeTx.ref}.jpg`);
+    toast(t('card.jpg'));
+  };
+
   document.getElementById('btnDownloadPdf').onclick = async () => {
     if(!activeTx) return;
     toast(t('history.pdfGenerating'));
@@ -2266,56 +2820,30 @@ function initModals(){
     } catch (e){ toast(t('history.pdfError') + ' ' + e.message); }
   };
 
-  // NEW: Duplicate from card modal
-  document.getElementById('btnDuplicate').onclick = () => {
+  document.getElementById('btnDownloadJson').onclick = async () => {
     if(!activeTx) return;
-    const tx = activeTx;
-    closeModals();
-    setTimeout(()=>duplicateRecord(tx), 250);
-  };
-
-  // NEW: Sync from card modal
-  document.getElementById('btnSyncCard').onclick = async () => {
-    if(!activeTx) return;
-    await syncRecord(activeTx);
+    try {
+      if(!firebaseReady){
+        const s = await idbGet(`archive::${activeTx.ref}::json`);
+        if(s && s.blob){ downloadBlob(s.blob, `${activeTx.ref}.json`); return toast(t('card.json')); }
+      }
+      downloadBlob(buildJsonBlob(activeTx), `${activeTx.ref}.json`);
+      toast(t('card.json'));
+    } catch {}
   };
 }
 
-/* ==================== NAVIGATION ==================== */
+/* ================================================================
+   NAVIGATION — bottom nav + module tabs
+   ================================================================ */
 function switchView(view){
-  $$('.view').forEach(v=>v.classList.toggle('active', v.id === 'view-'+view));
-  $$('.nav-btn').forEach(b=>b.classList.toggle('active', b.dataset.nav === view));
-  $$('.tt-modtab').forEach(t=>t.classList.toggle('active', t.dataset.view === view));
-  if(view === 'history') renderHistoryBanner();
-  if(view === 'profile') renderProfile();
-  window.scrollTo({top:0, behavior:'smooth'});
-}
-function initNavigation(){
-  const mt = document.getElementById('moduleTabs');
-  if(mt && !mt._init){
-    mt._init = true;
-    mt.addEventListener('click', e => {
-      const tab = e.target.closest('.tt-modtab');
-      if(!tab) return;
-      switchView(tab.dataset.view);
-    });
-  }
-  const bn = document.getElementById('bottomNav');
-  if(bn && !bn._init){
-    bn._init = true;
-    bn.addEventListener('click', e => {
-      const b = e.target.closest('.nav-btn');
-      if(!b) return;
-      switchView(b.dataset.nav);
-    });
-  }
-  const np = document.getElementById('navPlusBtn');
-  if(np && !np._init){
-    np._init = true;
-    np.onclick = () => {
-      const active = $$('.tt-modtab.active')[0];
+  $$('.view').forEach(v=>v.classList.toggle('active', v.id === 'view-'+view));$$
+('.nav-btn').forEach(b=>b.classList.toggle('active', b.dataset.nav === view));
+  $$('.tt-modtab').forEach(t=>t.classList.toggle('active', t.dataset.view === view));   if(view === 'history') renderHistoryBanner();   if(view === 'profile') renderProfile();   window.scrollTo({top:0, behavior:'smooth'}); }  function initNavigation(){   // Module tabs   const mt = document.getElementById('moduleTabs');   if(mt && !mt._init){     mt._init = true;     mt.addEventListener('click', e => {       const tab = e.target.closest('.tt-modtab');       if(!tab) return;       switchView(tab.dataset.view);     });   }   // Bottom nav   const bn = document.getElementById('bottomNav');   if(bn && !bn._init){     bn._init = true;     bn.addEventListener('click', e => {       const b = e.target.closest('.nav-btn');       if(!b) return;       switchView(b.dataset.nav);     });   }   // Center +   const np = document.getElementById('navPlusBtn');   if(np && !np._init){     np._init = true;     np.onclick = () => {       // Open the currently-active module's form (or warehouse by default)       const active = $$
+('.tt-modtab.active')[0];
       const target = active ? active.dataset.view : 'warehouse';
       switchView(target);
+      // Focus the staff field
       setTimeout(()=> {
         const form = document.getElementById('form-'+target);
         if(form) form.querySelector('[name=staff]')?.focus();
@@ -2324,31 +2852,35 @@ function initNavigation(){
   }
 }
 
-/* ==================== STATUS / BANNER / LANG / THEME ==================== */
+/* ================================================================
+   STATUS / BANNER / LANG / THEME
+   ================================================================ */
 function updateNetStatus(){
   const on = navigator.onLine;
   const dot = document.getElementById('netStatusDot');
   if(dot) dot.className = `tt-dot ${on ? 'online' : ''}`;
 }
+
 function renderHistoryBanner(){
   const host = document.getElementById('histBanner');
   if(!host) return;
   const q = JSON.parse(localStorage.getItem(QUEUE_KEY)||'[]');
   const parts = [];
   if(!firebaseReady){
-    parts.push(`<div class="tt-banner warn"><span class="b-ic">⚠</span><span>${currentLang==='ar'?'وضع محلي. البيانات في IndexedDB، حذف تلقائي بعد 48 ساعة.':currentLang==='fr'?'Mode local. Données dans IndexedDB, purge après 48h.':'Local mode. Data in IndexedDB, purged after 48h.'}</span></div>`);
+    parts.push(`<div class="tt-banner warn"><span class="b-ic">⚠</span><span>${currentLang==='ar'?'وضع محلي. البيانات محفوظة في IndexedDB، حذف تلقائي بعد 48 ساعة.':currentLang==='fr'?'Mode local. Données dans IndexedDB, purge après 48h.':'Local mode. Data in IndexedDB, purged after 48h.'}</span></div>`);
   } else {
     parts.push(`<div class="tt-banner ok"><span class="b-ic">✓</span><span>${currentLang==='ar'?'Firebase نشط. عدّادات ذرية + أرشفة سحابية.':currentLang==='fr'?'Firebase actif. Compteurs atomiques + archive cloud.':'Firebase active. Atomic counters + cloud archive.'}</span></div>`);
   }
   if(q.length) parts.push(`<div class="tt-banner warn"><span class="b-ic">⏳</span><span><b>${q.length}</b> ${currentLang==='ar'?'في الانتظار':currentLang==='fr'?'en attente':'queued'}</span></div>`);
   host.innerHTML = parts.join('');
 }
+
 function applyLang(){
   document.documentElement.lang = currentLang;
   document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
   $$('[data-i18n]').forEach(el => el.textContent = t(el.dataset.i18n));
-  $$('[data-i18n-placeholder]').forEach(el => el.placeholder = t(el.dataset.i18nPlaceholder));
-  $$('[data-i18n-title]').forEach(el => el.title = t(el.dataset.i18nTitle));
+  $$('[data-i18n-placeholder]').forEach(el => el.placeholder = t(el.dataset.i18nPlaceholder));$$
+('[data-i18n-title]').forEach(el => el.title = t(el.dataset.i18nTitle));
   const sel = document.getElementById('langSelect');
   if(sel) sel.value = currentLang;
   renderForms();
@@ -2356,6 +2888,7 @@ function applyLang(){
   renderProfile();
   renderHistoryBanner();
 }
+
 function initLang(){
   const sel = document.getElementById('langSelect');
   if(!sel || sel._init) return;
@@ -2367,6 +2900,7 @@ function initLang(){
     applyLang();
   });
 }
+
 function initTheme(){
   const saved = localStorage.getItem('ds.theme') || 'dark';
   document.documentElement.setAttribute('data-theme', saved);
@@ -2382,13 +2916,16 @@ function initTheme(){
   }
 }
 
-/* ==================== AUTH ==================== */
+/* ================================================================
+   AUTH
+   ================================================================ */
 function initAuth(){
   const btn = document.getElementById('btnLoginBtn');
   const em = document.getElementById('loginEmail');
   const pw = document.getElementById('loginPass');
   if(!btn || btn._init) return;
   btn._init = true;
+
   btn.onclick = async () => {
     const email = em.value.trim();
     const pass = pw.value;
@@ -2406,14 +2943,17 @@ function initAuth(){
   onAuthStateChanged(auth, user => {
     const authScreen = document.getElementById('auth-screen');
     const appScreen = document.getElementById('app-screen');
+
     if(user){
       firebaseReady = true;
       currentAgent = user.displayName || user.email.split('@')[0];
       currentEmail = user.email;
       document.getElementById('currentUserDisplay').textContent = currentAgent;
+
       ensureUI();
       authScreen.classList.add('hidden');
       appScreen.classList.add('visible');
+
       renderHistory(); renderProfile(); renderHistoryBanner();
       startRetention();
       setTimeout(()=>recoverUnarchived().catch(()=>{}), 2500);
@@ -2433,27 +2973,34 @@ function initAuth(){
   });
 }
 
-/* ==================== SINGLE INIT ==================== */
+/* ================================================================
+   SINGLE INIT — the fix for the blank screen
+   ================================================================ */
 function ensureUI(){
   if(uiReady) return;
   uiReady = true;
+
   loadSettings();
   initNavigation();
   initModals();
   initLang();
   initTheme();
   initHistory();
+
   renderForms();
   renderHistory();
   renderProfile();
   renderHistoryBanner();
   applyLang();
   updateNetStatus();
+
   window.addEventListener('online', ()=>{ updateNetStatus(); flushOfflineQueue(); });
   window.addEventListener('offline', updateNetStatus);
 }
 
-/* ==================== BOOT ==================== */
+/* ================================================================
+   BOOT
+   ================================================================ */
 (function boot(){
   loadSettings();
   initTheme();
@@ -2462,7 +3009,7 @@ function ensureUI(){
   initAuth();
   updateNetStatus();
   setTimeout(()=>document.getElementById('loginEmail')?.focus(), 300);
-  console.log('%c Digital Stock v6 — no delete, sync + duplicate ', 'background:linear-gradient(90deg,#25F4EE,#FE2C55);color:#000;padding:4px 10px;border-radius:8px;font-weight:900;');
+  console.log('%c Digital Stock v5 — Cloudinary Integrated ', 'background:linear-gradient(90deg,#25F4EE,#FE2C55);color:#000;padding:4px 10px;border-radius:8px;font-weight:900;');
 })();
 </script>
 </body>
