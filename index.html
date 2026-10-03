@@ -58,14 +58,12 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   border:1px solid var(--line-2);border-radius:32px;padding:40px 32px;
   box-shadow:0 24px 60px rgba(0,0,0,.6);animation:pop .7s cubic-bezier(.2,.9,.3,1.3) forwards}
 @keyframes pop{0%{opacity:0;transform:translateY(24px) scale(.96)}100%{opacity:1;transform:none}}
-.auth-logo{width:88px;height:88px;margin:0 auto 24px;border-radius:26px;
-  background:linear-gradient(135deg,var(--tt-cyan),var(--tt-pink));
-  display:grid;place-items:center;font-family:var(--font-en);font-weight:900;
-  font-size:34px;color:#000;box-shadow:0 12px 40px var(--tt-pink-glow),0 0 60px var(--tt-cyan-glow);
-  position:relative}
-.auth-logo::after{content:'';position:absolute;inset:-3px;border-radius:29px;
-  background:linear-gradient(135deg,var(--tt-cyan),var(--tt-pink));z-index:-1;
-  filter:blur(12px);opacity:.7}
+.auth-logo{width:120px;height:120px;margin:0 auto 24px;position:relative;
+  display:grid;place-items:center}
+.auth-logo img{width:100%;height:100%;object-fit:contain;
+  filter:drop-shadow(0 10px 32px rgba(212,160,23,.6)) drop-shadow(0 0 50px rgba(37,244,238,.4));
+  animation:logoPulse 3s ease-in-out infinite}
+@keyframes logoPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
 .auth-title{font-size:28px;font-weight:900;text-align:center;margin:0 0 6px;
   background:linear-gradient(90deg,var(--tt-cyan),var(--tt-pink));
   -webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-.5px}
@@ -111,10 +109,9 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   -webkit-backdrop-filter:blur(24px) saturate(180%);
   border:1px solid var(--line-2);border-radius:32px;padding:34px 26px 26px;
   box-shadow:0 24px 60px rgba(0,0,0,.65);animation:pop .6s cubic-bezier(.2,.9,.3,1.3) forwards;text-align:center}
-.pin-logo{width:72px;height:72px;margin:0 auto 16px;border-radius:22px;
-  background:linear-gradient(135deg,var(--tt-cyan),var(--tt-pink));
-  display:grid;place-items:center;font-size:32px;color:#000;
-  box-shadow:0 10px 32px var(--tt-pink-glow)}
+.pin-logo{width:90px;height:90px;margin:0 auto 16px;position:relative;display:grid;place-items:center}
+.pin-logo img{width:100%;height:100%;object-fit:contain;
+  filter:drop-shadow(0 8px 24px rgba(212,160,23,.55)) drop-shadow(0 0 30px rgba(37,244,238,.35))}
 .pin-title{font-size:22px;font-weight:900;margin:0 0 4px}
 .pin-sub{font-size:13px;color:var(--muted);margin:0 0 22px}
 .pin-dots{display:flex;justify-content:center;gap:14px;margin-bottom:26px}
@@ -149,9 +146,13 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   display:flex;align-items:center;gap:12px;padding:0 16px;
   background:linear-gradient(to bottom,var(--bg) 60%,transparent);
   backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-.tt-brand{font-family:var(--font-en);font-weight:900;font-size:18px;
+.tt-brand{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.tt-brand img{width:36px;height:36px;object-fit:contain;
+  filter:drop-shadow(0 3px 12px rgba(212,160,23,.5)) drop-shadow(0 0 20px rgba(37,244,238,.28))}
+.tt-brand-text{font-family:var(--font-en);font-weight:900;font-size:16px;
   background:linear-gradient(90deg,var(--tt-cyan),var(--tt-pink));
   -webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-.5px}
+@media(max-width:400px){.tt-brand-text{display:none}}
 .tt-user{flex:1;font-size:12px;color:var(--muted);display:flex;align-items:center;
   gap:6px;overflow:hidden;min-width:0}
 .tt-user b{color:var(--tt-cyan);font-weight:700}
@@ -206,7 +207,6 @@ html[dir="rtl"] .tt-label select{background-position:left 14px center}
 .tt-label textarea:focus,.tt-label select:focus,.tt-label .tt-input:focus{
   border-color:var(--tt-cyan) !important;background:var(--surface-3) !important;box-shadow:0 0 0 4px var(--tt-cyan-glow) !important}
 
-/* Items section */
 .tt-items-card{border:2px solid var(--c,var(--tt-cyan)) !important;
   background:linear-gradient(180deg,
     color-mix(in srgb, var(--c,var(--tt-cyan)) 7%, var(--surface)) 0%,
@@ -429,7 +429,6 @@ html[dir="rtl"] .tt-item-row .i-unit{background-position:left 8px center}
 .activity-cell .ref{font-family:var(--font-en);font-size:9px;font-weight:800;color:var(--muted);
   text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;direction:ltr}
 
-/* Profile additions */
 .profile-stamp-card{padding:16px;border-radius:18px;background:var(--surface-2);
   border:1.5px solid var(--line-2);text-align:center;margin-bottom:14px;position:relative;overflow:hidden}
 .profile-stamp-card::before{content:'';position:absolute;inset:0;
@@ -629,7 +628,6 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 92px 1fr;direction:rtl}
 .dev-filter-bar .x{width:28px;height:28px;border-radius:50%;background:rgba(254,44,85,.2);
   color:var(--tt-pink);border:none;font-size:12px;font-weight:900;display:grid;place-items:center;cursor:pointer;padding:0}
 
-/* Settings */
 .settings-section{border:1.5px solid var(--line-2);border-radius:16px;padding:14px;margin-bottom:14px;
   background:var(--surface-2)}
 .settings-section-title{font-size:13px;font-weight:900;color:var(--tt-cyan);letter-spacing:.3px;
@@ -663,7 +661,9 @@ html[dir="rtl"] .toggle-switch input:checked + .toggle-slider::after{transform:t
 <div id="auth-screen">
   <div class="auth-bg"></div>
   <div class="auth-card">
-    <div class="auth-logo">DS</div>
+    <div class="auth-logo">
+      <img id="authLogoImg" alt="Digital Stock">
+    </div>
     <h1 class="auth-title" data-i18n="app.name">Digital Stock</h1>
     <p class="auth-subtitle" data-i18n="app.tagline">نظام الإدارة والأمن الذكي</p>
     <label class="tt-field">
@@ -684,7 +684,9 @@ html[dir="rtl"] .toggle-switch input:checked + .toggle-slider::after{transform:t
 <div id="pin-screen" class="hidden">
   <div class="pin-bg"></div>
   <div class="pin-card">
-    <div class="pin-logo">🔐</div>
+    <div class="pin-logo">
+      <img id="pinLogoImg" alt="Digital Stock">
+    </div>
     <h1 class="pin-title" data-i18n="pin.title">الدخول السريع</h1>
     <p class="pin-sub" data-i18n="pin.sub">أدخل رمز PIN للمتابعة</p>
     <div class="pin-dots" id="pinDots">
@@ -714,7 +716,10 @@ html[dir="rtl"] .toggle-switch input:checked + .toggle-slider::after{transform:t
 <!-- APP SCREEN -->
 <div id="app-screen">
   <header class="tt-topbar">
-    <div class="tt-brand">Digital Stock</div>
+    <div class="tt-brand">
+      <img id="topbarLogoImg" alt="Digital Stock">
+      <span class="tt-brand-text">Digital Stock</span>
+    </div>
     <div class="tt-user">
       <span class="tt-dot" id="netStatusDot"></span>
       <span style="font-size:11.5px" data-i18n="status.offline">مفصول</span>
@@ -1003,6 +1008,9 @@ setPersistence(auth, browserLocalPersistence).catch(console.error);
 
 const ADMIN_UID = 'kszZYwapqMYc8XvY2yOYGmO3c6D3';
 
+/* ⭐⭐⭐ APP LOGO — الشعار الرسمي للتطبيق ⭐⭐⭐ */
+const APP_LOGO_URL = 'https://i.ibb.co/bRqLsfSm/Gemini-Generated-Image-u5cpgfu5cpgfu5cp-removebg-preview.png';
+
 let _jsPDFPromise = null;
 const JSPDF_URL = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
 async function loadJsPDF(){
@@ -1022,7 +1030,7 @@ async function loadJsPDF(){
   return _jsPDFPromise;
 }
 
-/* ⭐ REFINED CARD THEME — deeper olive, brighter gold */
+/* ⭐ REFINED CARD THEME */
 const CARD_THEME = {
   gold:'#D4A017', goldLight:'#F0C24A', goldDark:'#8B6914', goldPale:'#FBF3DC',
   olive:'#0A7B5F', oliveDark:'#064D3C', oliveLight:'#3FB893', olivePale:'#DFF2EB',
@@ -1318,7 +1326,7 @@ function getActivityLog(){
   return log[key] || [];
 }
 
-/* ⭐ PROFILE EXTRA (phone etc) */
+/* ⭐ PROFILE EXTRA */
 function loadProfileExtra(){
   try { return JSON.parse(localStorage.getItem(PROFILE_EXTRA_KEY) || '{}') || {}; } catch { return {}; }
 }
@@ -1348,7 +1356,7 @@ function fmtDuration(fromIso){
   return `${days} ${t('profile.daysAgo')}`;
 }
 
-/* ⭐ PIN storage (per user) */
+/* ⭐ PIN storage */
 function getPinForUser(uid){
   if(!uid) return null;
   const all = JSON.parse(localStorage.getItem(PIN_KEY) || '{}');
@@ -1363,7 +1371,6 @@ function setPinForUser(uid, pin, enabled){
   localStorage.setItem(PIN_KEY, JSON.stringify(all));
 }
 
-/* ⭐ PIN screen */
 function showPinScreen(){
   document.getElementById('pin-screen').classList.remove('hidden');
   document.getElementById('auth-screen').classList.add('hidden');
@@ -1975,7 +1982,7 @@ function refreshDatalists(){
   $$('#dl-staff').forEach(el => { el.innerHTML = staff.map(v=>`<option value="${esc(v)}">`).join(''); });
 }
 
-/* ⭐ Card generation with refreshed colors */
+/* ⭐⭐⭐ Card generation with logo + refined items table ⭐⭐⭐ */
 const CT = CARD_THEME;
 const rr = (ctx,x,y,w,h,r) => {
   r = Math.min(r,w/2,h/2);
@@ -2046,6 +2053,7 @@ async function generateCard(tx){
   const alignText = rtl ? 'right' : 'left';
   const alignX = rtl ? W - PAD : PAD;
   const dirInv = rtl ? 1 : -1;
+
   const photoImgs = [];
   if(tx.photos && tx.photos.length){
     const photoUrls = await Promise.all(tx.photos.slice(0, MAX_PHOTOS).map(ref => photoRefToURL(ref)));
@@ -2056,6 +2064,7 @@ async function generateCard(tx){
   const displayedSigSrc = tx.staffSignature || tx.guardSignature || null;
   if(displayedSigSrc) staffSigImg = await safeLoadImg(displayedSigSrc);
   const decoImg = await safeLoadImg(DECO_IMAGE_URL);
+  const logoImg = await safeLoadImg(APP_LOGO_URL);
 
   const cv = document.createElement('canvas');
   cv.width = W; cv.height = 8800;
@@ -2066,7 +2075,8 @@ async function generateCard(tx){
   ctx.fillRect(0, 0, W, cv.height);
   let y = 0;
 
-  const HEAD = 250;
+  /* ============ HEADER with LOGO ============ */
+  const HEAD = 300;
   const grad = ctx.createLinearGradient(0, 0, W, HEAD);
   grad.addColorStop(0, CT.olive); grad.addColorStop(0.5, CT.oliveDark); grad.addColorStop(1, CT.gold);
   ctx.fillStyle = grad; ctx.fillRect(0, 0, W, HEAD);
@@ -2075,20 +2085,45 @@ async function generateCard(tx){
   ctx.fillStyle = shine; ctx.fillRect(0, 0, W, HEAD);
   ctx.fillStyle = CT.goldLight; ctx.fillRect(0, 0, W, 6);
 
-  ctx.textAlign = alignText;
-  ctx.fillStyle = 'rgba(255,255,255,.85)'; ctx.font = F(600, 26);
-  ctx.fillText(settings.hotel || '', alignX, 72);
+  /* -- LOGO (كبير وواضح، على اليسار في RTL / اليمين في LTR) -- */
+  const LOGO_MAX_H = 200, LOGO_MAX_W = 260;
+  let logoW = 0, logoH = 0;
+  if(logoImg){
+    const lr = logoImg.width / logoImg.height;
+    if(lr > LOGO_MAX_W / LOGO_MAX_H){ logoW = LOGO_MAX_W; logoH = logoW / lr; }
+    else { logoH = LOGO_MAX_H; logoW = logoH * lr; }
+    const logoX = rtl ? PAD + 6 : W - PAD - logoW - 6;
+    const logoY = (HEAD - logoH) / 2;
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,.55)';
+    ctx.shadowBlur = 28; ctx.shadowOffsetY = 10;
+    ctx.drawImage(logoImg, logoX, logoY, logoW, logoH);
+    ctx.restore();
+  }
+
+  /* -- TEXT (ينزاح حسب حجم الشعار) -- */
+  const textShift = logoW ? (logoW + 50) : 0;
+  const textX = rtl ? W - PAD - textShift : PAD + textShift;
+  const textAlignNow = rtl ? 'right' : 'left';
+  ctx.textAlign = textAlignNow;
+
+  ctx.fillStyle = 'rgba(255,255,255,.92)'; ctx.font = F(700, 28);
+  ctx.fillText(settings.hotel || '', textX, 82);
+
   const ornG = ctx.createLinearGradient(0, 0, 180, 0);
   ornG.addColorStop(0, CT.goldLight); ornG.addColorStop(1, 'rgba(240,194,74,0)');
   ctx.fillStyle = ornG;
-  const ornX = rtl ? W - PAD - 180 : PAD;
-  rr(ctx, ornX, 88, 180, 3, 2); ctx.fill();
-  ctx.fillStyle = '#ffffff'; ctx.font = F(800, 54);
-  ctx.fillText(t('mod.' + tx.module + '.title'), alignX, 152);
-  ctx.font = F(500, 24); ctx.fillStyle = 'rgba(255,255,255,.9)';
-  ctx.fillText(t('mod.' + tx.module + '.subtitle'), alignX, 196);
+  const ornX = rtl ? W - PAD - textShift - 180 : PAD + textShift;
+  rr(ctx, ornX, 98, 180, 3, 2); ctx.fill();
+
+  ctx.fillStyle = '#ffffff'; ctx.font = F(800, 58);
+  ctx.fillText(t('mod.' + tx.module + '.title'), textX, 178);
+  ctx.font = F(500, 26); ctx.fillStyle = 'rgba(255,255,255,.92)';
+  ctx.fillText(t('mod.' + tx.module + '.subtitle'), textX, 226);
 
   y = HEAD;
+
+  /* ============ REF STRIP ============ */
   const STRIP = 110;
   const stripBg = ctx.createLinearGradient(0, y, 0, y+STRIP);
   stripBg.addColorStop(0, '#FFFDF7'); stripBg.addColorStop(1, CT.goldPale);
@@ -2117,6 +2152,7 @@ async function generateCard(tx){
   });
   y += STRIP + 44;
 
+  /* ============ PERSONNEL ============ */
   drawSectionTitle(ctx, PAD, y, CW, rtl, currentLang==='ar'?'الأفراد':currentLang==='fr'?'PERSONNEL':'PERSONNEL');
   y += 60;
   const gap = 22, bw = (CW-gap)/2, bh = 118;
@@ -2124,6 +2160,7 @@ async function generateCard(tx){
   drawInfoBox(ctx, rtl?W-PAD-2*bw-gap:PAD+bw+gap, y, bw, bh, currentLang==='ar'?'الموظف المستخرج':currentLang==='fr'?'Personnel':'Staff', tx.staff, rtl);
   y += bh + 40;
 
+  /* ============ DETAILS ============ */
   drawSectionTitle(ctx, PAD, y, CW, rtl, currentLang==='ar'?'تفاصيل الحركة':currentLang==='fr'?'DÉTAILS':'DETAILS');
   y += 60;
   const details = [];
@@ -2146,62 +2183,126 @@ async function generateCard(tx){
   }
   y -= gap; y += 40;
 
+  /* ============ ⭐ ITEMS TABLE (منظم في وسط البطاقة) ============ */
   const totalQty = (tx.items||[]).reduce((s,it) => s + (parseFloat(it.qty) || 0), 0);
+
+  /* عنوان القسم */
   drawSectionTitle(ctx, PAD, y, CW, rtl,
-    (currentLang==='ar'?'الأصناف والكميات':currentLang==='fr'?'ARTICLES & QUANTITÉS':'ITEMS & QUANTITIES')
-    + ` (${tx.items.length})`);
-  y += 60;
+    (currentLang==='ar'?'الموارد المُخرَجة':currentLang==='fr'?'RESSOURCES SORTIES':'RESOURCES ISSUED'));
+  y += 66;
 
-  const summaryH = 68;
-  ctx.fillStyle = CT.olivePale;
-  rr(ctx, PAD, y, CW, summaryH, 12); ctx.fill();
-  ctx.strokeStyle = CT.olive; ctx.lineWidth = 1.5;
-  rr(ctx, PAD, y, CW, summaryH, 12); ctx.stroke();
-  ctx.textAlign = rtl ? 'right' : 'left';
-  ctx.fillStyle = CT.oliveDark; ctx.font = F(800, 22);
-  const summaryText = currentLang==='ar'
-    ? `عدد الأصناف: ${tx.items.length}   •   مجموع الكميات: ${Number.isInteger(totalQty)?totalQty:totalQty.toFixed(2)}`
-    : currentLang==='fr'
-    ? `Articles : ${tx.items.length}   •   Total qtés : ${Number.isInteger(totalQty)?totalQty:totalQty.toFixed(2)}`
-    : `Items: ${tx.items.length}   •   Total qty: ${Number.isInteger(totalQty)?totalQty:totalQty.toFixed(2)}`;
-  ctx.fillText(summaryText, rtl ? W-PAD-22 : PAD+22, y+44);
-  y += summaryH + 16;
+  /* شريط ملخّص أعلى الجدول */
+  const SUMMARY_H = 82;
+  const sumGrad = ctx.createLinearGradient(PAD, y, PAD + CW, y);
+  sumGrad.addColorStop(0, CT.olivePale);
+  sumGrad.addColorStop(1, '#FFFFFF');
+  ctx.fillStyle = sumGrad;
+  rr(ctx, PAD, y, CW, SUMMARY_H, 16); ctx.fill();
+  ctx.strokeStyle = CT.olive; ctx.lineWidth = 2;
+  rr(ctx, PAD, y, CW, SUMMARY_H, 16); ctx.stroke();
 
-  const ROW_H = 62, colQty = 150, colUnit = 180;
-  const headGrad = ctx.createLinearGradient(PAD, y, PAD+CW, y);
-  headGrad.addColorStop(0, CT.oliveDark); headGrad.addColorStop(1, CT.olive);
-  ctx.fillStyle = headGrad;
-  rr(ctx, PAD, y, CW, 54, 12); ctx.fill();
-  ctx.fillStyle = '#ffffff'; ctx.font = F(800, 22);
-  const headerY = y + 35;
-  ctx.textAlign = rtl ? 'right' : 'left';
-  ctx.fillText(t('form.items.name'), rtl ? W-PAD-24 : PAD+24, headerY);
+  ctx.fillStyle = CT.oliveDark;
+  ctx.font = F(900, 28);
   ctx.textAlign = 'center';
-  ctx.fillText(t('form.items.qty'), W/2 - colUnit/4, headerY);
-  ctx.textAlign = rtl ? 'left' : 'right';
-  ctx.fillText(t('form.items.unit'), rtl ? PAD+24 : W-PAD-24, headerY);
-  y += 54;
-  tx.items.forEach((it, i) => {
-    if(i % 2 === 1){ ctx.fillStyle = CT.olivePale; ctx.fillRect(PAD, y, CW, ROW_H); }
-    else { ctx.fillStyle = '#FFFFFF'; ctx.fillRect(PAD, y, CW, ROW_H); }
-    ctx.strokeStyle = CT.line; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(PAD, y+ROW_H+.5); ctx.lineTo(PAD+CW, y+ROW_H+.5); ctx.stroke();
-    const midY = y + ROW_H/2 + 10;
-    ctx.fillStyle = CT.ink; ctx.font = F(700, 28);
-    ctx.textAlign = rtl ? 'right' : 'left';
-    const nameLines = wrapText(ctx, it.name, CW - colQty - colUnit - 60);
-    ctx.fillText(nameLines[0], rtl ? W-PAD-24 : PAD+24, midY);
-    ctx.textAlign = 'center'; ctx.font = F(900, 32); ctx.fillStyle = CT.goldDark;
-    ctx.fillText(String(it.qty), W/2 - colUnit/4, midY);
-    ctx.fillStyle = CT.inkSoft; ctx.font = F(700, 26);
-    ctx.textAlign = rtl ? 'left' : 'right';
-    ctx.fillText(it.unit, rtl ? PAD+24 : W-PAD-24, midY);
-    y += ROW_H;
-  });
-  ctx.fillStyle = CT.gold;
-  rr(ctx, PAD, y, CW, 3, 2); ctx.fill();
-  y += 44;
+  const summaryText = currentLang==='ar'
+    ? `عدد الأصناف : ${tx.items.length}      •      مجموع الكميات : ${Number.isInteger(totalQty)?totalQty:totalQty.toFixed(2)}`
+    : currentLang==='fr'
+    ? `Articles : ${tx.items.length}      •      Total qtés : ${Number.isInteger(totalQty)?totalQty:totalQty.toFixed(2)}`
+    : `Items : ${tx.items.length}      •      Total qty : ${Number.isInteger(totalQty)?totalQty:totalQty.toFixed(2)}`;
+  ctx.fillText(summaryText, W / 2, y + SUMMARY_H / 2 + 10);
+  y += SUMMARY_H + 24;
 
+  /* أبعاد الجدول */
+  const HEAD_H = 62;
+  const ROW_H = Math.max(66, 66);
+  const colQty = 190;
+  const colUnit = 230;
+  const NAME_W = CW - colQty - colUnit;
+  const TABLE_H = HEAD_H + ROW_H * tx.items.length;
+
+  /* رأس الجدول */
+  const headGrad = ctx.createLinearGradient(PAD, y, PAD + CW, y);
+  headGrad.addColorStop(0, CT.oliveDark);
+  headGrad.addColorStop(1, CT.olive);
+  ctx.fillStyle = headGrad;
+  ctx.fillRect(PAD, y, CW, HEAD_H);
+
+  /* خلفيات الصفوف (تبادل) */
+  tx.items.forEach((it, i) => {
+    const rowY = y + HEAD_H + i * ROW_H;
+    ctx.fillStyle = i % 2 === 1 ? CT.olivePale : '#FFFFFF';
+    ctx.fillRect(PAD, rowY, CW, ROW_H);
+  });
+
+  /* فواصل أفقية بين الصفوف */
+  ctx.strokeStyle = 'rgba(10,123,95,.22)';
+  ctx.lineWidth = 1;
+  for(let i = 1; i < tx.items.length; i++){
+    const divY = y + HEAD_H + i * ROW_H + 0.5;
+    ctx.beginPath();
+    ctx.moveTo(PAD + 8, divY);
+    ctx.lineTo(PAD + CW - 8, divY);
+    ctx.stroke();
+  }
+
+  /* مواضع الفواصل الرأسية (RTL و LTR) */
+  const div1X = rtl ? PAD + CW - NAME_W : PAD + NAME_W;
+  const div2X = rtl ? PAD + CW - NAME_W - colQty : PAD + NAME_W + colQty;
+  ctx.strokeStyle = 'rgba(10,123,95,.45)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(div1X, y);      ctx.lineTo(div1X, y + TABLE_H);
+  ctx.moveTo(div2X, y);      ctx.lineTo(div2X, y + TABLE_H);
+  ctx.stroke();
+
+  /* الإطار الخارجي */
+  ctx.strokeStyle = CT.olive;
+  ctx.lineWidth = 2.5;
+  ctx.strokeRect(PAD + 1, y + 1, CW - 2, TABLE_H - 2);
+
+  /* رأس الجدول - النصوص */
+  const headerMidY = y + HEAD_H / 2 + 9;
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = F(800, 24);
+  const qtyCenterX = rtl
+    ? PAD + CW - NAME_W - colQty / 2
+    : PAD + NAME_W + colQty / 2;
+  ctx.textAlign = rtl ? 'right' : 'left';
+  ctx.fillText(t('form.items.name'), rtl ? PAD + CW - 26 : PAD + 26, headerMidY);
+  ctx.textAlign = 'center';
+  ctx.fillText(t('form.items.qty'), qtyCenterX, headerMidY);
+  ctx.textAlign = rtl ? 'left' : 'right';
+  ctx.fillText(t('form.items.unit'), rtl ? PAD + 26 : PAD + CW - 26, headerMidY);
+
+  /* الصفوف - النصوص */
+  tx.items.forEach((it, i) => {
+    const rowY = y + HEAD_H + i * ROW_H;
+    const midY = rowY + ROW_H / 2 + 11;
+
+    /* الاسم */
+    ctx.fillStyle = CT.ink;
+    ctx.font = F(700, 28);
+    ctx.textAlign = rtl ? 'right' : 'left';
+    const nameLines = wrapText(ctx, it.name, NAME_W - 56);
+    ctx.fillText(nameLines[0], rtl ? PAD + CW - 26 : PAD + 26, midY);
+
+    /* الكمية (بارزة بالوسط) */
+    ctx.fillStyle = CT.goldDark;
+    ctx.font = F(900, 38);
+    ctx.textAlign = 'center';
+    ctx.fillText(String(it.qty), qtyCenterX, midY);
+
+    /* الوحدة */
+    ctx.fillStyle = CT.oliveDark;
+    ctx.font = F(700, 26);
+    ctx.textAlign = rtl ? 'left' : 'right';
+    ctx.fillText(it.unit, rtl ? PAD + 26 : PAD + CW - 26, midY);
+  });
+
+  y += TABLE_H + 50;
+  /* ============ END ITEMS TABLE ============ */
+
+  /* ============ NOTES ============ */
   if(tx.notes){
     drawSectionTitle(ctx, PAD, y, CW, rtl, currentLang==='ar'?'ملاحظات':currentLang==='fr'?'OBSERVATIONS':'NOTES');
     y += 60;
@@ -2217,6 +2318,7 @@ async function generateCard(tx){
     y += noteH + 44;
   }
 
+  /* ============ PHOTOS ============ */
   if(photoImgs.length){
     drawSectionTitle(ctx, PAD, y, CW, rtl,
       (currentLang==='ar'?'الصور التوثيقية':currentLang==='fr'?'PREUVES PHOTOGRAPHIQUES':'PHOTO EVIDENCE') + ` (${photoImgs.length})`);
@@ -2251,6 +2353,7 @@ async function generateCard(tx){
     y += 44;
   }
 
+  /* ============ SIGNATURE ============ */
   y += 40;
   drawSectionTitle(ctx, PAD, y, CW, rtl,
     currentLang==='ar'?'التوقيع والختم الرسمي':currentLang==='fr'?'SIGNATURE ET CACHET':'SIGNATURE & STAMP');
@@ -2303,6 +2406,7 @@ async function generateCard(tx){
   if(tx.staff){ y += 42; ctx.fillStyle = CT.inkSoft; ctx.font = F(700, 26); ctx.fillText(`— ${tx.staff} —`, W/2, y); }
   y += 60;
 
+  /* ============ FOOTER ============ */
   ctx.strokeStyle = CT.olive; ctx.lineWidth = 1.5;
   ctx.beginPath(); ctx.moveTo(PAD, y+.5); ctx.lineTo(PAD+CW, y+.5); ctx.stroke();
   ctx.fillStyle = CT.gold;
@@ -2765,7 +2869,6 @@ function initHistory(){
   }
 }
 
-/* ⭐ PROFILE — with stamp, member duration, items summary, activity log, edit/pwd buttons */
 function renderProfile(){
   const host = document.getElementById('view-profile');
   if(!host) return;
@@ -3111,7 +3214,6 @@ function initModals(){
     document.getElementById('setFbConfig').value = localStorage.getItem('ds.fbConfig') || '';
     const sz = await idbSizeEstimate();
     document.getElementById('storageInfo').textContent = sz;
-    /* PIN section */
     const pinInfo = getPinForUser(currentUid);
     const enabled = !!(pinInfo && pinInfo.enabled);
     const toggle = document.getElementById('pinEnabledToggle');
@@ -3144,7 +3246,6 @@ function initModals(){
     closeModals();
   };
 
-  /* PIN toggle */
   const pinToggle = document.getElementById('pinEnabledToggle');
   const pinInput = document.getElementById('pinInput');
   const pinSaveBtn = document.getElementById('pinSaveBtn');
@@ -3179,7 +3280,6 @@ function initModals(){
     };
   }
 
-  /* Edit profile */
   const saveProfileBtn = document.getElementById('saveProfileBtn');
   if(saveProfileBtn && !saveProfileBtn._init){
     saveProfileBtn._init = true;
@@ -3205,7 +3305,6 @@ function initModals(){
     };
   }
 
-  /* Change password */
   const savePwdBtn = document.getElementById('savePwdBtn');
   if(savePwdBtn && !savePwdBtn._init){
     savePwdBtn._init = true;
@@ -3274,7 +3373,6 @@ function initModals(){
     sigClose(true); toast(t('sig.saved'));
   };
 
-  /* PIN pad */
   const pinPad = document.getElementById('pinPad');
   if(pinPad && !pinPad._init){
     pinPad._init = true;
@@ -3416,6 +3514,16 @@ function initTheme(){
   }
 }
 
+/* ⭐ Set logos everywhere */
+function applyLogos(){
+  const a = document.getElementById('authLogoImg');
+  const p = document.getElementById('pinLogoImg');
+  const tp = document.getElementById('topbarLogoImg');
+  if(a) a.src = APP_LOGO_URL;
+  if(p) p.src = APP_LOGO_URL;
+  if(tp) tp.src = APP_LOGO_URL;
+}
+
 function initAuth(){
   const btn = document.getElementById('btnLoginBtn');
   const em = document.getElementById('loginEmail');
@@ -3429,7 +3537,7 @@ function initAuth(){
     const old = btn.innerHTML;
     btn.innerHTML = `<span class="spinner-inline"></span> ${t('login.loading')}`;
     try {
-      sessionUnlocked = true; /* user just authenticated with email+password */
+      sessionUnlocked = true;
       await signInWithEmailAndPassword(auth, email, pass);
     }
     catch(err){ console.error(err); toast(t('login.error')); sessionUnlocked = false; }
@@ -3448,7 +3556,6 @@ function initAuth(){
       getMemberSince();
       document.getElementById('currentUserDisplay').textContent = currentAgent;
       ensureUI();
-      /* If PIN is enabled and this session hasn't been unlocked → show PIN screen */
       const pinInfo = getPinForUser(user.uid);
       if(pinInfo && pinInfo.enabled && !sessionUnlocked){
         showPinScreen();
@@ -3476,6 +3583,7 @@ function ensureUI(){
   if(uiReady) return;
   uiReady = true;
   loadSettings();
+  applyLogos();
   sigInit();
   initNavigation();
   initModals();
@@ -3496,13 +3604,14 @@ function ensureUI(){
 
 (function boot(){
   loadSettings();
+  applyLogos();
   initTheme();
   initLang();
   ensureUI();
   initAuth();
   updateNetStatus();
   setTimeout(()=>document.getElementById('loginEmail')?.focus(), 300);
-  console.log('%c Digital Stock v24 — PIN + Activity log + Profile edit + Stamp + refined colors ',
+  console.log('%c Digital Stock v25 — LOGO everywhere + organized ITEMS table ',
     'background:linear-gradient(90deg,#D4A017,#0A7B5F);color:#fff;padding:4px 10px;border-radius:8px;font-weight:900;');
 })();
 </script>
