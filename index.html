@@ -43,7 +43,6 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   background:radial-gradient(circle at 20% 10%,rgba(37,244,238,.08) 0%,transparent 40%),
              radial-gradient(circle at 80% 90%,rgba(254,44,85,.08) 0%,transparent 40%)}
 
-/* ⭐⭐⭐ SPLASH SCREEN — نبض ملء الشاشة ثم انكماش للشعار الرئيسي ⭐⭐⭐ */
 #splash-screen{position:fixed;inset:0;z-index:9999;background:var(--bg);
   display:grid;place-items:center;transition:background .9s ease;overflow:hidden}
 #splash-screen.hidden{display:none}
@@ -202,6 +201,8 @@ main{flex:1;width:100%;max-width:640px;margin:0 auto;padding:0 16px 24px}
 .tt-pill.acc{background:color-mix(in srgb,var(--c,var(--tt-cyan)) 18%,transparent);color:var(--c,var(--tt-cyan))}
 .tt-pill.ok{background:rgba(37,244,238,.15);color:var(--tt-cyan)}
 .tt-pill.warn{background:rgba(254,44,85,.15);color:var(--tt-pink)}
+.tt-pill.priv{background:rgba(168,85,247,.18);color:#d8b4fe}
+.tt-pill.pub{background:rgba(14,143,111,.18);color:#6ee7b7}
 .tt-hint{font-size:12.5px;color:var(--muted);line-height:1.5;margin:0 0 14px}
 .tt-grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media(max-width:560px){.tt-grid2{grid-template-columns:1fr;gap:0}}
@@ -279,6 +280,21 @@ html[dir="rtl"] .tt-item-row .i-unit{background-position:left 8px center}
   .tt-item-row .i-unit{font-size:11.5px}
   .tt-item-row .del{width:34px;height:34px}
 }
+
+/* ⭐ Private/Public selector in form */
+.vis-selector{display:flex;gap:8px;margin-top:6px}
+.vis-opt{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:12px 14px;border-radius:14px;border:2px solid var(--line-2);
+  background:var(--surface-2);cursor:pointer;transition:.2s;
+  font-weight:800;font-size:13.5px}
+.vis-opt:hover{border-color:var(--line-2);background:var(--surface-3)}
+.vis-opt.active-pub{border-color:#0e8f6f;background:rgba(14,143,111,.12);color:#6ee7b7;
+  box-shadow:0 0 0 3px rgba(14,143,111,.15)}
+.vis-opt.active-priv{border-color:#a855f7;background:rgba(168,85,247,.12);color:#d8b4fe;
+  box-shadow:0 0 0 3px rgba(168,85,247,.15)}
+.vis-opt .ic{font-size:18px}
+html[data-theme="light"] .vis-opt.active-pub{color:#0e8f6f}
+html[data-theme="light"] .vis-opt.active-priv{color:#7c3aed}
 
 .tt-photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px}
 .tt-photo-grid:empty{display:none}
@@ -387,6 +403,8 @@ html[dir="rtl"] .tt-item-row .i-unit{background-position:left 8px center}
   margin-bottom:12px;position:relative;overflow:hidden;transition:.2s;cursor:pointer}
 .feed-card::before{content:'';position:absolute;top:0;bottom:0;inset-inline-start:0;width:4px;
   background:var(--c,var(--tt-cyan));box-shadow:0 0 16px var(--c,var(--tt-cyan))}
+.feed-card.private-card::before{background:linear-gradient(180deg,#a855f7,#7c3aed);
+  box-shadow:0 0 16px rgba(168,85,247,.6)}
 .feed-card:hover{transform:translateY(-2px);border-color:var(--line-2)}
 .feed-main{flex:1;min-width:0;padding-inline-start:6px}
 .feed-ref{font-size:14.5px;font-weight:800;display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-bottom:4px}
@@ -434,10 +452,13 @@ html[dir="rtl"] .tt-item-row .i-unit{background-position:left 8px center}
   transition:.2s;position:relative;overflow:hidden}
 .activity-cell::before{content:'';position:absolute;top:0;inset-inline-start:0;width:100%;height:3px;
   background:var(--c,var(--tt-cyan));opacity:.8}
+.activity-cell.private-card::before{background:linear-gradient(90deg,#a855f7,#7c3aed)}
 .activity-cell:hover{border-color:var(--c,var(--tt-cyan));transform:scale(1.03)}
 .activity-cell .ic{font-size:22px;margin-bottom:4px}
 .activity-cell .ref{font-family:var(--font-en);font-size:9px;font-weight:800;color:var(--muted);
   text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;direction:ltr}
+.activity-cell .lock-badge{position:absolute;top:4px;inset-inline-end:4px;
+  font-size:10px;background:rgba(168,85,247,.85);color:#fff;padding:2px 5px;border-radius:6px}
 
 .profile-stamp-card{padding:16px;border-radius:18px;background:var(--surface-2);
   border:1.5px solid var(--line-2);text-align:center;margin-bottom:14px;position:relative;overflow:hidden}
@@ -456,6 +477,19 @@ html[dir="rtl"] .tt-item-row .i-unit{background-position:left 8px center}
   border-color:rgba(229,168,35,.35);color:#E5A823}
 .profile-badge.olive{background:linear-gradient(135deg,rgba(14,143,111,.15),rgba(14,143,111,.08));
   border-color:rgba(14,143,111,.35);color:#0e8f6f}
+.profile-badge.priv{background:linear-gradient(135deg,rgba(168,85,247,.15),rgba(168,85,247,.08));
+  border-color:rgba(168,85,247,.35);color:#d8b4fe}
+.profile-badge.pub{background:linear-gradient(135deg,rgba(14,143,111,.15),rgba(14,143,111,.08));
+  border-color:rgba(14,143,111,.35);color:#6ee7b7}
+
+/* Agent code badge in profile */
+.agent-code-badge{margin-top:10px;display:inline-flex;align-items:center;gap:8px;
+  padding:6px 14px;border-radius:99px;
+  background:linear-gradient(135deg,#D4A017,#0A7B5F);
+  color:#fff;font-family:'Inter',sans-serif;font-weight:900;font-size:13px;
+  letter-spacing:.5px;box-shadow:0 4px 14px rgba(212,160,23,.35);cursor:pointer;transition:.2s;
+  border:none}
+.agent-code-badge:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(212,160,23,.5)}
 
 .activity-log-list{display:flex;flex-direction:column;gap:6px}
 .activity-log-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;
@@ -665,7 +699,6 @@ html[dir="rtl"] .toggle-switch input:checked + .toggle-slider::after{transform:t
 </head>
 <body>
 
-<!-- ⭐⭐⭐ SPLASH SCREEN ⭐⭐⭐ -->
 <div id="splash-screen">
   <div id="splashMove">
     <img id="splashLogo" alt="Digital Stock">
@@ -757,6 +790,8 @@ html[dir="rtl"] .toggle-switch input:checked + .toggle-slider::after{transform:t
         <button class="hist-filter active" data-filter="all" data-i18n="history.filter.all">الكل</button>
         <button class="hist-filter" data-filter="warehouse" data-i18n="history.filter.internal">داخلي</button>
         <button class="hist-filter" data-filter="bon" data-i18n="history.filter.external">خارجي</button>
+        <button class="hist-filter" data-filter="public" data-i18n="history.filter.public">🌍 عام</button>
+        <button class="hist-filter" data-filter="private" data-i18n="history.filter.private">🔒 خاص</button>
         <button class="tt-iconbtn" id="btnExportAll">⬇</button>
         <button class="tt-iconbtn" id="btnImportAll">⬆</button>
         <div class="hist-date-row">
@@ -790,8 +825,6 @@ html[dir="rtl"] .toggle-switch input:checked + .toggle-slider::after{transform:t
           <img class="mode-icon mode-icon-wh" src="https://i.ibb.co/671SFNbX/Gemini-Generated-Image-9labrq9labrq9lab-removebg-preview.png" alt="" draggable="false">
           <img class="mode-icon mode-icon-bon" src="https://i.ibb.co/gbRhXZXW/Gemini-Generated-Image-xiyblvxiyblvxiyb-removebg-preview.png" alt="" draggable="false">
         </div>
-        <span class="mode-ripple ring-a"></span>
-        <span class="mode-ripple ring-b"></span>
       </button>
       <div class="mode-label" id="modeLabel">خروج مخزن</div>
     </div>
@@ -916,7 +949,7 @@ html[dir="rtl"] .toggle-switch input:checked + .toggle-slider::after{transform:t
   </div>
 </div>
 
-<!-- EDIT PROFILE -->
+<!-- EDIT PROFILE — with AGENT CODE -->
 <div class="tt-modal" id="editProfileModal">
   <div class="tt-modal-box">
     <div class="tt-modal-head">
@@ -926,6 +959,16 @@ html[dir="rtl"] .toggle-switch input:checked + .toggle-slider::after{transform:t
     <div class="tt-modal-body">
       <label class="tt-label"><span data-i18n="editProfile.name">الاسم الظاهر</span>
         <input class="tt-input" id="editProfileName" placeholder="اسمك الكامل"></label>
+
+      <label class="tt-label">
+        <span data-i18n="editProfile.agentCode">كود العون (يدوي)</span>
+        <input class="tt-input" id="editProfileAgentCode" dir="ltr" maxlength="8"
+          placeholder="AB12" style="text-transform:uppercase;font-family:var(--font-en);font-weight:900;letter-spacing:3px;text-align:center;font-size:18px">
+      </label>
+      <p class="tt-hint" style="margin-top:-8px;font-size:11.5px" data-i18n="editProfile.agentCodeHint">
+        2 إلى 8 أحرف/أرقام. يستخدم في توليد رقم المرجع.
+      </p>
+
       <label class="tt-label"><span data-i18n="editProfile.phone">رقم الهاتف (اختياري)</span>
         <input class="tt-input" id="editProfilePhone" type="tel" dir="ltr" placeholder="+216..."></label>
       <p class="tt-hint" data-i18n="editProfile.hint">البريد الإلكتروني لا يمكن تغييره من هنا.</p>
@@ -1022,8 +1065,6 @@ enableIndexedDbPersistence(db).catch(() => {});
 setPersistence(auth, browserLocalPersistence).catch(console.error);
 
 const ADMIN_UID = 'kszZYwapqMYc8XvY2yOYGmO3c6D3';
-
-/* ⭐ APP LOGO */
 const APP_LOGO_URL = 'https://i.ibb.co/bRqLsfSm/Gemini-Generated-Image-u5cpgfu5cpgfu5cp-removebg-preview.png';
 
 let _jsPDFPromise = null;
@@ -1077,6 +1118,9 @@ const I18N = {
     'form.reason':'السبب *','form.vehicle':'المركبة / السائق','form.vehicle.placeholder':'مثال: شاحنة ABC-123',
     'form.authorizedBy':'المفوِّض','form.authorizedBy.placeholder':'اسم المسؤول',
     'form.notes':'ملاحظات','form.notes.placeholder':'ملاحظات إضافية…',
+    'form.visibility':'ظهور البطاقة','form.visibility.hint':'اختر من يمكنه رؤية هذه البطاقة',
+    'form.visibility.public':'🌍 عام','form.visibility.private':'🔒 خاص',
+    'form.visibility.public.hint':'مرئية للجميع','form.visibility.private.hint':'مرئية لك فقط',
     'form.items':'الأصناف والكميات','form.items.detail':'تفاصيل',
     'form.items.name':'التسمية','form.items.qty':'الكمية','form.items.unit':'الوحدة','form.items.add':'+ إضافة صنف',
     'form.items.count':'عدد الأصناف','form.items.totalQty':'مجموع الكميات',
@@ -1090,12 +1134,15 @@ const I18N = {
     'form.noPhotos':'لا صور. المتابعة؟','form.maxPhotos':'الحد 10 صور',
     'form.saved':'تم الحفظ:','form.saved.local':'تم الحفظ محلياً:','form.offline':'غير متصل — في الانتظار','form.photos.added':'تمت إضافة',
     'history.title':'السجل','history.search':'🔍 بحث…','history.filter.all':'الكل','history.filter.internal':'داخلي','history.filter.external':'خارجي',
+    'history.filter.public':'🌍 عام','history.filter.private':'🔒 خاص',
     'history.export':'تصدير','history.import':'استيراد','history.empty':'لا توجد حركات.','history.empty.hint':'اعتمد معاملة.',
     'history.noResults':'لا نتائج.','history.archived':'مؤرشف','history.unarchived':'غير مؤرشف','history.purgeIn':'حذف في','history.hours':'س',
     'history.view':'عرض','history.share':'واتساب','history.pdf':'PDF','history.delete':'حذف',
     'history.deleted':'تم الحذف','history.exported':'تم التصدير','history.imported':'تم الاستيراد','history.noExport':'لا سجلات',
     'history.importConfirm':'استيراد؟','history.importInvalid':'ملف غير صالح','history.pdfGenerating':'جاري التوليد…','history.pdfReady':'تم','history.pdfError':'خطأ:',
     'history.dateFrom':'من','history.dateTo':'إلى',
+    'history.madePublic':'✓ أصبحت عامة','history.madePrivate':'🔒 أصبحت خاصة',
+    'history.toggleVisibility':'تغيير الظهور',
     'card.title':'البطاقة','card.whatsapp':'واتساب','card.jpg':'تم','card.json':'تم',
     'card.noActive':'لا بطاقة','card.generating':'جاري التوليد…','card.genError':'تعذّر.',
     'archive.running':'أرشفة…','archive.compiling':'PDF+JSON','archive.cloud':'مؤرشف سحابياً','archive.local':'مؤرشف محلياً',
@@ -1117,14 +1164,21 @@ const I18N = {
     'profile.edit':'تعديل الملف','profile.changePwd':'تغيير كلمة المرور',
     'profile.memberSince':'عضو منذ','profile.daysAgo':'يوم','profile.today':'اليوم',
     'profile.stats.totalItems':'إجمالي الأصناف','profile.stats.totalQty':'إجمالي الكميات',
+    'profile.stats.public':'🌍 عام','profile.stats.private':'🔒 خاص',
     'profile.officialStamp':'الختم الرسمي للمنشأة',
     'profile.activityLog':'سجل الدخول والخروج',
     'profile.noActivityLog':'لا يوجد نشاط مسجّل',
     'profile.activity.login':'تسجيل دخول','profile.activity.logout':'تسجيل خروج',
     'profile.activity.pin_ok':'دخول ناجح بـ PIN','profile.activity.pin_fail':'محاولة PIN فاشلة',
+    'profile.allCards':'عرض جميع البطاقات (مشرف)',
+    'profile.adminBanner':'أنت مسجل كمدير — ترى جميع بطاقات كل المستخدمين',
     'editProfile.title':'تعديل الملف الشخصي','editProfile.name':'الاسم الظاهر',
+    'editProfile.agentCode':'كود العون (يدوي)','editProfile.agentCodeHint':'2 إلى 8 أحرف/أرقام. يستخدم في توليد رقم المرجع.',
     'editProfile.phone':'رقم الهاتف (اختياري)','editProfile.hint':'البريد الإلكتروني لا يمكن تغييره من هنا.',
     'editProfile.saved':'تم تحديث الملف','editProfile.error':'فشل التحديث',
+    'editProfile.codeInvalid':'كود العون غير صالح (2-8 أحرف/أرقام)',
+    'editProfile.codeExists':'كود العون مستخدم من قبل عضو آخر',
+    'editProfile.codeSaved':'✓ تم حفظ كود العون',
     'changePwd.title':'تغيير كلمة المرور','changePwd.current':'كلمة المرور الحالية',
     'changePwd.new':'كلمة المرور الجديدة','changePwd.confirm':'تأكيد كلمة المرور الجديدة',
     'changePwd.hint':'يجب أن تكون كلمة المرور 6 أحرف على الأقل.','changePwd.submit':'تحديث',
@@ -1158,6 +1212,9 @@ const I18N = {
     'form.po':'Code employé','form.po.optional':'Ex: EMP-001','form.destination':'Destination *','form.destination.placeholder':'Fournisseur…',
     'form.reason':'Motif *','form.vehicle':'Véhicule','form.vehicle.placeholder':'Ex: Camion AB-123',
     'form.authorizedBy':'Autorisé par','form.authorizedBy.placeholder':'Responsable','form.notes':'Observations','form.notes.placeholder':'Remarques…',
+    'form.visibility':'Visibilité de la fiche','form.visibility.hint':'Choisissez qui peut voir cette fiche',
+    'form.visibility.public':'🌍 Public','form.visibility.private':'🔒 Privé',
+    'form.visibility.public.hint':'Visible par tous','form.visibility.private.hint':'Visible par vous uniquement',
     'form.items':'Articles & Quantités','form.items.detail':'Détail','form.items.name':'Désignation','form.items.qty':'Qté','form.items.unit':'Unité','form.items.add':'+ Ajouter',
     'form.items.count':'Nb articles','form.items.totalQty':'Total qtés','form.photos':'Photos','form.photos.hint':'Jusqu\'à 10 photos.',
     'form.photos.camera':'📷 Caméra','form.photos.gallery':'🖼 Galerie','form.signature':'Signature du personnel','form.signature.hint':'Passez l\'appareil',
@@ -1167,12 +1224,13 @@ const I18N = {
     'form.destination.required':'Destination requise','form.reason.required':'Motif requis','form.noPhotos':'Sans photos ?','form.maxPhotos':'Max 10',
     'form.saved':'Enregistré:','form.saved.local':'Local:','form.offline':'Hors ligne','form.photos.added':'Ajouté',
     'history.title':'Historique','history.search':'🔍 Rechercher…','history.filter.all':'Tout','history.filter.internal':'Interne','history.filter.external':'Externe',
+    'history.filter.public':'🌍 Public','history.filter.private':'🔒 Privé',
     'history.export':'Exporter','history.import':'Importer','history.empty':'Aucune fiche.','history.empty.hint':'Validez une sortie.',
     'history.noResults':'Aucun résultat.','history.archived':'Archivé','history.unarchived':'Non archivé','history.purgeIn':'Purge','history.hours':'h',
     'history.view':'Voir','history.share':'WhatsApp','history.pdf':'PDF','history.delete':'Suppr','history.deleted':'Supprimé',
     'history.exported':'Exporté','history.imported':'Importé','history.noExport':'Aucun','history.importConfirm':'Importer ?',
     'history.importInvalid':'Fichier invalide','history.pdfGenerating':'Génération…','history.pdfReady':'Prêt','history.pdfError':'Erreur:',
-    'history.dateFrom':'Du','history.dateTo':'Au',
+    'history.dateFrom':'Du','history.dateTo':'Au','history.madePublic':'✓ Public','history.madePrivate':'🔒 Privé','history.toggleVisibility':'Changer visibilité',
     'card.title':'Fiche','card.whatsapp':'WhatsApp','card.jpg':'OK','card.json':'OK','card.noActive':'Aucune','card.generating':'Génération…','card.genError':'Erreur.',
     'archive.running':'Archivage…','archive.compiling':'PDF+JSON','archive.cloud':'Archivé cloud','archive.local':'Archivé local',
     'archive.autoPurge':'Purge','archive.hours':'h','archive.days':'j','archive.partial':'Partiel','archive.failed':'Échec','archive.failedHint':'Réessayez',
@@ -1188,10 +1246,15 @@ const I18N = {
     'profile.avatarUpdated':'Photo mise à jour','profile.agentCode':'Code agent','profile.edit':'Modifier profil','profile.changePwd':'Changer mot de passe',
     'profile.memberSince':'Membre depuis','profile.daysAgo':'jours','profile.today':'Aujourd\'hui',
     'profile.stats.totalItems':'Total articles','profile.stats.totalQty':'Total qtés',
+    'profile.stats.public':'🌍 Public','profile.stats.private':'🔒 Privé',
     'profile.officialStamp':'Cachet officiel','profile.activityLog':'Journal d\'accès','profile.noActivityLog':'Aucun journal',
     'profile.activity.login':'Connexion','profile.activity.logout':'Déconnexion','profile.activity.pin_ok':'PIN correct','profile.activity.pin_fail':'PIN échoué',
-    'editProfile.title':'Modifier le profil','editProfile.name':'Nom affiché','editProfile.phone':'Téléphone (optionnel)',
-    'editProfile.hint':'L\'email ne peut pas être modifié.','editProfile.saved':'Profil mis à jour','editProfile.error':'Échec',
+    'profile.allCards':'Toutes les fiches (admin)','profile.adminBanner':'Admin — vous voyez toutes les fiches',
+    'editProfile.title':'Modifier le profil','editProfile.name':'Nom affiché',
+    'editProfile.agentCode':'Code agent (manuel)','editProfile.agentCodeHint':'2 à 8 caractères alphanumériques.',
+    'editProfile.phone':'Téléphone (optionnel)','editProfile.hint':'L\'email ne peut pas être modifié.',
+    'editProfile.saved':'Profil mis à jour','editProfile.error':'Échec',
+    'editProfile.codeInvalid':'Code invalide (2-8)','editProfile.codeExists':'Code déjà utilisé','editProfile.codeSaved':'✓ Code enregistré',
     'changePwd.title':'Changer mot de passe','changePwd.current':'Mot de passe actuel','changePwd.new':'Nouveau mot de passe',
     'changePwd.confirm':'Confirmer','changePwd.hint':'Au moins 6 caractères.','changePwd.submit':'Mettre à jour','changePwd.saved':'Mot de passe mis à jour',
     'changePwd.error':'Échec','changePwd.mismatch':'Mots de passe différents','changePwd.tooShort':'Trop court','changePwd.required':'Champs requis',
@@ -1219,8 +1282,11 @@ const I18N = {
     'form.staff':'Staff *','form.staff.placeholder':'Full name','form.department':'Department *','form.choose':'— Choose —',
     'form.po':'Employee code','form.po.optional':'Ex: EMP-001','form.destination':'Destination *','form.destination.placeholder':'Supplier…',
     'form.reason':'Reason *','form.vehicle':'Vehicle','form.vehicle.placeholder':'Ex: Truck AB-123','form.authorizedBy':'Authorized by','form.authorizedBy.placeholder':'Name',
-    'form.notes':'Notes','form.notes.placeholder':'Remarks…','form.items':'Items & Quantities','form.items.detail':'Details',
-    'form.items.name':'Name','form.items.qty':'Qty','form.items.unit':'Unit','form.items.add':'+ Add item',
+    'form.notes':'Notes','form.notes.placeholder':'Remarks…',
+    'form.visibility':'Card visibility','form.visibility.hint':'Choose who can see this card',
+    'form.visibility.public':'🌍 Public','form.visibility.private':'🔒 Private',
+    'form.visibility.public.hint':'Visible to everyone','form.visibility.private.hint':'Visible to you only',
+    'form.items':'Items & Quantities','form.items.detail':'Details','form.items.name':'Name','form.items.qty':'Qty','form.items.unit':'Unit','form.items.add':'+ Add item',
     'form.items.count':'Items count','form.items.totalQty':'Total qty','form.photos':'Photos','form.photos.hint':'Up to 10 photos.',
     'form.photos.camera':'📷 Camera','form.photos.gallery':'🖼 Gallery','form.signature':'Receiving employee signature','form.signature.hint':'Hand the device',
     'form.signature.tap':'Tap to sign','form.signature.signed':'✓ Signed','form.signature.manual':'Manual',
@@ -1229,12 +1295,13 @@ const I18N = {
     'form.destination.required':'Destination required','form.reason.required':'Reason required','form.noPhotos':'No photos?','form.maxPhotos':'Max 10',
     'form.saved':'Saved:','form.saved.local':'Local:','form.offline':'Offline','form.photos.added':'Added',
     'history.title':'History','history.search':'🔍 Search…','history.filter.all':'All','history.filter.internal':'Internal','history.filter.external':'External',
+    'history.filter.public':'🌍 Public','history.filter.private':'🔒 Private',
     'history.export':'Export','history.import':'Import','history.empty':'No records.','history.empty.hint':'Validate an exit.',
     'history.noResults':'No results.','history.archived':'Archived','history.unarchived':'Not archived','history.purgeIn':'Purge','history.hours':'h',
     'history.view':'View','history.share':'WhatsApp','history.pdf':'PDF','history.delete':'Delete','history.deleted':'Deleted',
     'history.exported':'Exported','history.imported':'Imported','history.noExport':'None','history.importConfirm':'Import?',
     'history.importInvalid':'Invalid file','history.pdfGenerating':'Generating…','history.pdfReady':'Ready','history.pdfError':'Error:',
-    'history.dateFrom':'From','history.dateTo':'To',
+    'history.dateFrom':'From','history.dateTo':'To','history.madePublic':'✓ Public','history.madePrivate':'🔒 Private','history.toggleVisibility':'Toggle visibility',
     'card.title':'Card','card.whatsapp':'WhatsApp','card.jpg':'OK','card.json':'OK','card.noActive':'None','card.generating':'Generating…','card.genError':'Error.',
     'archive.running':'Archiving…','archive.compiling':'PDF+JSON','archive.cloud':'Cloud archived','archive.local':'Local archived',
     'archive.autoPurge':'Purge','archive.hours':'h','archive.days':'d','archive.partial':'Partial','archive.failed':'Failed','archive.failedHint':'Retry',
@@ -1250,10 +1317,15 @@ const I18N = {
     'profile.avatarUpdated':'Photo updated','profile.agentCode':'Agent code','profile.edit':'Edit profile','profile.changePwd':'Change password',
     'profile.memberSince':'Member since','profile.daysAgo':'days','profile.today':'Today',
     'profile.stats.totalItems':'Total items','profile.stats.totalQty':'Total qty',
+    'profile.stats.public':'🌍 Public','profile.stats.private':'🔒 Private',
     'profile.officialStamp':'Official establishment stamp','profile.activityLog':'Access log','profile.noActivityLog':'No activity',
     'profile.activity.login':'Sign in','profile.activity.logout':'Sign out','profile.activity.pin_ok':'PIN success','profile.activity.pin_fail':'PIN failed',
-    'editProfile.title':'Edit Profile','editProfile.name':'Display name','editProfile.phone':'Phone (optional)',
-    'editProfile.hint':'Email cannot be changed here.','editProfile.saved':'Profile updated','editProfile.error':'Update failed',
+    'profile.allCards':'All cards (admin)','profile.adminBanner':'Admin account — you see all cards from all users',
+    'editProfile.title':'Edit Profile','editProfile.name':'Display name',
+    'editProfile.agentCode':'Agent code (manual)','editProfile.agentCodeHint':'2 to 8 alphanumeric characters.',
+    'editProfile.phone':'Phone (optional)','editProfile.hint':'Email cannot be changed here.',
+    'editProfile.saved':'Profile updated','editProfile.error':'Update failed',
+    'editProfile.codeInvalid':'Invalid code (2-8)','editProfile.codeExists':'Code already used','editProfile.codeSaved':'✓ Code saved',
     'changePwd.title':'Change Password','changePwd.current':'Current password','changePwd.new':'New password','changePwd.confirm':'Confirm password',
     'changePwd.hint':'At least 6 characters.','changePwd.submit':'Update','changePwd.saved':'Password updated',
     'changePwd.error':'Update failed','changePwd.mismatch':'Passwords do not match','changePwd.tooShort':'Too short','changePwd.required':'All fields required',
@@ -1279,6 +1351,7 @@ const DECO_IMAGE_URL='https://i.ibb.co/jP5hnSGX/Gemini-Generated-Image-9fqvg09fq
 
 const drafts = { warehouse:[], bon:[] };
 const signatures = { warehouse:null, bon:null };
+const visDraft = { warehouse:'public', bon:'public' };   /* ⭐ default visibility */
 let settings = { hotel:'Les Oliviers Palace', phone:'' };
 let activeTx = null, activeCardUrl = null;
 let currentAgent = '', currentEmail = '', currentUid = '', currentAgentCode = 'XXXX';
@@ -1298,81 +1371,44 @@ const fmtDate = d => new Date(d).toLocaleDateString('en-US');
 const fmtTime = d => new Date(d).toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:false});
 const fmtDateTime = d => `${fmtDate(d)} • ${fmtTime(d)}`;
 
-/* ⭐⭐⭐ SPLASH ANIMATION ⭐⭐⭐ */
 function runSplash(onComplete){
   const splash = document.getElementById('splash-screen');
   const moveWrap = document.getElementById('splashMove');
   const logoImg = document.getElementById('splashLogo');
   if(!splash || !moveWrap) { if(onComplete) onComplete(); return; }
   logoImg.src = APP_LOGO_URL;
-
   const finish = () => { if(onComplete) onComplete(); };
-
-  /* بعد 2 ثانية: انكماش الشعار إلى موقعه الرئيسي */
   setTimeout(() => {
-    /* تحديد العنصر الهدف حسب الشاشة الظاهرة */
     let target = null;
     const authScreen = document.getElementById('auth-screen');
     const pinScreen = document.getElementById('pin-screen');
     const appScreen = document.getElementById('app-screen');
-
     if(appScreen && appScreen.classList.contains('visible')){
-      /* الشاشة الرئيسية ظاهرة: لا يوجد شعار هدف → تلاشي بسيط */
-      splash.style.transition = 'opacity .5s ease';
-      splash.style.opacity = '0';
-      setTimeout(() => {
-        splash.classList.add('hidden');
-        splash.style.opacity = ''; splash.style.transition = '';
-        finish();
-      }, 520);
+      splash.style.transition = 'opacity .5s ease'; splash.style.opacity = '0';
+      setTimeout(() => { splash.classList.add('hidden'); splash.style.opacity = ''; splash.style.transition = ''; finish(); }, 520);
       return;
     }
-    if(authScreen && !authScreen.classList.contains('hidden')){
-      target = document.querySelector('.auth-logo');
-    } else if(pinScreen && !pinScreen.classList.contains('hidden')){
-      target = document.querySelector('.pin-logo');
-    }
-
+    if(authScreen && !authScreen.classList.contains('hidden')) target = document.querySelector('.auth-logo');
+    else if(pinScreen && !pinScreen.classList.contains('hidden')) target = document.querySelector('.pin-logo');
     if(!target){
-      splash.style.transition = 'opacity .5s ease';
-      splash.style.opacity = '0';
-      setTimeout(() => {
-        splash.classList.add('hidden');
-        splash.style.opacity = ''; splash.style.transition = '';
-        finish();
-      }, 520);
+      splash.style.transition = 'opacity .5s ease'; splash.style.opacity = '0';
+      setTimeout(() => { splash.classList.add('hidden'); splash.style.opacity = ''; splash.style.transition = ''; finish(); }, 520);
       return;
     }
-
-    /* قياس المواقع */
     void document.body.offsetHeight;
     const tr = target.getBoundingClientRect();
     const sr = moveWrap.getBoundingClientRect();
-    if(tr.width === 0 || sr.width === 0){
-      splash.classList.add('hidden');
-      finish();
-      return;
-    }
+    if(tr.width === 0 || sr.width === 0){ splash.classList.add('hidden'); finish(); return; }
     const scale = tr.width / sr.width;
     const dx = (tr.left + tr.width / 2) - (sr.left + sr.width / 2);
     const dy = (tr.top + tr.height / 2) - (sr.top + sr.height / 2);
-
-    /* إخفاء الشعار الهدف مؤقتاً */
     target.style.opacity = '0';
-
-    /* إيقاف النبض */
     moveWrap.style.animation = 'none';
     void moveWrap.offsetHeight;
-
-    /* الانكماش */
     moveWrap.style.transition = 'transform .95s cubic-bezier(.6,0,.2,1)';
     moveWrap.style.transform = `translate(${dx}px, ${dy}px) scale(${scale})`;
-
-    /* تلاشي خلفية الشاشة */
     splash.style.transition = 'background .95s ease';
     splash.style.background = 'transparent';
-
-    /* بعد وصول الشعار: استبدال الشعارين ثم إخفاء splash */
     setTimeout(() => {
       target.style.opacity = '1';
       splash.style.transition = 'opacity .35s ease';
@@ -1403,6 +1439,8 @@ const dataURLtoBlob = dataURL => {
   for (let i=0;i<bin.length;i++) arr[i] = bin.charCodeAt(i);
   return new Blob([arr],{type:mime});
 };
+
+/* ⭐⭐⭐ AGENT CODE (manual + auto fallback) ⭐⭐⭐ */
 function generateAgentCode(uid){
   if(!uid) return 'XXXX';
   const codes = JSON.parse(localStorage.getItem(AGENT_CODES_KEY) || '{}');
@@ -1412,6 +1450,30 @@ function generateAgentCode(uid){
   codes[uid] = code;
   localStorage.setItem(AGENT_CODES_KEY, JSON.stringify(codes));
   return code;
+}
+function getAgentCodeForUser(uid){
+  if(!uid) return null;
+  const codes = JSON.parse(localStorage.getItem(AGENT_CODES_KEY) || '{}');
+  return codes[uid] || null;
+}
+function isAgentCodeUsed(code, exceptUid){
+  const codes = JSON.parse(localStorage.getItem(AGENT_CODES_KEY) || '{}');
+  const c = String(code||'').toUpperCase();
+  for(const [uid, val] of Object.entries(codes)){
+    if(uid === exceptUid) continue;
+    if(String(val).toUpperCase() === c) return true;
+  }
+  return false;
+}
+function setAgentCodeForUser(uid, code){
+  if(!uid) return;
+  const codes = JSON.parse(localStorage.getItem(AGENT_CODES_KEY) || '{}');
+  codes[uid] = String(code).toUpperCase().trim();
+  localStorage.setItem(AGENT_CODES_KEY, JSON.stringify(codes));
+}
+function normalizeAgentCode(input){
+  const raw = String(input||'').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  return raw.slice(0, 8);
 }
 
 function logActivity(type, extra={}){
@@ -1477,14 +1539,11 @@ function showPinScreen(){
   document.getElementById('pin-screen').classList.remove('hidden');
   document.getElementById('auth-screen').classList.add('hidden');
   document.getElementById('app-screen').classList.remove('visible');
-  pinBuffer = '';
-  pinFailCount = 0;
+  pinBuffer = ''; pinFailCount = 0;
   renderPinDots();
   document.getElementById('pinError').textContent = '';
 }
-function hidePinScreen(){
-  document.getElementById('pin-screen').classList.add('hidden');
-}
+function hidePinScreen(){ document.getElementById('pin-screen').classList.add('hidden'); }
 function renderPinDots(){
   const dots = document.querySelectorAll('#pinDots span');
   dots.forEach((d,i) => d.classList.toggle('filled', i < pinBuffer.length));
@@ -1495,45 +1554,20 @@ function handlePinDigit(d){
   renderPinDots();
   if(pinBuffer.length === PIN_LENGTH) verifyPin();
 }
-function handlePinClear(){
-  pinBuffer = '';
-  renderPinDots();
-  document.getElementById('pinError').textContent = '';
-}
-function handlePinBack(){
-  if(pinBuffer.length === 0) return;
-  pinBuffer = pinBuffer.slice(0, -1);
-  renderPinDots();
-  document.getElementById('pinError').textContent = '';
-}
+function handlePinClear(){ pinBuffer=''; renderPinDots(); document.getElementById('pinError').textContent=''; }
+function handlePinBack(){ if(pinBuffer.length===0) return; pinBuffer=pinBuffer.slice(0,-1); renderPinDots(); document.getElementById('pinError').textContent=''; }
 function verifyPin(){
   const stored = getPinForUser(currentUid);
-  if(!stored || !stored.enabled){
-    sessionUnlocked = true;
-    hidePinScreen();
-    showAppScreen();
-    return;
-  }
-  if(pinBuffer === stored.pin){
-    sessionUnlocked = true;
-    logActivity('pin_ok');
-    hidePinScreen();
-    showAppScreen();
-  } else {
-    pinFailCount++;
-    logActivity('pin_fail');
+  if(!stored || !stored.enabled){ sessionUnlocked=true; hidePinScreen(); showAppScreen(); return; }
+  if(pinBuffer === stored.pin){ sessionUnlocked=true; logActivity('pin_ok'); hidePinScreen(); showAppScreen(); }
+  else {
+    pinFailCount++; logActivity('pin_fail');
     const dots = document.getElementById('pinDots');
     dots.classList.add('error');
     setTimeout(()=>dots.classList.remove('error'), 500);
     document.getElementById('pinError').textContent = t('pin.wrong');
-    pinBuffer = '';
-    renderPinDots();
-    if(pinFailCount >= 5){
-      toast(t('pin.tooManyTries'), 3500);
-      setTimeout(async()=>{
-        try { await signOut(auth); } catch {}
-      }, 1200);
-    }
+    pinBuffer=''; renderPinDots();
+    if(pinFailCount >= 5){ toast(t('pin.tooManyTries'), 3500); setTimeout(async()=>{ try{ await signOut(auth); }catch{} }, 1200); }
   }
 }
 function showAppScreen(){
@@ -1930,6 +1964,29 @@ function moduleExtraHtml(key){
       <input class="tt-input" name="authorizedBy" placeholder="${t('form.authorizedBy.placeholder')}"></label>
   </div>`;
 }
+/* ⭐ Visibility selector HTML */
+function visibilityHtml(key){
+  const cur = visDraft[key];
+  return `
+    <div class="tt-card" style="--c:${cur==='private'?'#a855f7':'#0e8f6f'};padding:14px">
+      <div class="tt-card-head" style="margin-bottom:8px">
+        <span class="tt-bullet" style="--c:${cur==='private'?'#a855f7':'#0e8f6f'}"></span>
+        <h2 style="font-size:14px">${t('form.visibility')}</h2>
+      </div>
+      <p class="tt-hint" style="margin-bottom:10px">${t('form.visibility.hint')}</p>
+      <div class="vis-selector" data-vis="${key}">
+        <div class="vis-opt${cur==='public'?' active-pub':''}" data-vis-val="public">
+          <span class="ic">🌍</span><span>${t('form.visibility.public')}</span>
+        </div>
+        <div class="vis-opt${cur==='private'?' active-priv':''}" data-vis-val="private">
+          <span class="ic">🔒</span><span>${t('form.visibility.private')}</span>
+        </div>
+      </div>
+      <p class="tt-hint" style="margin:8px 0 0;font-size:11px">
+        ${cur==='private' ? t('form.visibility.private.hint') : t('form.visibility.public.hint')}
+      </p>
+    </div>`;
+}
 function formHtml(key){
   const a = MODULE_DEF[key].accent;
   const hasSig = !!signatures[key];
@@ -1963,6 +2020,7 @@ function formHtml(key){
         <button type="button" class="tt-btn ghost sm" data-gal="${key}">${t('form.photos.gallery')}</button>
       </div>
     </div>
+    ${visibilityHtml(key)}
     <div class="tt-card" style="--c:${a}">
       <div class="tt-card-head"><span class="tt-bullet"></span><h2>${t('form.signature')}</h2><span class="tt-pill">${t('form.signature.manual')}</span></div>
       <p class="tt-hint">${t('form.signature.hint')}</p>
@@ -2011,15 +2069,25 @@ function renderForms(){
       const cam = e.target.closest('[data-cam]'); if(cam) return openPicker(cam.dataset.cam, true);
       const gal = e.target.closest('[data-gal]'); if(gal) return openPicker(gal.dataset.gal, false);
       const sig = e.target.closest('[data-open-sig]'); if(sig) return sigOpen(sig.dataset.openSig);
+      const vis = e.target.closest('[data-vis-val]');
+      if(vis){
+        const wrap = vis.closest('[data-vis]');
+        const k = wrap.dataset.vis;
+        visDraft[k] = vis.dataset.visVal;
+        /* تحديث فوري لبطاقة الاختيار */
+        renderForms();
+        return;
+      }
     });
     host.addEventListener('submit', e => { e.preventDefault(); handleSubmit(key); });
     host.addEventListener('reset', ()=>{
       setTimeout(()=>{
         drafts[key].forEach(p=>{try{URL.revokeObjectURL(p.url);}catch{}});
-        drafts[key] = []; signatures[key] = null;
+        drafts[key] = []; signatures[key] = null; visDraft[key] = 'public';
         renderPhotos(key); updateSigPreview(key);
         const it = document.getElementById('items-'+key); if(it) it.innerHTML='';
         addItemRow(key); updateItemsSummary(key);
+        renderForms();
       },0);
     });
     setTimeout(()=>{ updateSigPreview(key); updateItemsSummary(key); }, 120);
@@ -2176,7 +2244,6 @@ async function generateCard(tx){
   ctx.fillRect(0, 0, W, cv.height);
   let y = 0;
 
-  /* HEADER with LOGO */
   const HEAD = 300;
   const grad = ctx.createLinearGradient(0, 0, W, HEAD);
   grad.addColorStop(0, CT.olive); grad.addColorStop(0.5, CT.oliveDark); grad.addColorStop(1, CT.gold);
@@ -2194,11 +2261,8 @@ async function generateCard(tx){
     else { logoH = LOGO_MAX_H; logoW = logoH * lr; }
     const logoX = rtl ? PAD + 6 : W - PAD - logoW - 6;
     const logoY = (HEAD - logoH) / 2;
-    ctx.save();
-    ctx.shadowColor = 'rgba(0,0,0,.55)';
-    ctx.shadowBlur = 28; ctx.shadowOffsetY = 10;
-    ctx.drawImage(logoImg, logoX, logoY, logoW, logoH);
-    ctx.restore();
+    ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.55)'; ctx.shadowBlur = 28; ctx.shadowOffsetY = 10;
+    ctx.drawImage(logoImg, logoX, logoY, logoW, logoH); ctx.restore();
   }
 
   const textShift = logoW ? (logoW + 50) : 0;
@@ -2219,9 +2283,19 @@ async function generateCard(tx){
   ctx.font = F(500, 26); ctx.fillStyle = 'rgba(255,255,255,.92)';
   ctx.fillText(t('mod.' + tx.module + '.subtitle'), textX, 226);
 
+  /* ⭐ PRIVATE badge in header */
+  if(tx.visibility === 'private'){
+    const bw2 = 190, bh2 = 46;
+    const bx = rtl ? PAD + 10 : W - PAD - bw2 - 10;
+    const by = HEAD - 62;
+    ctx.fillStyle = 'rgba(168,85,247,.9)';
+    rr(ctx, bx, by, bw2, bh2, 12); ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.font = F(800, 22); ctx.textAlign = 'center';
+    ctx.fillText('🔒 ' + (currentLang==='ar'?'خاص':currentLang==='fr'?'PRIVÉ':'PRIVATE'), bx+bw2/2, by+31);
+  }
+
   y = HEAD;
 
-  /* REF STRIP */
   const STRIP = 110;
   const stripBg = ctx.createLinearGradient(0, y, 0, y+STRIP);
   stripBg.addColorStop(0, '#FFFDF7'); stripBg.addColorStop(1, CT.goldPale);
@@ -2250,7 +2324,6 @@ async function generateCard(tx){
   });
   y += STRIP + 44;
 
-  /* PERSONNEL */
   drawSectionTitle(ctx, PAD, y, CW, rtl, currentLang==='ar'?'الأفراد':currentLang==='fr'?'PERSONNEL':'PERSONNEL');
   y += 60;
   const gap = 22, bw = (CW-gap)/2, bh = 118;
@@ -2258,7 +2331,6 @@ async function generateCard(tx){
   drawInfoBox(ctx, rtl?W-PAD-2*bw-gap:PAD+bw+gap, y, bw, bh, currentLang==='ar'?'الموظف المستخرج':currentLang==='fr'?'Personnel':'Staff', tx.staff, rtl);
   y += bh + 40;
 
-  /* DETAILS */
   drawSectionTitle(ctx, PAD, y, CW, rtl, currentLang==='ar'?'تفاصيل الحركة':currentLang==='fr'?'DÉTAILS':'DETAILS');
   y += 60;
   const details = [];
@@ -2281,7 +2353,6 @@ async function generateCard(tx){
   }
   y -= gap; y += 40;
 
-  /* ITEMS TABLE */
   const totalQty = (tx.items||[]).reduce((s,it) => s + (parseFloat(it.qty) || 0), 0);
 
   drawSectionTitle(ctx, PAD, y, CW, rtl,
@@ -2290,16 +2361,13 @@ async function generateCard(tx){
 
   const SUMMARY_H = 82;
   const sumGrad = ctx.createLinearGradient(PAD, y, PAD + CW, y);
-  sumGrad.addColorStop(0, CT.olivePale);
-  sumGrad.addColorStop(1, '#FFFFFF');
+  sumGrad.addColorStop(0, CT.olivePale); sumGrad.addColorStop(1, '#FFFFFF');
   ctx.fillStyle = sumGrad;
   rr(ctx, PAD, y, CW, SUMMARY_H, 16); ctx.fill();
   ctx.strokeStyle = CT.olive; ctx.lineWidth = 2;
   rr(ctx, PAD, y, CW, SUMMARY_H, 16); ctx.stroke();
 
-  ctx.fillStyle = CT.oliveDark;
-  ctx.font = F(900, 28);
-  ctx.textAlign = 'center';
+  ctx.fillStyle = CT.oliveDark; ctx.font = F(900, 28); ctx.textAlign = 'center';
   const summaryText = currentLang==='ar'
     ? `عدد الأصناف : ${tx.items.length}      •      مجموع الكميات : ${Number.isInteger(totalQty)?totalQty:totalQty.toFixed(2)}`
     : currentLang==='fr'
@@ -2308,54 +2376,38 @@ async function generateCard(tx){
   ctx.fillText(summaryText, W / 2, y + SUMMARY_H / 2 + 10);
   y += SUMMARY_H + 24;
 
-  const HEAD_H = 62;
-  const ROW_H = 66;
-  const colQty = 190;
-  const colUnit = 230;
+  const HEAD_H = 62, ROW_H = 66;
+  const colQty = 190, colUnit = 230;
   const NAME_W = CW - colQty - colUnit;
   const TABLE_H = HEAD_H + ROW_H * tx.items.length;
 
   const headGrad = ctx.createLinearGradient(PAD, y, PAD + CW, y);
-  headGrad.addColorStop(0, CT.oliveDark);
-  headGrad.addColorStop(1, CT.olive);
-  ctx.fillStyle = headGrad;
-  ctx.fillRect(PAD, y, CW, HEAD_H);
+  headGrad.addColorStop(0, CT.oliveDark); headGrad.addColorStop(1, CT.olive);
+  ctx.fillStyle = headGrad; ctx.fillRect(PAD, y, CW, HEAD_H);
 
   tx.items.forEach((it, i) => {
     const rowY = y + HEAD_H + i * ROW_H;
     ctx.fillStyle = i % 2 === 1 ? CT.olivePale : '#FFFFFF';
     ctx.fillRect(PAD, rowY, CW, ROW_H);
   });
-
-  ctx.strokeStyle = 'rgba(10,123,95,.22)';
-  ctx.lineWidth = 1;
+  ctx.strokeStyle = 'rgba(10,123,95,.22)'; ctx.lineWidth = 1;
   for(let i = 1; i < tx.items.length; i++){
     const divY = y + HEAD_H + i * ROW_H + 0.5;
-    ctx.beginPath();
-    ctx.moveTo(PAD + 8, divY);
-    ctx.lineTo(PAD + CW - 8, divY);
-    ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(PAD + 8, divY); ctx.lineTo(PAD + CW - 8, divY); ctx.stroke();
   }
-
   const div1X = rtl ? PAD + CW - NAME_W : PAD + NAME_W;
   const div2X = rtl ? PAD + CW - NAME_W - colQty : PAD + NAME_W + colQty;
-  ctx.strokeStyle = 'rgba(10,123,95,.45)';
-  ctx.lineWidth = 1.5;
+  ctx.strokeStyle = 'rgba(10,123,95,.45)'; ctx.lineWidth = 1.5;
   ctx.beginPath();
   ctx.moveTo(div1X, y);      ctx.lineTo(div1X, y + TABLE_H);
   ctx.moveTo(div2X, y);      ctx.lineTo(div2X, y + TABLE_H);
   ctx.stroke();
-
-  ctx.strokeStyle = CT.olive;
-  ctx.lineWidth = 2.5;
+  ctx.strokeStyle = CT.olive; ctx.lineWidth = 2.5;
   ctx.strokeRect(PAD + 1, y + 1, CW - 2, TABLE_H - 2);
 
   const headerMidY = y + HEAD_H / 2 + 9;
-  ctx.fillStyle = '#FFFFFF';
-  ctx.font = F(800, 24);
-  const qtyCenterX = rtl
-    ? PAD + CW - NAME_W - colQty / 2
-    : PAD + NAME_W + colQty / 2;
+  ctx.fillStyle = '#FFFFFF'; ctx.font = F(800, 24);
+  const qtyCenterX = rtl ? PAD + CW - NAME_W - colQty / 2 : PAD + NAME_W + colQty / 2;
   ctx.textAlign = rtl ? 'right' : 'left';
   ctx.fillText(t('form.items.name'), rtl ? PAD + CW - 26 : PAD + 26, headerMidY);
   ctx.textAlign = 'center';
@@ -2366,27 +2418,19 @@ async function generateCard(tx){
   tx.items.forEach((it, i) => {
     const rowY = y + HEAD_H + i * ROW_H;
     const midY = rowY + ROW_H / 2 + 11;
-
-    ctx.fillStyle = CT.ink;
-    ctx.font = F(700, 28);
+    ctx.fillStyle = CT.ink; ctx.font = F(700, 28);
     ctx.textAlign = rtl ? 'right' : 'left';
     const nameLines = wrapText(ctx, it.name, NAME_W - 56);
     ctx.fillText(nameLines[0], rtl ? PAD + CW - 26 : PAD + 26, midY);
-
-    ctx.fillStyle = CT.goldDark;
-    ctx.font = F(900, 38);
+    ctx.fillStyle = CT.goldDark; ctx.font = F(900, 38);
     ctx.textAlign = 'center';
     ctx.fillText(String(it.qty), qtyCenterX, midY);
-
-    ctx.fillStyle = CT.oliveDark;
-    ctx.font = F(700, 26);
+    ctx.fillStyle = CT.oliveDark; ctx.font = F(700, 26);
     ctx.textAlign = rtl ? 'left' : 'right';
     ctx.fillText(it.unit, rtl ? PAD + 26 : PAD + CW - 26, midY);
   });
-
   y += TABLE_H + 50;
 
-  /* NOTES */
   if(tx.notes){
     drawSectionTitle(ctx, PAD, y, CW, rtl, currentLang==='ar'?'ملاحظات':currentLang==='fr'?'OBSERVATIONS':'NOTES');
     y += 60;
@@ -2402,7 +2446,6 @@ async function generateCard(tx){
     y += noteH + 44;
   }
 
-  /* PHOTOS */
   if(photoImgs.length){
     drawSectionTitle(ctx, PAD, y, CW, rtl,
       (currentLang==='ar'?'الصور التوثيقية':currentLang==='fr'?'PREUVES PHOTOGRAPHIQUES':'PHOTO EVIDENCE') + ` (${photoImgs.length})`);
@@ -2437,7 +2480,6 @@ async function generateCard(tx){
     y += 44;
   }
 
-  /* SIGNATURE BOX */
   y += 40;
   drawSectionTitle(ctx, PAD, y, CW, rtl,
     currentLang==='ar'?'التوقيع والختم الرسمي':currentLang==='fr'?'SIGNATURE ET CACHET':'SIGNATURE & STAMP');
@@ -2468,13 +2510,11 @@ async function generateCard(tx){
 
   if(staffSigImg){
     try {
-      const sigMaxH = 380;
-      const sigMaxW = boxW - 60;
+      const sigMaxH = 380, sigMaxW = boxW - 60;
       const ir = staffSigImg.width/staffSigImg.height;
       let dw, dh;
       const br = sigMaxW/sigMaxH;
-      if(ir > br){ dw = sigMaxW; dh = sigMaxW/ir; }
-      else { dh = sigMaxH; dw = sigMaxH*ir; }
+      if(ir > br){ dw = sigMaxW; dh = sigMaxW/ir; } else { dh = sigMaxH; dw = sigMaxH*ir; }
       const dx = boxX + (boxW - dw) / 2;
       const dy = boxY + (boxH - dh) / 2 - 30;
       const BOLD = 1.4;
@@ -2492,7 +2532,6 @@ async function generateCard(tx){
     ctx.fillStyle = CT.muted; ctx.font = F(600, 28); ctx.textAlign = 'center';
     ctx.fillText(currentLang==='ar'?'لا يوجد توقيع':currentLang==='fr'?'Aucune signature':'No signature', boxX+boxW/2, boxY+boxH/2+10);
   }
-
   y += boxH + 50;
   ctx.strokeStyle = CT.ink; ctx.lineWidth = 4;
   ctx.beginPath(); ctx.moveTo(PAD+40, y); ctx.lineTo(W-PAD-40, y); ctx.stroke();
@@ -2505,7 +2544,6 @@ async function generateCard(tx){
   if(tx.staff){ y += 42; ctx.fillStyle = CT.inkSoft; ctx.font = F(700, 26); ctx.fillText(`— ${tx.staff} —`, W/2, y); }
   y += 60;
 
-  /* FOOTER */
   ctx.strokeStyle = CT.olive; ctx.lineWidth = 1.5;
   ctx.beginPath(); ctx.moveTo(PAD, y+.5); ctx.lineTo(PAD+CW, y+.5); ctx.stroke();
   ctx.fillStyle = CT.gold;
@@ -2543,9 +2581,10 @@ async function buildPdfBlob(tx, cardDataUrl){
 }
 function buildJsonBlob(tx){
   return new Blob([JSON.stringify({
-    schema:'digitalstock.exit.v18', exportedAt:new Date().toISOString(),
+    schema:'digitalstock.exit.v19', exportedAt:new Date().toISOString(),
     reference:tx.ref, module:tx.module, hotel:tx.hotel||settings.hotel,
     guard:tx.guard, staff:tx.staff, guardCode:tx.guardCode||null,
+    visibility:tx.visibility||'public',
     department:tx.department||null, destination:tx.destination||null,
     reason:tx.reason||null, vehicle:tx.vehicle||null,
     authorizedBy:tx.authorizedBy||null, notes:tx.notes||null,
@@ -2606,6 +2645,7 @@ function buildMessage(tx){
   L.push(`🏨 ${tx.hotel||settings.hotel}`);
   L.push(`📄 ${tx.ref}`);
   L.push(`🕒 ${fmtDateTime(tx.createdAt)}`);
+  L.push(`${tx.visibility === 'private' ? '🔒' : '🌍'} ${tx.visibility === 'private' ? 'خاص' : 'عام'}`);
   L.push('');
   L.push(`👮 ${tx.guard}`);
   L.push(`👤 ${tx.staff}`);
@@ -2677,6 +2717,7 @@ async function handleSubmit(key){
     module: key, hotel: settings.hotel,
     guard: currentAgent, staff,
     guardUid: currentUid, guardCode: currentAgentCode,
+    visibility: visDraft[key] || 'public',
     department: (fd.get('department')||'').trim(),
     po: (fd.get('po')||'').trim(),
     destination: (fd.get('destination')||'').trim(),
@@ -2690,7 +2731,7 @@ async function handleSubmit(key){
     clientTimestamp: new Date().toISOString()
   };
 
-  let record = null, photoSource = 'local', commitSource = 'local';
+  let record = null, commitSource = 'local';
   try {
     const tempId = (crypto.randomUUID && crypto.randomUUID()) || String(Date.now());
     let refs;
@@ -2698,8 +2739,7 @@ async function handleSubmit(key){
       try {
         refs = await savePhotosCloudinary(tempId, drafts[key]);
         if(!refs || !refs.length) throw new Error('Cloudinary empty');
-        photoSource = 'cloudinary';
-      } catch(photoErr){ refs = await savePhotosLocal(tempId, drafts[key]); photoSource = 'local'; }
+      } catch(photoErr){ refs = await savePhotosLocal(tempId, drafts[key]); }
     } else { refs = await savePhotosLocal(tempId, drafts[key]); }
     const { id, ref, source } = await commitTransaction({...payload, photos:refs});
     commitSource = source;
@@ -2710,10 +2750,11 @@ async function handleSubmit(key){
 
     form.reset();
     drafts[key].forEach(p=>{try{URL.revokeObjectURL(p.url);}catch{}});
-    drafts[key] = []; signatures[key] = null;
+    drafts[key] = []; signatures[key] = null; visDraft[key] = 'public';
     renderPhotos(key); updateSigPreview(key);
     const it = document.getElementById('items-'+key); if(it) it.innerHTML='';
     addItemRow(key); updateItemsSummary(key);
+    renderForms();
     refreshDatalists(); renderHistory(); renderProfile();
     toast((commitSource==='local'?t('form.saved.local'):t('form.saved')) + ' ' + ref, 3000);
   } catch(err){
@@ -2815,18 +2856,25 @@ function initDeleteConfirm(){
   document.getElementById('delConfirmBtn').onclick = () => performDelete();
 }
 
+/* ⭐⭐⭐ ADMIN ALWAYS SEES ALL ⭐⭐⭐ */
 function getVisibleRecords(){
   const all = loadAll();
+  /* Admin (developer UID) always sees everything */
+  if(currentUid === ADMIN_UID) return all;
   if(developerMode) return all;
   if(!currentAgent) return all;
+  /* Non-admin: only own + public cards from others */
   return all.filter(x => {
-    if(x.guardUid && currentUid) return x.guardUid === currentUid;
-    return x.guard === currentAgent;
+    const isMine = (x.guardUid && currentUid) ? x.guardUid === currentUid : x.guard === currentAgent;
+    if(isMine) return true;
+    return (x.visibility || 'public') === 'public';
   });
 }
 function filterRecords(records){
   let f = records;
-  if(historyFilter !== 'all') f = f.filter(x => x.module === historyFilter);
+  if(historyFilter === 'warehouse' || historyFilter === 'bon') f = f.filter(x => x.module === historyFilter);
+  else if(historyFilter === 'public') f = f.filter(x => (x.visibility || 'public') === 'public');
+  else if(historyFilter === 'private') f = f.filter(x => x.visibility === 'private');
   if(historyQuery){
     const q = historyQuery.toLowerCase();
     f = f.filter(x =>
@@ -2860,12 +2908,15 @@ function renderHistory(){
     const ttlD = ttlH !== null ? Math.ceil(ttlH/24) : null;
     const expiring = ttlH !== null && ttlH < 24;
     const totalQty = (tx.items||[]).reduce((s,it)=>s+(parseFloat(it.qty)||0),0);
+    const isPriv = tx.visibility === 'private';
+    const isMine = (tx.guardUid && currentUid) ? tx.guardUid === currentUid : tx.guard === currentAgent;
     return `
-      <div class="feed-card" style="--c:${m.accent}" data-id="${tx.id}">
+      <div class="feed-card${isPriv?' private-card':''}" style="--c:${m.accent}" data-id="${tx.id}">
         <div class="feed-main">
           <div class="feed-ref">
             ${esc(tx.ref)}
             <span class="tt-pill acc">${esc(t('mod.'+tx.module+'.tag'))}</span>
+            ${isPriv ? `<span class="tt-pill priv">🔒 ${t('form.visibility.private')}</span>` : `<span class="tt-pill pub">🌍 ${t('form.visibility.public')}</span>`}
             ${tx.archived ? `<span class="tt-pill ok">${t('history.archived')}</span>` : `<span class="tt-pill warn">${t('history.unarchived')}</span>`}
             ${expiring ? `<span class="tt-pill warn">${t('history.purgeIn')} ${ttlD}${t('archive.days')}</span>` : ''}
           </div>
@@ -2873,6 +2924,7 @@ function renderHistory(){
           <div class="feed-sub">👤 ${esc(tx.staff)} • 👮 ${esc(tx.guard)} • 📦 ${tx.items.length} (${Number.isInteger(totalQty)?totalQty:totalQty.toFixed(2)}) • 📷 ${(tx.photos||[]).length}</div>
         </div>
         <div class="feed-actions">
+          ${isMine ? `<button class="tt-iconbtn" data-act="vis" title="${t('history.toggleVisibility')}">${isPriv?'🔒':'🌍'}</button>` : ''}
           <button class="tt-iconbtn" data-act="view">👁</button>
           <button class="tt-iconbtn" data-act="share">📲</button>
           <button class="tt-iconbtn" data-act="pdf">📄</button>
@@ -2887,6 +2939,21 @@ function updateDateClearButtons(){
   if(fromClear) fromClear.classList.toggle('hidden', !historyDateFrom);
   if(toClear) toClear.classList.toggle('hidden', !historyDateTo);
 }
+/* ⭐ Toggle visibility */
+function toggleVisibility(txId){
+  const all = loadAll();
+  const idx = all.findIndex(x => x.id === txId);
+  if(idx < 0) return;
+  const tx = all[idx];
+  tx.visibility = (tx.visibility === 'private') ? 'public' : 'private';
+  saveAll(all);
+  if(firebaseReady && navigator.onLine && tx.id){
+    updateDoc(doc(db,'transactions',tx.id), { visibility: tx.visibility }).catch(()=>{});
+  }
+  toast(tx.visibility === 'private' ? t('history.madePrivate') : t('history.madePublic'));
+  renderHistory(); renderProfile();
+  if(developerMode) renderDeveloper();
+}
 function initHistory(){
   const list = document.getElementById('histList');
   if(!list || list._init) return;
@@ -2899,6 +2966,7 @@ function initHistory(){
     const btn = e.target.closest('[data-act]');
     const act = btn ? btn.dataset.act : 'view';
     if(act === 'del'){ openDeleteConfirm(tx); return; }
+    if(act === 'vis'){ toggleVisibility(tx.id); return; }
     if(act === 'pdf'){
       toast(t('history.pdfGenerating'));
       try {
@@ -2981,6 +3049,8 @@ function renderProfile(){
   const arch = all.filter(x => x.archived).length;
   const totalItems = all.reduce((s,x) => s + (x.items?.length || 0), 0);
   const totalQty = all.reduce((s,x) => s + (x.items||[]).reduce((a,it)=>a+(parseFloat(it.qty)||0),0), 0);
+  const pubCount = all.filter(x => (x.visibility || 'public') === 'public').length;
+  const privCount = all.filter(x => x.visibility === 'private').length;
   const initial = (currentAgent || '?').trim().charAt(0).toUpperCase();
   const recent = all.slice(0, 9);
   const avatar = getAvatar();
@@ -2999,21 +3069,25 @@ function renderProfile(){
       </div>
       <h2 class="profile-name">${esc(currentAgent||'—')}</h2>
       <div class="profile-handle">@${esc((currentEmail||'').split('@')[0]||'agent')}</div>
-      <div class="profile-role">${t('profile.role')}</div>
+      <div class="profile-role">${t('profile.role')}${isAdmin ? ' • 🔧 ADMIN' : ''}</div>
       ${currentEmail ? `<div class="profile-email">${esc(currentEmail)}</div>` : ''}
-      <div style="margin-top:10px;display:inline-flex;align-items:center;gap:8px;
-        padding:6px 14px;border-radius:99px;
-        background:linear-gradient(135deg,#D4A017,#0A7B5F);
-        color:#fff;font-family:'Inter',sans-serif;font-weight:900;font-size:13px;
-        letter-spacing:.5px;box-shadow:0 4px 14px rgba(212,160,23,.35)">
+      <button class="agent-code-badge" id="agentCodeBadge" type="button">
         <span style="opacity:.85;font-weight:700;font-size:11px">${t('profile.agentCode')}</span>
         <span>${esc(currentAgentCode)}</span>
-      </div>
+        <span style="opacity:.85;font-size:11px">✏️</span>
+      </button>
       <div style="margin-top:8px;font-size:11.5px;color:var(--muted)">
         ${t('profile.memberSince')}: <b style="color:var(--tt-cyan)">${memberDuration}</b>
         • ${fmtDate(memberSince)}
       </div>
     </div>
+
+    ${isAdmin ? `
+      <div class="tt-banner admin" style="margin-bottom:14px">
+        <span class="b-ic">👑</span>
+        <span><b>${t('profile.adminBanner')}</b></span>
+      </div>
+    ` : ''}
 
     <div style="display:flex;gap:8px;margin-bottom:16px">
       <button class="tt-btn ghost sm" id="btnEditProfile" style="flex:1">
@@ -3055,6 +3129,14 @@ function renderProfile(){
           <span class="lbl">${t('profile.stats.totalQty')}</span>
           <span class="val" style="color:#0A7B5F">${Number.isInteger(totalQty)?totalQty:totalQty.toFixed(2)}</span>
         </div>
+        <div class="itm">
+          <span class="lbl">${t('profile.stats.public')}</span>
+          <span class="val" style="color:#0e8f6f">${pubCount}</span>
+        </div>
+        <div class="itm">
+          <span class="lbl">${t('profile.stats.private')}</span>
+          <span class="val" style="color:#a855f7">${privCount}</span>
+        </div>
       </div>
     </div>
 
@@ -3065,7 +3147,9 @@ function renderProfile(){
     ${recent.length
       ? `<div class="activity-grid">${recent.map(tx => {
           const m = MODULE_DEF[tx.module];
-          return `<div class="activity-cell" style="--c:${m.accent}" data-id="${esc(tx.id)}">
+          const isPriv = tx.visibility === 'private';
+          return `<div class="activity-cell${isPriv?' private-card':''}" style="--c:${m.accent}" data-id="${esc(tx.id)}">
+            ${isPriv ? `<span class="lock-badge">🔒</span>` : ''}
             <div class="ic">${tx.module==='warehouse'?'🏭':'🚚'}</div>
             <div class="ref">${esc(tx.ref.slice(-8))}</div>
           </div>`;
@@ -3094,10 +3178,6 @@ function renderProfile(){
     </div>
 
     ${isAdmin ? `
-      <div class="tt-banner admin" style="margin-bottom:14px">
-        <span class="b-ic">🔧</span>
-        <span>${t('dev.subtitle')}</span>
-      </div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
         <button class="tt-btn admin" id="devToggleBtn" style="flex:1">
           ${developerMode ? '⏹ ' + t('dev.deactivate') : t('dev.activate')}
@@ -3136,6 +3216,9 @@ function renderProfile(){
   if(ring) ring.onclick = triggerAvatarUpload;
   if(editBtn) editBtn.onclick = (e) => { e.stopPropagation(); triggerAvatarUpload(); };
 
+  const acb = document.getElementById('agentCodeBadge');
+  if(acb) acb.onclick = () => openEditProfile();
+
   host.querySelectorAll('.activity-cell').forEach(el => {
     el.onclick = () => { const tx = loadAll().find(x => x.id === el.dataset.id); if(tx) showCard(tx); };
   });
@@ -3159,6 +3242,7 @@ function openEditProfile(){
   const modal = document.getElementById('editProfileModal');
   const extra = getProfileExtra();
   document.getElementById('editProfileName').value = currentAgent || '';
+  document.getElementById('editProfileAgentCode').value = currentAgentCode || '';
   document.getElementById('editProfilePhone').value = extra.phone || '';
   modal.classList.add('open');
 }
@@ -3256,10 +3340,11 @@ function renderDeveloper(){
       ? filteredTx.map(tx => {
           const m = MODULE_DEF[tx.module];
           const totalQty = (tx.items||[]).reduce((s,it)=>s+(parseFloat(it.qty)||0),0);
+          const isPriv = tx.visibility === 'private';
           return `
-            <div class="feed-card" style="--c:${m.accent}" data-id="${tx.id}">
+            <div class="feed-card${isPriv?' private-card':''}" style="--c:${m.accent}" data-id="${tx.id}">
               <div class="feed-main">
-                <div class="feed-ref">${esc(tx.ref)}<span class="tt-pill acc">${esc(t('mod.'+tx.module+'.tag'))}</span>${tx.archived ? `<span class="tt-pill ok">${t('history.archived')}</span>` : `<span class="tt-pill warn">${t('history.unarchived')}</span>`}</div>
+                <div class="feed-ref">${esc(tx.ref)}<span class="tt-pill acc">${esc(t('mod.'+tx.module+'.tag'))}</span>${isPriv?`<span class="tt-pill priv">🔒</span>`:`<span class="tt-pill pub">🌍</span>`}${tx.archived ? `<span class="tt-pill ok">${t('history.archived')}</span>` : `<span class="tt-pill warn">${t('history.unarchived')}</span>`}</div>
                 <div class="feed-sub">${fmtDateTime(tx.createdAt)}</div>
                 <div class="feed-sub">👤 ${esc(tx.staff)} • 👮 ${esc(tx.guard)} • 📦 ${tx.items.length} (${Number.isInteger(totalQty)?totalQty:totalQty.toFixed(2)}) • 📷 ${(tx.photos||[]).length}</div>
               </div>
@@ -3339,8 +3424,7 @@ function initModals(){
   const blo = document.getElementById('btnLogoutBtn');
   if(blo) blo.onclick = async () => {
     if(!confirm(t('settings.logoutConfirm'))) return;
-    logActivity('logout');
-    sessionUnlocked = false;
+    logActivity('logout'); sessionUnlocked = false;
     try { await signOut(auth); } catch {}
     closeModals();
   };
@@ -3352,22 +3436,14 @@ function initModals(){
     pinToggle._init = true;
     pinToggle.addEventListener('change', e => {
       const on = e.target.checked;
-      pinInput.disabled = !on;
-      pinSaveBtn.disabled = !on;
-      if(!on){
-        setPinForUser(currentUid, null, false);
-        pinInput.value = '';
-        toast(t('settings.pin.removed'));
-      } else {
-        pinInput.focus();
-      }
+      pinInput.disabled = !on; pinSaveBtn.disabled = !on;
+      if(!on){ setPinForUser(currentUid, null, false); pinInput.value = ''; toast(t('settings.pin.removed')); }
+      else { pinInput.focus(); }
     });
   }
   if(pinInput && !pinInput._init){
     pinInput._init = true;
-    pinInput.addEventListener('input', e => {
-      e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4);
-    });
+    pinInput.addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4); });
   }
   if(pinSaveBtn && !pinSaveBtn._init){
     pinSaveBtn._init = true;
@@ -3379,22 +3455,35 @@ function initModals(){
     };
   }
 
+  /* ⭐ Save profile: name + agent code + phone */
   const saveProfileBtn = document.getElementById('saveProfileBtn');
   if(saveProfileBtn && !saveProfileBtn._init){
     saveProfileBtn._init = true;
     saveProfileBtn.onclick = async () => {
       const name = (document.getElementById('editProfileName').value || '').trim();
+      const codeInput = (document.getElementById('editProfileAgentCode').value || '').trim();
       const phone = (document.getElementById('editProfilePhone').value || '').trim();
+
       if(!name){ toast(t('editProfile.error')); return; }
+
+      /* Validate agent code */
+      const newCode = normalizeAgentCode(codeInput);
+      if(newCode.length < 2 || newCode.length > 8){ toast(t('editProfile.codeInvalid')); return; }
+      if(isAgentCodeUsed(newCode, currentUid)){ toast(t('editProfile.codeExists')); return; }
+
       saveProfileBtn.disabled = true;
       try {
         if(auth.currentUser) await updateProfile(auth.currentUser, { displayName: name });
         currentAgent = name;
         document.getElementById('currentUserDisplay').textContent = name;
         saveProfileExtra({ phone });
-        toast(t('editProfile.saved'));
+        /* Save agent code */
+        setAgentCodeForUser(currentUid, newCode);
+        currentAgentCode = newCode;
+        toast(t('editProfile.saved') + ' • ' + t('editProfile.codeSaved'));
         closeModals();
         renderProfile();
+        renderForms();
       } catch(err){
         console.error(err);
         toast(t('editProfile.error') + ' ' + (err.message || ''));
@@ -3488,8 +3577,7 @@ function initModals(){
   if(pinLogoutBtn && !pinLogoutBtn._init){
     pinLogoutBtn._init = true;
     pinLogoutBtn.onclick = async () => {
-      logActivity('logout');
-      sessionUnlocked = false;
+      logActivity('logout'); sessionUnlocked = false;
       try { await signOut(auth); } catch {}
     };
   }
@@ -3530,8 +3618,6 @@ function performModeSwitch(){
   const nextMode = currentModule === 'warehouse' ? 'bon' : 'warehouse';
   const goingToBon = nextMode === 'bon';
   btn.classList.add('spin');
-  const ripples = btn.querySelectorAll('.mode-ripple');
-  ripples.forEach(r => { r.style.animation = 'none'; void r.offsetHeight; r.style.animation = ''; });
   if(flash){ flash.className = 'mode-flash ' + (goingToBon ? 'bon' : 'wh') + ' active'; setTimeout(() => { flash.classList.remove('active'); }, 350); }
   if(navigator.vibrate) { try { navigator.vibrate(goingToBon ? [40,30,40] : 40); } catch {} }
   currentModule = nextMode;
@@ -3708,13 +3794,8 @@ function ensureUI(){
   ensureUI();
   initAuth();
   updateNetStatus();
-
-  /* ⭐ تشغيل أنيميشن Splash */
-  runSplash(() => {
-    setTimeout(()=>document.getElementById('loginEmail')?.focus(), 200);
-  });
-
-  console.log('%c Digital Stock v27 — Splash animation + Big bold signature in card ',
+  runSplash(() => { setTimeout(()=>document.getElementById('loginEmail')?.focus(), 200); });
+  console.log('%c Digital Stock v28 — Manual agent code + Admin sees ALL + Private/Public cards ',
     'background:linear-gradient(90deg,#D4A017,#0A7B5F);color:#fff;padding:4px 10px;border-radius:8px;font-weight:900;');
 })();
 </script>
