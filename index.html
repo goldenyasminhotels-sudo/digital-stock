@@ -43,7 +43,24 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   background:radial-gradient(circle at 20% 10%,rgba(37,244,238,.08) 0%,transparent 40%),
              radial-gradient(circle at 80% 90%,rgba(254,44,85,.08) 0%,transparent 40%)}
 
-/* Auth screen */
+/* ⭐⭐⭐ SPLASH SCREEN — نبض ملء الشاشة ثم انكماش للشعار الرئيسي ⭐⭐⭐ */
+#splash-screen{position:fixed;inset:0;z-index:9999;background:var(--bg);
+  display:grid;place-items:center;transition:background .9s ease;overflow:hidden}
+#splash-screen.hidden{display:none}
+#splash-screen::before{content:'';position:absolute;width:520px;height:520px;border-radius:50%;
+  filter:blur(140px);opacity:.55;pointer-events:none;
+  background:radial-gradient(circle,rgba(212,160,23,.55) 0%,rgba(37,244,238,.35) 45%,transparent 70%);
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  animation:splashGlow 2s ease-in-out infinite}
+@keyframes splashGlow{0%,100%{opacity:.45;transform:translate(-50%,-50%) scale(1)}
+  50%{opacity:.75;transform:translate(-50%,-50%) scale(1.15)}}
+#splashMove{width:min(58vw,320px);height:min(58vw,320px);display:grid;place-items:center;
+  animation:splashPulse 1.3s ease-in-out infinite;will-change:transform;
+  position:relative;z-index:1}
+#splashLogo{width:100%;height:100%;object-fit:contain;
+  filter:drop-shadow(0 22px 55px rgba(212,160,23,.75)) drop-shadow(0 0 80px rgba(37,244,238,.55))}
+@keyframes splashPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.09)}}
+
 #auth-screen{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;
   justify-content:center;background:var(--bg);padding:24px;transition:opacity .5s,visibility .5s}
 #auth-screen.hidden{opacity:0;visibility:hidden;pointer-events:none}
@@ -61,9 +78,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .auth-logo{width:120px;height:120px;margin:0 auto 24px;position:relative;
   display:grid;place-items:center}
 .auth-logo img{width:100%;height:100%;object-fit:contain;
-  filter:drop-shadow(0 10px 32px rgba(212,160,23,.6)) drop-shadow(0 0 50px rgba(37,244,238,.4));
-  animation:logoPulse 3s ease-in-out infinite}
-@keyframes logoPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+  filter:drop-shadow(0 10px 32px rgba(212,160,23,.6)) drop-shadow(0 0 50px rgba(37,244,238,.4))}
 .auth-title{font-size:28px;font-weight:900;text-align:center;margin:0 0 6px;
   background:linear-gradient(90deg,var(--tt-cyan),var(--tt-pink));
   -webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-.5px}
@@ -96,7 +111,6 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .tt-btn.ghost .spinner-inline{border-color:rgba(255,255,255,.2);border-top-color:#fff}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* PIN screen */
 #pin-screen{position:fixed;inset:0;z-index:1100;display:flex;align-items:center;
   justify-content:center;background:var(--bg);padding:24px;transition:opacity .4s,visibility .4s}
 #pin-screen.hidden{opacity:0;visibility:hidden;pointer-events:none}
@@ -133,10 +147,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   cursor:pointer;transition:.15s}
 .pin-logout:hover{background:rgba(254,44,85,.22)}
 .pin-error{color:var(--tt-pink);font-size:12.5px;font-weight:700;margin:0 0 12px;min-height:16px}
-.pin-reset-link{background:none;border:none;color:var(--muted);font-size:12px;font-weight:700;
-  text-decoration:underline;cursor:pointer;margin-top:8px}
 
-/* App screen */
 #app-screen{position:relative;z-index:1;display:flex;flex-direction:column;
   min-height:100vh;opacity:0;visibility:hidden;pointer-events:none;
   transition:opacity .5s,visibility .5s;
@@ -383,7 +394,6 @@ html[dir="rtl"] .tt-item-row .i-unit{background-position:left 8px center}
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .feed-actions{display:flex;gap:6px;flex-wrap:wrap;flex:0 0 auto}
 
-/* Profile */
 .profile-hero{text-align:center;padding:24px 0 20px;position:relative}
 .avatar-ring{width:120px;height:120px;margin:0 auto 16px;padding:4px;border-radius:50%;
   background:linear-gradient(135deg,var(--tt-cyan),var(--tt-pink));
@@ -460,7 +470,6 @@ html[dir="rtl"] .tt-item-row .i-unit{background-position:left 8px center}
 .activity-log-item .t{font-weight:800;font-size:12.5px}
 .activity-log-item .ts{font-size:10.5px;color:var(--muted);font-family:var(--font-en)}
 
-/* Bottom nav */
 .tt-bottomnav{position:fixed;bottom:0;left:0;right:0;
   height:calc(var(--nav-h) + env(safe-area-inset-bottom,0px));
   padding-bottom:env(safe-area-inset-bottom,0px);
@@ -518,7 +527,6 @@ html[dir="rtl"] .tt-bottomnav{grid-template-columns:1fr 92px 1fr;direction:rtl}
 .mode-label.bon{background:linear-gradient(90deg,#FE2C55,#f43f5e);
   -webkit-background-clip:text;background-clip:text;color:transparent}
 
-/* Modals */
 .tt-modal{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.6);
   backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
   display:flex;align-items:flex-end;justify-content:center;
@@ -656,6 +664,13 @@ html[dir="rtl"] .toggle-switch input:checked + .toggle-slider::after{transform:t
 </style>
 </head>
 <body>
+
+<!-- ⭐⭐⭐ SPLASH SCREEN ⭐⭐⭐ -->
+<div id="splash-screen">
+  <div id="splashMove">
+    <img id="splashLogo" alt="Digital Stock">
+  </div>
+</div>
 
 <!-- AUTH SCREEN -->
 <div id="auth-screen">
@@ -1008,7 +1023,7 @@ setPersistence(auth, browserLocalPersistence).catch(console.error);
 
 const ADMIN_UID = 'kszZYwapqMYc8XvY2yOYGmO3c6D3';
 
-/* ⭐⭐⭐ APP LOGO — الشعار الرسمي للتطبيق ⭐⭐⭐ */
+/* ⭐ APP LOGO */
 const APP_LOGO_URL = 'https://i.ibb.co/bRqLsfSm/Gemini-Generated-Image-u5cpgfu5cpgfu5cp-removebg-preview.png';
 
 let _jsPDFPromise = null;
@@ -1030,7 +1045,6 @@ async function loadJsPDF(){
   return _jsPDFPromise;
 }
 
-/* ⭐ REFINED CARD THEME */
 const CARD_THEME = {
   gold:'#D4A017', goldLight:'#F0C24A', goldDark:'#8B6914', goldPale:'#FBF3DC',
   olive:'#0A7B5F', oliveDark:'#064D3C', oliveLight:'#3FB893', olivePale:'#DFF2EB',
@@ -1284,6 +1298,97 @@ const fmtDate = d => new Date(d).toLocaleDateString('en-US');
 const fmtTime = d => new Date(d).toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:false});
 const fmtDateTime = d => `${fmtDate(d)} • ${fmtTime(d)}`;
 
+/* ⭐⭐⭐ SPLASH ANIMATION ⭐⭐⭐ */
+function runSplash(onComplete){
+  const splash = document.getElementById('splash-screen');
+  const moveWrap = document.getElementById('splashMove');
+  const logoImg = document.getElementById('splashLogo');
+  if(!splash || !moveWrap) { if(onComplete) onComplete(); return; }
+  logoImg.src = APP_LOGO_URL;
+
+  const finish = () => { if(onComplete) onComplete(); };
+
+  /* بعد 2 ثانية: انكماش الشعار إلى موقعه الرئيسي */
+  setTimeout(() => {
+    /* تحديد العنصر الهدف حسب الشاشة الظاهرة */
+    let target = null;
+    const authScreen = document.getElementById('auth-screen');
+    const pinScreen = document.getElementById('pin-screen');
+    const appScreen = document.getElementById('app-screen');
+
+    if(appScreen && appScreen.classList.contains('visible')){
+      /* الشاشة الرئيسية ظاهرة: لا يوجد شعار هدف → تلاشي بسيط */
+      splash.style.transition = 'opacity .5s ease';
+      splash.style.opacity = '0';
+      setTimeout(() => {
+        splash.classList.add('hidden');
+        splash.style.opacity = ''; splash.style.transition = '';
+        finish();
+      }, 520);
+      return;
+    }
+    if(authScreen && !authScreen.classList.contains('hidden')){
+      target = document.querySelector('.auth-logo');
+    } else if(pinScreen && !pinScreen.classList.contains('hidden')){
+      target = document.querySelector('.pin-logo');
+    }
+
+    if(!target){
+      splash.style.transition = 'opacity .5s ease';
+      splash.style.opacity = '0';
+      setTimeout(() => {
+        splash.classList.add('hidden');
+        splash.style.opacity = ''; splash.style.transition = '';
+        finish();
+      }, 520);
+      return;
+    }
+
+    /* قياس المواقع */
+    void document.body.offsetHeight;
+    const tr = target.getBoundingClientRect();
+    const sr = moveWrap.getBoundingClientRect();
+    if(tr.width === 0 || sr.width === 0){
+      splash.classList.add('hidden');
+      finish();
+      return;
+    }
+    const scale = tr.width / sr.width;
+    const dx = (tr.left + tr.width / 2) - (sr.left + sr.width / 2);
+    const dy = (tr.top + tr.height / 2) - (sr.top + sr.height / 2);
+
+    /* إخفاء الشعار الهدف مؤقتاً */
+    target.style.opacity = '0';
+
+    /* إيقاف النبض */
+    moveWrap.style.animation = 'none';
+    void moveWrap.offsetHeight;
+
+    /* الانكماش */
+    moveWrap.style.transition = 'transform .95s cubic-bezier(.6,0,.2,1)';
+    moveWrap.style.transform = `translate(${dx}px, ${dy}px) scale(${scale})`;
+
+    /* تلاشي خلفية الشاشة */
+    splash.style.transition = 'background .95s ease';
+    splash.style.background = 'transparent';
+
+    /* بعد وصول الشعار: استبدال الشعارين ثم إخفاء splash */
+    setTimeout(() => {
+      target.style.opacity = '1';
+      splash.style.transition = 'opacity .35s ease';
+      splash.style.opacity = '0';
+      setTimeout(() => {
+        splash.classList.add('hidden');
+        splash.style.opacity = ''; splash.style.transition = '';
+        splash.style.background = '';
+        moveWrap.style.transition = ''; moveWrap.style.transform = '';
+        moveWrap.style.animation = '';
+        finish();
+      }, 380);
+    }, 950);
+  }, 2000);
+}
+
 function toast(msg, ms=2800){
   const el = document.getElementById('toast');
   el.textContent = msg; el.classList.add('show');
@@ -1309,7 +1414,6 @@ function generateAgentCode(uid){
   return code;
 }
 
-/* ⭐ ACTIVITY LOG */
 function logActivity(type, extra={}){
   if(!currentUid && !currentEmail) return;
   const key = currentUid || currentEmail || 'unknown';
@@ -1326,7 +1430,6 @@ function getActivityLog(){
   return log[key] || [];
 }
 
-/* ⭐ PROFILE EXTRA */
 function loadProfileExtra(){
   try { return JSON.parse(localStorage.getItem(PROFILE_EXTRA_KEY) || '{}') || {}; } catch { return {}; }
 }
@@ -1356,7 +1459,6 @@ function fmtDuration(fromIso){
   return `${days} ${t('profile.daysAgo')}`;
 }
 
-/* ⭐ PIN storage */
 function getPinForUser(uid){
   if(!uid) return null;
   const all = JSON.parse(localStorage.getItem(PIN_KEY) || '{}');
@@ -1982,7 +2084,6 @@ function refreshDatalists(){
   $$('#dl-staff').forEach(el => { el.innerHTML = staff.map(v=>`<option value="${esc(v)}">`).join(''); });
 }
 
-/* ⭐⭐⭐ Card generation with logo + refined items table ⭐⭐⭐ */
 const CT = CARD_THEME;
 const rr = (ctx,x,y,w,h,r) => {
   r = Math.min(r,w/2,h/2);
@@ -2075,7 +2176,7 @@ async function generateCard(tx){
   ctx.fillRect(0, 0, W, cv.height);
   let y = 0;
 
-  /* ============ HEADER with LOGO ============ */
+  /* HEADER with LOGO */
   const HEAD = 300;
   const grad = ctx.createLinearGradient(0, 0, W, HEAD);
   grad.addColorStop(0, CT.olive); grad.addColorStop(0.5, CT.oliveDark); grad.addColorStop(1, CT.gold);
@@ -2085,7 +2186,6 @@ async function generateCard(tx){
   ctx.fillStyle = shine; ctx.fillRect(0, 0, W, HEAD);
   ctx.fillStyle = CT.goldLight; ctx.fillRect(0, 0, W, 6);
 
-  /* -- LOGO (كبير وواضح، على اليسار في RTL / اليمين في LTR) -- */
   const LOGO_MAX_H = 200, LOGO_MAX_W = 260;
   let logoW = 0, logoH = 0;
   if(logoImg){
@@ -2101,11 +2201,9 @@ async function generateCard(tx){
     ctx.restore();
   }
 
-  /* -- TEXT (ينزاح حسب حجم الشعار) -- */
   const textShift = logoW ? (logoW + 50) : 0;
   const textX = rtl ? W - PAD - textShift : PAD + textShift;
-  const textAlignNow = rtl ? 'right' : 'left';
-  ctx.textAlign = textAlignNow;
+  ctx.textAlign = rtl ? 'right' : 'left';
 
   ctx.fillStyle = 'rgba(255,255,255,.92)'; ctx.font = F(700, 28);
   ctx.fillText(settings.hotel || '', textX, 82);
@@ -2123,7 +2221,7 @@ async function generateCard(tx){
 
   y = HEAD;
 
-  /* ============ REF STRIP ============ */
+  /* REF STRIP */
   const STRIP = 110;
   const stripBg = ctx.createLinearGradient(0, y, 0, y+STRIP);
   stripBg.addColorStop(0, '#FFFDF7'); stripBg.addColorStop(1, CT.goldPale);
@@ -2152,7 +2250,7 @@ async function generateCard(tx){
   });
   y += STRIP + 44;
 
-  /* ============ PERSONNEL ============ */
+  /* PERSONNEL */
   drawSectionTitle(ctx, PAD, y, CW, rtl, currentLang==='ar'?'الأفراد':currentLang==='fr'?'PERSONNEL':'PERSONNEL');
   y += 60;
   const gap = 22, bw = (CW-gap)/2, bh = 118;
@@ -2160,7 +2258,7 @@ async function generateCard(tx){
   drawInfoBox(ctx, rtl?W-PAD-2*bw-gap:PAD+bw+gap, y, bw, bh, currentLang==='ar'?'الموظف المستخرج':currentLang==='fr'?'Personnel':'Staff', tx.staff, rtl);
   y += bh + 40;
 
-  /* ============ DETAILS ============ */
+  /* DETAILS */
   drawSectionTitle(ctx, PAD, y, CW, rtl, currentLang==='ar'?'تفاصيل الحركة':currentLang==='fr'?'DÉTAILS':'DETAILS');
   y += 60;
   const details = [];
@@ -2183,15 +2281,13 @@ async function generateCard(tx){
   }
   y -= gap; y += 40;
 
-  /* ============ ⭐ ITEMS TABLE (منظم في وسط البطاقة) ============ */
+  /* ITEMS TABLE */
   const totalQty = (tx.items||[]).reduce((s,it) => s + (parseFloat(it.qty) || 0), 0);
 
-  /* عنوان القسم */
   drawSectionTitle(ctx, PAD, y, CW, rtl,
     (currentLang==='ar'?'الموارد المُخرَجة':currentLang==='fr'?'RESSOURCES SORTIES':'RESOURCES ISSUED'));
   y += 66;
 
-  /* شريط ملخّص أعلى الجدول */
   const SUMMARY_H = 82;
   const sumGrad = ctx.createLinearGradient(PAD, y, PAD + CW, y);
   sumGrad.addColorStop(0, CT.olivePale);
@@ -2212,29 +2308,25 @@ async function generateCard(tx){
   ctx.fillText(summaryText, W / 2, y + SUMMARY_H / 2 + 10);
   y += SUMMARY_H + 24;
 
-  /* أبعاد الجدول */
   const HEAD_H = 62;
-  const ROW_H = Math.max(66, 66);
+  const ROW_H = 66;
   const colQty = 190;
   const colUnit = 230;
   const NAME_W = CW - colQty - colUnit;
   const TABLE_H = HEAD_H + ROW_H * tx.items.length;
 
-  /* رأس الجدول */
   const headGrad = ctx.createLinearGradient(PAD, y, PAD + CW, y);
   headGrad.addColorStop(0, CT.oliveDark);
   headGrad.addColorStop(1, CT.olive);
   ctx.fillStyle = headGrad;
   ctx.fillRect(PAD, y, CW, HEAD_H);
 
-  /* خلفيات الصفوف (تبادل) */
   tx.items.forEach((it, i) => {
     const rowY = y + HEAD_H + i * ROW_H;
     ctx.fillStyle = i % 2 === 1 ? CT.olivePale : '#FFFFFF';
     ctx.fillRect(PAD, rowY, CW, ROW_H);
   });
 
-  /* فواصل أفقية بين الصفوف */
   ctx.strokeStyle = 'rgba(10,123,95,.22)';
   ctx.lineWidth = 1;
   for(let i = 1; i < tx.items.length; i++){
@@ -2245,7 +2337,6 @@ async function generateCard(tx){
     ctx.stroke();
   }
 
-  /* مواضع الفواصل الرأسية (RTL و LTR) */
   const div1X = rtl ? PAD + CW - NAME_W : PAD + NAME_W;
   const div2X = rtl ? PAD + CW - NAME_W - colQty : PAD + NAME_W + colQty;
   ctx.strokeStyle = 'rgba(10,123,95,.45)';
@@ -2255,12 +2346,10 @@ async function generateCard(tx){
   ctx.moveTo(div2X, y);      ctx.lineTo(div2X, y + TABLE_H);
   ctx.stroke();
 
-  /* الإطار الخارجي */
   ctx.strokeStyle = CT.olive;
   ctx.lineWidth = 2.5;
   ctx.strokeRect(PAD + 1, y + 1, CW - 2, TABLE_H - 2);
 
-  /* رأس الجدول - النصوص */
   const headerMidY = y + HEAD_H / 2 + 9;
   ctx.fillStyle = '#FFFFFF';
   ctx.font = F(800, 24);
@@ -2274,25 +2363,21 @@ async function generateCard(tx){
   ctx.textAlign = rtl ? 'left' : 'right';
   ctx.fillText(t('form.items.unit'), rtl ? PAD + 26 : PAD + CW - 26, headerMidY);
 
-  /* الصفوف - النصوص */
   tx.items.forEach((it, i) => {
     const rowY = y + HEAD_H + i * ROW_H;
     const midY = rowY + ROW_H / 2 + 11;
 
-    /* الاسم */
     ctx.fillStyle = CT.ink;
     ctx.font = F(700, 28);
     ctx.textAlign = rtl ? 'right' : 'left';
     const nameLines = wrapText(ctx, it.name, NAME_W - 56);
     ctx.fillText(nameLines[0], rtl ? PAD + CW - 26 : PAD + 26, midY);
 
-    /* الكمية (بارزة بالوسط) */
     ctx.fillStyle = CT.goldDark;
     ctx.font = F(900, 38);
     ctx.textAlign = 'center';
     ctx.fillText(String(it.qty), qtyCenterX, midY);
 
-    /* الوحدة */
     ctx.fillStyle = CT.oliveDark;
     ctx.font = F(700, 26);
     ctx.textAlign = rtl ? 'left' : 'right';
@@ -2300,9 +2385,8 @@ async function generateCard(tx){
   });
 
   y += TABLE_H + 50;
-  /* ============ END ITEMS TABLE ============ */
 
-  /* ============ NOTES ============ */
+  /* NOTES */
   if(tx.notes){
     drawSectionTitle(ctx, PAD, y, CW, rtl, currentLang==='ar'?'ملاحظات':currentLang==='fr'?'OBSERVATIONS':'NOTES');
     y += 60;
@@ -2318,7 +2402,7 @@ async function generateCard(tx){
     y += noteH + 44;
   }
 
-  /* ============ PHOTOS ============ */
+  /* PHOTOS */
   if(photoImgs.length){
     drawSectionTitle(ctx, PAD, y, CW, rtl,
       (currentLang==='ar'?'الصور التوثيقية':currentLang==='fr'?'PREUVES PHOTOGRAPHIQUES':'PHOTO EVIDENCE') + ` (${photoImgs.length})`);
@@ -2353,12 +2437,12 @@ async function generateCard(tx){
     y += 44;
   }
 
-  /* ============ SIGNATURE ============ */
+  /* SIGNATURE BOX */
   y += 40;
   drawSectionTitle(ctx, PAD, y, CW, rtl,
     currentLang==='ar'?'التوقيع والختم الرسمي':currentLang==='fr'?'SIGNATURE ET CACHET':'SIGNATURE & STAMP');
-  y += 100;
-  const boxW = CW, boxH = 460, boxX = PAD, boxY = y;
+  y += 110;
+  const boxW = CW, boxH = 560, boxX = PAD, boxY = y;
   const boxBg = ctx.createLinearGradient(0, boxY, 0, boxY+boxH);
   boxBg.addColorStop(0, '#FEFEFB'); boxBg.addColorStop(1, '#F5F7F2');
   ctx.fillStyle = boxBg; rr(ctx, boxX, boxY, boxW, boxH, 22); ctx.fill();
@@ -2370,30 +2454,45 @@ async function generateCard(tx){
   [[boxX+8,boxY+8],[boxX+boxW-8,boxY+8],[boxX+8,boxY+boxH-8],[boxX+boxW-8,boxY+boxH-8]].forEach(([cx,cy])=>{
     ctx.beginPath(); ctx.arc(cx, cy, 4.5, 0, Math.PI*2); ctx.fill();
   });
+
   if(decoImg){
     try {
-      const stampMaxH = 260, stampRatio = decoImg.width/decoImg.height;
+      const stampMaxH = 240, stampRatio = decoImg.width/decoImg.height;
       let sh = Math.min(stampMaxH, decoImg.height);
       let sw = sh*stampRatio;
-      if(sw > boxW - 120){ sw = boxW - 120; sh = sw/stampRatio; }
-      const sx = boxX + (boxW-sw)/2, sy = boxY + boxH - sh - 32;
-      ctx.globalAlpha = 0.92; ctx.drawImage(decoImg, sx, sy, sw, sh); ctx.globalAlpha = 1.0;
+      if(sw > boxW - 140){ sw = boxW - 140; sh = sw/stampRatio; }
+      const sx = boxX + (boxW-sw)/2, sy = boxY + boxH - sh - 26;
+      ctx.globalAlpha = 0.85; ctx.drawImage(decoImg, sx, sy, sw, sh); ctx.globalAlpha = 1.0;
     } catch(e){}
   }
+
   if(staffSigImg){
     try {
-      const sigMaxH = 260, sigMaxW = boxW - 100;
+      const sigMaxH = 380;
+      const sigMaxW = boxW - 60;
       const ir = staffSigImg.width/staffSigImg.height;
       let dw, dh;
       const br = sigMaxW/sigMaxH;
-      if(ir > br){ dw = sigMaxW; dh = sigMaxW/ir; } else { dh = sigMaxH; dw = sigMaxH*ir; }
-      const dx = boxX + (boxW-dw)/2, dy = boxY + 30;
-      ctx.drawImage(staffSigImg, dx, dy, dw, dh);
+      if(ir > br){ dw = sigMaxW; dh = sigMaxW/ir; }
+      else { dh = sigMaxH; dw = sigMaxH*ir; }
+      const dx = boxX + (boxW - dw) / 2;
+      const dy = boxY + (boxH - dh) / 2 - 30;
+      const BOLD = 1.4;
+      const offsets = [
+        [0, 0],
+        [-BOLD, 0], [BOLD, 0], [0, -BOLD], [0, BOLD],
+        [-BOLD * 0.7, -BOLD * 0.7], [BOLD * 0.7, BOLD * 0.7],
+        [-BOLD * 0.7, BOLD * 0.7], [BOLD * 0.7, -BOLD * 0.7]
+      ];
+      ctx.save(); ctx.globalAlpha = 1.0;
+      offsets.forEach(([ox, oy]) => { ctx.drawImage(staffSigImg, dx + ox, dy + oy, dw, dh); });
+      ctx.restore();
     } catch(e){}
   } else {
     ctx.fillStyle = CT.muted; ctx.font = F(600, 28); ctx.textAlign = 'center';
     ctx.fillText(currentLang==='ar'?'لا يوجد توقيع':currentLang==='fr'?'Aucune signature':'No signature', boxX+boxW/2, boxY+boxH/2+10);
   }
+
   y += boxH + 50;
   ctx.strokeStyle = CT.ink; ctx.lineWidth = 4;
   ctx.beginPath(); ctx.moveTo(PAD+40, y); ctx.lineTo(W-PAD-40, y); ctx.stroke();
@@ -2406,7 +2505,7 @@ async function generateCard(tx){
   if(tx.staff){ y += 42; ctx.fillStyle = CT.inkSoft; ctx.font = F(700, 26); ctx.fillText(`— ${tx.staff} —`, W/2, y); }
   y += 60;
 
-  /* ============ FOOTER ============ */
+  /* FOOTER */
   ctx.strokeStyle = CT.olive; ctx.lineWidth = 1.5;
   ctx.beginPath(); ctx.moveTo(PAD, y+.5); ctx.lineTo(PAD+CW, y+.5); ctx.stroke();
   ctx.fillStyle = CT.gold;
@@ -3514,7 +3613,6 @@ function initTheme(){
   }
 }
 
-/* ⭐ Set logos everywhere */
 function applyLogos(){
   const a = document.getElementById('authLogoImg');
   const p = document.getElementById('pinLogoImg');
@@ -3610,8 +3708,13 @@ function ensureUI(){
   ensureUI();
   initAuth();
   updateNetStatus();
-  setTimeout(()=>document.getElementById('loginEmail')?.focus(), 300);
-  console.log('%c Digital Stock v25 — LOGO everywhere + organized ITEMS table ',
+
+  /* ⭐ تشغيل أنيميشن Splash */
+  runSplash(() => {
+    setTimeout(()=>document.getElementById('loginEmail')?.focus(), 200);
+  });
+
+  console.log('%c Digital Stock v27 — Splash animation + Big bold signature in card ',
     'background:linear-gradient(90deg,#D4A017,#0A7B5F);color:#fff;padding:4px 10px;border-radius:8px;font-weight:900;');
 })();
 </script>
